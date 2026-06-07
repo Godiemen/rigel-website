@@ -214,14 +214,16 @@ export function Home() {
   return (
     <div className="bg-white">
       <section className="relative overflow-hidden bg-[#04100d] text-white">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_12%_12%,rgba(0,223,95,0.24),transparent_28%),radial-gradient(circle_at_82%_8%,rgba(20,184,166,0.26),transparent_30%),radial-gradient(circle_at_58%_92%,rgba(59,130,246,0.12),transparent_34%)] pointer-events-none" />
-        <div className="hero-grid absolute inset-0 opacity-[0.18] pointer-events-none" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px)', backgroundSize: '72px 72px' }} />
-        <div className="hero-drift absolute -left-24 top-10 h-72 w-72 rounded-full bg-emerald-400/20 blur-3xl pointer-events-none" />
-        <div className="hero-orb absolute right-[8%] top-14 h-44 w-44 rounded-full bg-[#00df5f]/20 blur-2xl pointer-events-none" />
-        <div className="hero-orb-slow absolute bottom-10 left-[42%] h-56 w-56 rounded-full bg-cyan-400/10 blur-3xl pointer-events-none" />
-        <div className="absolute inset-y-0 left-0 w-1/2 bg-gradient-to-r from-black/35 to-transparent pointer-events-none" />
-        <div className="hero-shimmer absolute top-0 h-full w-1/3 bg-gradient-to-r from-transparent via-white/10 to-transparent blur-sm pointer-events-none" />
-        <div className="absolute inset-0 opacity-15 pointer-events-none" style={{ backgroundImage: 'repeating-linear-gradient(135deg, rgba(255,255,255,0.06) 0px, rgba(255,255,255,0.06) 1px, transparent 1px, transparent 34px)' }} />
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+        >
+          <source src="/kling_20260607_VIDEO_people_in__2396_0.mp4" type="video/mp4" />
+        </video>
+        <div className="absolute inset-0 bg-gradient-to-br from-black/75 via-black/55 to-black/85 pointer-events-none" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-28 relative">
           <div className="grid lg:grid-cols-2 gap-14 items-center">
             <div>
@@ -255,29 +257,26 @@ export function Home() {
             </div>
 
             <div className="relative min-h-[470px] lg:min-h-[540px]">
-              <div className="hero-soft-pulse absolute right-0 top-0 h-[28rem] w-[28rem] rounded-full bg-[#00df5f] opacity-95 shadow-[0_0_90px_rgba(0,223,95,0.28)]" />
-              <div className="hero-device-float absolute left-0 right-6 top-4">
-                <div className="overflow-hidden rounded-[2rem] bg-white p-3 shadow-2xl shadow-black/40 ring-1 ring-white/70">
-                  <div className="overflow-hidden rounded-[1.5rem] bg-white">
-                    <div className="flex items-center gap-2 border-b border-slate-100 bg-white px-5 py-3">
-                      <span className="h-3 w-3 rounded-full bg-red-400" />
-                      <span className="h-3 w-3 rounded-full bg-amber-400" />
-                      <span className="h-3 w-3 rounded-full bg-emerald-400" />
-                      <span className="ml-3 text-xs font-bold text-slate-500">Rigel Business Desktop</span>
+              <div className="absolute right-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[28rem] w-[28rem] rounded-full bg-gradient-to-br from-[#00df5f]/30 to-emerald-700/30 blur-3xl" />
+              <div className="absolute left-4 right-10 top-0 transform -rotate-2">
+                <div className="overflow-hidden rounded-xl bg-white p-4 shadow-xl shadow-black/25 border border-slate-100">
+                  <div className="overflow-hidden rounded-lg bg-slate-50">
+                    <div className="flex items-center gap-2 border-b border-slate-200 bg-slate-50 px-4 py-2">
+                      <span className="h-2.5 w-2.5 rounded-full bg-red-400" />
+                      <span className="h-2.5 w-2.5 rounded-full bg-yellow-400" />
+                      <span className="h-2.5 w-2.5 rounded-full bg-green-400" />
+                      <span className="ml-3 text-xs text-slate-600">Rigel Business</span>
                     </div>
-                    <div className="relative bg-white">
-                      <div className="absolute inset-0 z-10 bg-gradient-to-br from-white/12 via-transparent to-transparent pointer-events-none" />
-                      <img src="/desktop%20app.png" alt="Rigel Business desktop app screenshot" className="relative z-0 w-full object-cover" />
-                    </div>
+                    <img src="/desktop%20app.png" alt="Rigel Business desktop app" className="w-full object-cover" />
                   </div>
                 </div>
               </div>
-              <div className="hero-device-float absolute right-0 bottom-0 w-44 sm:w-52 rounded-[2.8rem] bg-white p-2.5 shadow-2xl shadow-black/60 ring-1 ring-white/70 [animation-delay:-3s]">
-                <div className="relative overflow-hidden rounded-[2.25rem] bg-white p-1.5">
-                  <div className="absolute left-1/2 top-2 z-20 h-5 w-24 -translate-x-1/2 rounded-b-2xl bg-white" />
-                  <div className="absolute inset-x-8 top-3 z-20 h-1 rounded-full bg-slate-200" />
-                  <div className="absolute inset-0 z-10 bg-gradient-to-br from-white/18 via-transparent to-transparent pointer-events-none" />
-                  <img src="/mobile%20app.png" alt="Rigel Business mobile PWA screenshot" className="relative z-0 w-full rounded-[1.85rem] object-cover" />
+              <div className="absolute right-0 bottom-0 w-44 sm:w-52 transform rotate-3">
+                <div className="overflow-hidden rounded-3xl bg-white p-2 shadow-xl shadow-black/30 border border-slate-100">
+                  <div className="relative overflow-hidden rounded-[2rem] bg-slate-50">
+                    <div className="absolute left-1/2 top-1.5 h-4 w-16 -translate-x-1/2 rounded-b-xl bg-black" />
+                    <img src="/mobile%20app.png" alt="Rigel Business mobile app" className="w-full rounded-[1.75rem] object-cover" />
+                  </div>
                 </div>
               </div>
             </div>
@@ -326,39 +325,36 @@ export function Home() {
         </div>
       </section>
 
-      <section className="relative overflow-hidden bg-slate-950 py-24 text-white">
-        <div className="absolute right-[8%] top-12 h-[32rem] w-[32rem] rounded-full bg-[#00df5f] opacity-25" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_12%_25%,rgba(27,163,123,0.25),transparent_30%),radial-gradient(circle_at_82%_70%,rgba(59,130,246,0.14),transparent_30%)] pointer-events-none" />
+      <section className="relative overflow-hidden bg-slate-900 bg-cover bg-center py-24 text-white" style={{ backgroundImage: "url('/afs-balance-sheet.jpg')" }}>
+        <div className="absolute inset-0 bg-slate-950/85" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-[0.9fr_1.1fr] gap-12 items-center">
             <div>
-              <p className="text-sm font-black uppercase tracking-[0.25em] text-[#70e1bf] mb-4">Financial reporting</p>
-              <h2 className="text-4xl lg:text-5xl font-black leading-tight mb-6">Generate full AFS, trial balance and general ledger reports.</h2>
+              <p className="text-sm font-semibold uppercase tracking-wider text-emerald-400 mb-4">Financial reporting</p>
+              <h2 className="text-4xl lg:text-5xl font-bold leading-tight mb-6">Generate full AFS, trial balance and general ledger reports.</h2>
               <p className="text-slate-300 text-lg leading-8 mb-8">
                 Rigel turns your captured transactions into structured accounting reports, so you can review balances, trace ledger movement and prepare financial statements faster.
               </p>
-              <div className="grid sm:grid-cols-3 gap-3">
+              <div className="grid sm:grid-cols-3 gap-4">
                 {['Annual Financial Statements', 'Trial Balance', 'General Ledger'].map(item => (
-                  <div key={item} className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                    <CheckCircle2 className="mb-3 h-5 w-5 text-[#00df5f]" />
-                    <p className="text-sm font-black leading-5">{item}</p>
+                  <div key={item} className="rounded-xl border border-slate-700 bg-slate-800/50 p-4">
+                    <CheckCircle2 className="mb-3 h-5 w-5 text-emerald-400" />
+                    <p className="text-sm font-medium">{item}</p>
                   </div>
                 ))}
               </div>
             </div>
 
             <div className="relative">
-              <div className="absolute -right-8 -top-10 h-[26rem] w-[26rem] rounded-full bg-[#00df5f] opacity-90" />
-              <div className="relative overflow-hidden rounded-[2rem] bg-white p-3 text-slate-900 shadow-2xl shadow-black/50 ring-1 ring-white/30">
-                <div className="relative overflow-hidden rounded-[1.5rem] bg-slate-100">
-                  <div className="absolute left-5 top-5 z-20 rounded-full bg-white/90 px-4 py-2 text-[10px] font-black uppercase tracking-[0.22em] text-[#1BA37B] shadow-lg shadow-slate-900/10 backdrop-blur">
+              <div className="relative overflow-hidden rounded-2xl bg-white p-4 text-slate-900 shadow-xl border border-slate-200">
+                <div className="relative overflow-hidden rounded-xl bg-slate-50">
+                  <div className="absolute left-4 top-4 bg-white px-3 py-1 rounded-full text-xs font-semibold text-emerald-700 shadow-sm">
                     {afsScreenshots[activeAfsScreenshot].title}
                   </div>
-                  <div className="absolute inset-0 z-10 bg-gradient-to-br from-white/25 via-transparent to-transparent pointer-events-none" />
                   <img
                     src={afsScreenshots[activeAfsScreenshot].src}
                     alt={afsScreenshots[activeAfsScreenshot].title}
-                    className="relative z-0 w-full object-cover transition-all duration-700 ease-in-out"
+                    className="w-full object-cover transition-all duration-500"
                   />
                 </div>
                 <div className="mt-4 flex items-center justify-center gap-2">
@@ -368,39 +364,39 @@ export function Home() {
                       type="button"
                       aria-label={`Show ${screenshot.title}`}
                       onClick={() => setActiveAfsScreenshot(index)}
-                      className={`h-3 rounded-full transition-all ${
-                        activeAfsScreenshot === index ? 'w-9 bg-[#1BA37B]' : 'w-3 bg-slate-300 hover:bg-slate-400'
+                      className={`h-2.5 rounded-full transition-all ${
+                        activeAfsScreenshot === index ? 'w-7 bg-emerald-600' : 'w-2.5 bg-slate-300 hover:bg-slate-400'
                       }`}
                     />
                   ))}
-                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="py-24 bg-slate-50 overflow-hidden">
+      <section className="py-24 bg-slate-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
-            <p className="text-sm font-black uppercase tracking-[0.25em] text-[#1BA37B] mb-3">VAT management</p>
-            <h2 className="text-4xl lg:text-5xl font-black text-slate-900 mb-5">Create VAT returns without the spreadsheet stress</h2>
-            <p className="text-slate-500 text-lg max-w-3xl mx-auto leading-8">
+            <p className="text-sm font-semibold uppercase tracking-wider text-emerald-700 mb-3">VAT management</p>
+            <h2 className="text-4xl lg:text-5xl font-bold text-slate-900 mb-5">Create VAT returns without the spreadsheet stress</h2>
+            <p className="text-slate-600 text-lg max-w-3xl mx-auto leading-8">
               Rigel helps you prepare, review and close VAT periods with the transactions, totals and reports already connected to your business records.
             </p>
           </div>
 
-          <div className="grid lg:grid-cols-[0.8fr_1.2fr] gap-10 items-center">
+          <div className="grid lg:grid-cols-[0.8fr_1.2fr] gap-12 items-center">
             <div className="space-y-4">
               {vatFeatures.map((item, index) => (
-                <div key={item.title} className={`rounded-3xl border p-6 transition-colors ${index === 0 ? 'bg-white border-[#1BA37B]/30 shadow-xl shadow-emerald-100/70' : 'bg-white/70 border-slate-100'}`}>
+                <div key={item.title} className={`rounded-2xl border p-6 transition-colors ${index === 0 ? 'bg-white border-emerald-200 shadow-lg shadow-emerald-50' : 'bg-white border-slate-200'}`}>
                   <div className="flex gap-4">
-                    <div className="h-12 w-12 rounded-2xl bg-[#1BA37B]/10 text-[#1BA37B] flex items-center justify-center shrink-0">
+                    <div className="h-12 w-12 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
                       <item.icon className="h-6 w-6" />
                     </div>
                     <div>
-                      <h3 className="text-lg font-black text-slate-900 mb-2">{item.title}</h3>
-                      <p className="text-sm leading-7 text-slate-500">{item.desc}</p>
+                      <h3 className="text-lg font-semibold text-slate-900 mb-2">{item.title}</h3>
+                      <p className="text-sm leading-7 text-slate-600">{item.desc}</p>
                     </div>
                   </div>
                 </div>
@@ -408,18 +404,16 @@ export function Home() {
             </div>
 
             <div className="relative">
-              <div className="absolute -right-8 -top-12 h-[26rem] w-[26rem] rounded-full bg-[#00df5f] opacity-90" />
-              <div className="absolute -inset-8 rounded-[3rem] bg-gradient-to-br from-[#1BA37B]/20 via-cyan-400/10 to-blue-500/10 blur-3xl" />
-              <div className="relative overflow-hidden rounded-[2rem] bg-white p-3 shadow-2xl shadow-slate-200/80 ring-1 ring-slate-100">
-                <div className="relative overflow-hidden rounded-[1.5rem] bg-slate-100">
-                  <div className="absolute left-5 top-5 z-20 rounded-full bg-white/90 px-4 py-2 text-[10px] font-black uppercase tracking-[0.22em] text-[#1BA37B] shadow-lg shadow-slate-900/10 backdrop-blur">
+              <div className="absolute -right-4 -top-4 h-[20rem] w-[20rem] rounded-full bg-emerald-400/20 blur-3xl" />
+              <div className="relative overflow-hidden rounded-2xl bg-white p-4 shadow-xl shadow-slate-200 border border-slate-200">
+                <div className="relative overflow-hidden rounded-xl bg-slate-50">
+                  <div className="absolute left-4 top-4 bg-white px-3 py-1 rounded-full text-xs font-semibold text-emerald-700 shadow-sm">
                     {vatScreenshots[activeVatScreenshot].title}
                   </div>
-                  <div className="absolute inset-0 z-10 bg-gradient-to-br from-white/25 via-transparent to-transparent pointer-events-none" />
                   <img
                     src={vatScreenshots[activeVatScreenshot].src}
                     alt={vatScreenshots[activeVatScreenshot].title}
-                    className="relative z-0 w-full object-cover transition-all duration-700 ease-in-out"
+                    className="w-full object-cover transition-all duration-500"
                   />
                 </div>
                 <div className="mt-4 flex items-center justify-center gap-2">
@@ -429,35 +423,32 @@ export function Home() {
                       type="button"
                       aria-label={`Show ${screenshot.title}`}
                       onClick={() => setActiveVatScreenshot(index)}
-                      className={`h-3 rounded-full transition-all ${
-                        activeVatScreenshot === index ? 'w-9 bg-[#1BA37B]' : 'w-3 bg-white/25 hover:bg-white/40'
+                      className={`h-2.5 rounded-full transition-all ${
+                        activeVatScreenshot === index ? 'w-7 bg-emerald-600' : 'w-2.5 bg-slate-300 hover:bg-slate-400'
                       }`}
                     />
                   ))}
-                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="relative overflow-hidden bg-white py-24">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_10%_10%,rgba(27,163,123,0.08),transparent_28%),radial-gradient(circle_at_90%_40%,rgba(59,130,246,0.08),transparent_32%)] pointer-events-none" />
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="bg-white py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-12 items-center">
             <div className="relative order-2 lg:order-1">
-              <div className="absolute -left-10 -top-12 h-[26rem] w-[26rem] rounded-full bg-[#00df5f] opacity-90" />
-              <div className="absolute -inset-6 rounded-[3rem] bg-emerald-100/60 blur-3xl" />
-              <div className="relative overflow-hidden rounded-[2rem] bg-white p-3 shadow-2xl shadow-slate-200/80 ring-1 ring-slate-100">
-                <div className="relative overflow-hidden rounded-[1.5rem] bg-slate-100">
-                  <div className="absolute left-5 top-5 z-20 rounded-full bg-white/90 px-4 py-2 text-[10px] font-black uppercase tracking-[0.22em] text-[#1BA37B] shadow-lg shadow-slate-900/10 backdrop-blur">
+              <div className="absolute -left-4 -top-4 h-[20rem] w-[20rem] rounded-full bg-emerald-400/20 blur-3xl" />
+              <div className="relative overflow-hidden rounded-2xl bg-white p-4 shadow-xl shadow-slate-200 border border-slate-200">
+                <div className="relative overflow-hidden rounded-xl bg-slate-50">
+                  <div className="absolute left-4 top-4 bg-white px-3 py-1 rounded-full text-xs font-semibold text-emerald-700 shadow-sm">
                     {purchaseScreenshots[activePurchaseScreenshot].title}
                   </div>
-                  <div className="absolute inset-0 z-10 bg-gradient-to-br from-white/25 via-transparent to-transparent pointer-events-none" />
                   <img
                     src={purchaseScreenshots[activePurchaseScreenshot].src}
                     alt={purchaseScreenshots[activePurchaseScreenshot].title}
-                    className="relative z-0 w-full object-cover transition-all duration-700 ease-in-out"
+                    className="w-full object-cover transition-all duration-500"
                   />
                 </div>
                 <div className="mt-4 flex items-center justify-center gap-2">
@@ -467,8 +458,8 @@ export function Home() {
                       type="button"
                       aria-label={`Show ${screenshot.title}`}
                       onClick={() => setActivePurchaseScreenshot(index)}
-                      className={`h-3 rounded-full transition-all ${
-                        activePurchaseScreenshot === index ? 'w-9 bg-[#1BA37B]' : 'w-3 bg-slate-300 hover:bg-slate-400'
+                      className={`h-2.5 rounded-full transition-all ${
+                        activePurchaseScreenshot === index ? 'w-7 bg-emerald-600' : 'w-2.5 bg-slate-300 hover:bg-slate-400'
                       }`}
                     />
                   ))}
@@ -477,21 +468,21 @@ export function Home() {
             </div>
 
             <div className="order-1 lg:order-2">
-              <p className="text-sm font-black uppercase tracking-[0.25em] text-[#1BA37B] mb-3">Purchase management</p>
-              <h2 className="text-4xl lg:text-5xl font-black text-slate-900 mb-5">Know what you ordered, received and still owe</h2>
-              <p className="text-slate-500 text-lg leading-8 mb-8">
+              <p className="text-sm font-semibold uppercase tracking-wider text-emerald-700 mb-3">Purchase management</p>
+              <h2 className="text-4xl lg:text-5xl font-bold text-slate-900 mb-5">Know what you ordered, received and still owe</h2>
+              <p className="text-slate-600 text-lg leading-8 mb-8">
                 Rigel connects suppliers, purchase orders, supplier invoices and accounts payable so your buying process stays organised from request to payment.
               </p>
               <div className="space-y-4">
                 {purchaseFeatures.map((item) => (
-                  <div key={item.title} className="rounded-3xl border border-slate-100 bg-white p-6 shadow-sm">
+                  <div key={item.title} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
                     <div className="flex gap-4">
-                      <div className="h-12 w-12 rounded-2xl bg-[#1BA37B]/10 text-[#1BA37B] flex items-center justify-center shrink-0">
+                      <div className="h-12 w-12 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
                         <item.icon className="h-6 w-6" />
                       </div>
                       <div>
-                        <h3 className="text-lg font-black text-slate-900 mb-2">{item.title}</h3>
-                        <p className="text-sm leading-7 text-slate-500">{item.desc}</p>
+                        <h3 className="text-lg font-semibold text-slate-900 mb-2">{item.title}</h3>
+                        <p className="text-sm leading-7 text-slate-600">{item.desc}</p>
                       </div>
                     </div>
                   </div>
@@ -502,26 +493,25 @@ export function Home() {
         </div>
       </section>
 
-      <section className="relative overflow-hidden bg-slate-50 py-24">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_30%,rgba(59,130,246,0.09),transparent_28%),radial-gradient(circle_at_85%_10%,rgba(27,163,123,0.12),transparent_30%)] pointer-events-none" />
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="bg-slate-50 py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-[0.9fr_1.1fr] gap-12 items-center">
             <div>
-              <p className="text-sm font-black uppercase tracking-[0.25em] text-[#1BA37B] mb-3">Customer management</p>
-              <h2 className="text-4xl lg:text-5xl font-black text-slate-900 mb-5">Turn quotes into paid invoices without losing the trail</h2>
-              <p className="text-slate-500 text-lg leading-8 mb-8">
+              <p className="text-sm font-semibold uppercase tracking-wider text-emerald-700 mb-3">Customer management</p>
+              <h2 className="text-4xl lg:text-5xl font-bold text-slate-900 mb-5">Turn quotes into paid invoices without losing the trail</h2>
+              <p className="text-slate-600 text-lg leading-8 mb-8">
                 Rigel keeps customers, quotes, sales orders, invoices, delivery status and receipts in one connected revenue workspace.
               </p>
               <div className="space-y-4">
                 {customerFeatures.map((item) => (
-                  <div key={item.title} className="rounded-3xl border border-slate-100 bg-white p-6 shadow-sm">
+                  <div key={item.title} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
                     <div className="flex gap-4">
-                      <div className="h-12 w-12 rounded-2xl bg-[#1BA37B]/10 text-[#1BA37B] flex items-center justify-center shrink-0">
+                      <div className="h-12 w-12 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
                         <item.icon className="h-6 w-6" />
                       </div>
                       <div>
-                        <h3 className="text-lg font-black text-slate-900 mb-2">{item.title}</h3>
-                        <p className="text-sm leading-7 text-slate-500">{item.desc}</p>
+                        <h3 className="text-lg font-semibold text-slate-900 mb-2">{item.title}</h3>
+                        <p className="text-sm leading-7 text-slate-600">{item.desc}</p>
                       </div>
                     </div>
                   </div>
@@ -530,18 +520,16 @@ export function Home() {
             </div>
 
             <div className="relative">
-              <div className="absolute -right-8 -top-12 h-[26rem] w-[26rem] rounded-full bg-[#00df5f] opacity-90" />
-              <div className="absolute -inset-6 rounded-[3rem] bg-gradient-to-br from-blue-100 via-emerald-100 to-white blur-3xl" />
-              <div className="relative overflow-hidden rounded-[2rem] bg-white p-3 shadow-2xl shadow-slate-200/80 ring-1 ring-slate-100">
-                <div className="relative overflow-hidden rounded-[1.5rem] bg-slate-100">
-                  <div className="absolute left-5 top-5 z-20 rounded-full bg-white/90 px-4 py-2 text-[10px] font-black uppercase tracking-[0.22em] text-[#1BA37B] shadow-lg shadow-slate-900/10 backdrop-blur">
+              <div className="absolute -right-4 -top-4 h-[20rem] w-[20rem] rounded-full bg-emerald-400/20 blur-3xl" />
+              <div className="relative overflow-hidden rounded-2xl bg-white p-4 shadow-xl shadow-slate-200 border border-slate-200">
+                <div className="relative overflow-hidden rounded-xl bg-slate-50">
+                  <div className="absolute left-4 top-4 bg-white px-3 py-1 rounded-full text-xs font-semibold text-emerald-700 shadow-sm">
                     {salesScreenshots[activeSalesScreenshot].title}
                   </div>
-                  <div className="absolute inset-0 z-10 bg-gradient-to-br from-white/25 via-transparent to-transparent pointer-events-none" />
                   <img
                     src={salesScreenshots[activeSalesScreenshot].src}
                     alt={salesScreenshots[activeSalesScreenshot].title}
-                    className="relative z-0 w-full object-cover transition-all duration-700 ease-in-out"
+                    className="w-full object-cover transition-all duration-500"
                   />
                 </div>
                 <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
@@ -551,8 +539,8 @@ export function Home() {
                       type="button"
                       aria-label={`Show ${screenshot.title}`}
                       onClick={() => setActiveSalesScreenshot(index)}
-                      className={`h-3 rounded-full transition-all ${
-                        activeSalesScreenshot === index ? 'w-9 bg-[#1BA37B]' : 'w-3 bg-slate-300 hover:bg-slate-400'
+                      className={`h-2.5 rounded-full transition-all ${
+                        activeSalesScreenshot === index ? 'w-7 bg-emerald-600' : 'w-2.5 bg-slate-300 hover:bg-slate-400'
                       }`}
                     />
                   ))}
@@ -563,30 +551,28 @@ export function Home() {
         </div>
       </section>
 
-      <section className="relative overflow-hidden bg-white py-24">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_12%_15%,rgba(27,163,123,0.10),transparent_28%),radial-gradient(circle_at_80%_70%,rgba(147,51,234,0.08),transparent_30%)] pointer-events-none" />
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="bg-white py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
-            <p className="text-sm font-black uppercase tracking-[0.25em] text-[#1BA37B] mb-3">More business modules</p>
-            <h2 className="text-4xl lg:text-5xl font-black text-slate-900 mb-5">Run payroll, stock and assets from the same workspace</h2>
-            <p className="text-slate-500 text-lg max-w-3xl mx-auto leading-8">
+            <p className="text-sm font-semibold uppercase tracking-wider text-emerald-700 mb-3">More business modules</p>
+            <h2 className="text-4xl lg:text-5xl font-bold text-slate-900 mb-5">Run payroll, stock and assets from the same workspace</h2>
+            <p className="text-slate-600 text-lg max-w-3xl mx-auto leading-8">
               Rigel keeps operational records connected to your accounts, so payroll, inventory movement and asset values stay visible in your reports.
             </p>
           </div>
 
           <div className="relative">
-            <div className="absolute left-1/2 top-10 h-[34rem] w-[34rem] -translate-x-1/2 rounded-full bg-[#00df5f] opacity-20" />
+            <div className="absolute left-1/2 top-10 h-[24rem] w-[24rem] -translate-x-1/2 rounded-full bg-emerald-400/15 blur-3xl" />
             <div className="relative grid lg:grid-cols-3 gap-6">
-            <div className="overflow-hidden rounded-[2rem] bg-white p-3 shadow-xl shadow-slate-200/80 ring-1 ring-slate-100">
-              <div className="relative overflow-hidden rounded-[1.5rem] bg-slate-100">
-                <div className="absolute left-5 top-5 z-20 rounded-full bg-white/90 px-4 py-2 text-[10px] font-black uppercase tracking-[0.22em] text-[#1BA37B] shadow-lg shadow-slate-900/10 backdrop-blur">
+            <div className="overflow-hidden rounded-2xl bg-white p-4 shadow-xl shadow-slate-200 border border-slate-200">
+              <div className="relative overflow-hidden rounded-xl bg-slate-50">
+                <div className="absolute left-4 top-4 bg-white px-3 py-1 rounded-full text-xs font-semibold text-emerald-700 shadow-sm">
                   {payrollScreenshots[activePayrollScreenshot].title}
                 </div>
-                <div className="absolute inset-0 z-10 bg-gradient-to-br from-white/25 via-transparent to-transparent pointer-events-none" />
                 <img
                   src={payrollScreenshots[activePayrollScreenshot].src}
                   alt={payrollScreenshots[activePayrollScreenshot].title}
-                  className="relative z-0 w-full object-cover transition-all duration-700 ease-in-out"
+                  className="w-full object-cover transition-all duration-500"
                 />
               </div>
               <div className="mt-4 flex items-center justify-center gap-2">
@@ -596,24 +582,23 @@ export function Home() {
                     type="button"
                     aria-label={`Show ${screenshot.title}`}
                     onClick={() => setActivePayrollScreenshot(index)}
-                    className={`h-3 rounded-full transition-all ${
-                      activePayrollScreenshot === index ? 'w-9 bg-[#1BA37B]' : 'w-3 bg-slate-300 hover:bg-slate-400'
+                    className={`h-2.5 rounded-full transition-all ${
+                      activePayrollScreenshot === index ? 'w-7 bg-emerald-600' : 'w-2.5 bg-slate-300 hover:bg-slate-400'
                     }`}
                   />
                 ))}
               </div>
             </div>
 
-            <div className="overflow-hidden rounded-[2rem] bg-white p-3 shadow-xl shadow-slate-200/80 ring-1 ring-slate-100">
-              <div className="relative overflow-hidden rounded-[1.5rem] bg-slate-100">
-                <div className="absolute left-5 top-5 z-20 rounded-full bg-white/90 px-4 py-2 text-[10px] font-black uppercase tracking-[0.22em] text-blue-600 shadow-lg shadow-slate-900/10 backdrop-blur">
+            <div className="overflow-hidden rounded-2xl bg-white p-4 shadow-xl shadow-slate-200 border border-slate-200">
+              <div className="relative overflow-hidden rounded-xl bg-slate-50">
+                <div className="absolute left-4 top-4 bg-white px-3 py-1 rounded-full text-xs font-semibold text-blue-700 shadow-sm">
                   {inventoryScreenshots[activeInventoryScreenshot].title}
                 </div>
-                <div className="absolute inset-0 z-10 bg-gradient-to-br from-white/25 via-transparent to-transparent pointer-events-none" />
                 <img
                   src={inventoryScreenshots[activeInventoryScreenshot].src}
                   alt={inventoryScreenshots[activeInventoryScreenshot].title}
-                  className="relative z-0 w-full object-cover transition-all duration-700 ease-in-out"
+                  className="w-full object-cover transition-all duration-500"
                 />
               </div>
               <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
@@ -623,24 +608,23 @@ export function Home() {
                     type="button"
                     aria-label={`Show ${screenshot.title}`}
                     onClick={() => setActiveInventoryScreenshot(index)}
-                    className={`h-3 rounded-full transition-all ${
-                      activeInventoryScreenshot === index ? 'w-9 bg-blue-600' : 'w-3 bg-slate-300 hover:bg-slate-400'
+                    className={`h-2.5 rounded-full transition-all ${
+                      activeInventoryScreenshot === index ? 'w-7 bg-blue-600' : 'w-2.5 bg-slate-300 hover:bg-slate-400'
                     }`}
                   />
                 ))}
               </div>
             </div>
 
-            <div className="overflow-hidden rounded-[2rem] bg-white p-3 shadow-xl shadow-slate-200/80 ring-1 ring-slate-100">
-              <div className="relative overflow-hidden rounded-[1.5rem] bg-slate-100">
-                <div className="absolute left-5 top-5 z-20 rounded-full bg-white/90 px-4 py-2 text-[10px] font-black uppercase tracking-[0.22em] text-purple-700 shadow-lg shadow-slate-900/10 backdrop-blur">
+            <div className="overflow-hidden rounded-2xl bg-white p-4 shadow-xl shadow-slate-200 border border-slate-200">
+              <div className="relative overflow-hidden rounded-xl bg-slate-50">
+                <div className="absolute left-4 top-4 bg-white px-3 py-1 rounded-full text-xs font-semibold text-purple-700 shadow-sm">
                   {assetScreenshots[activeAssetScreenshot].title}
                 </div>
-                <div className="absolute inset-0 z-10 bg-gradient-to-br from-white/25 via-transparent to-transparent pointer-events-none" />
                 <img
                   src={assetScreenshots[activeAssetScreenshot].src}
                   alt={assetScreenshots[activeAssetScreenshot].title}
-                  className="relative z-0 w-full object-cover transition-all duration-700 ease-in-out"
+                  className="w-full object-cover transition-all duration-500"
                 />
               </div>
               <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
@@ -650,8 +634,8 @@ export function Home() {
                     type="button"
                     aria-label={`Show ${screenshot.title}`}
                     onClick={() => setActiveAssetScreenshot(index)}
-                    className={`h-3 rounded-full transition-all ${
-                      activeAssetScreenshot === index ? 'w-9 bg-purple-700' : 'w-3 bg-slate-300 hover:bg-slate-400'
+                    className={`h-2.5 rounded-full transition-all ${
+                      activeAssetScreenshot === index ? 'w-7 bg-purple-700' : 'w-2.5 bg-slate-300 hover:bg-slate-400'
                     }`}
                   />
                 ))}
@@ -666,18 +650,18 @@ export function Home() {
       <section className="py-24 bg-slate-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-black text-slate-900 mb-4">Loved by businesses across SA</h2>
+            <h2 className="text-4xl font-bold text-slate-900 mb-4">Loved by businesses across SA</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {testimonials.map(t => (
-              <div key={t.name} className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm">
+              <div key={t.name} className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
                 <div className="flex gap-1 mb-4">
                   {[...Array(5)].map((_, i) => <Star key={i} className="h-4 w-4 fill-amber-400 text-amber-400" />)}
                 </div>
                 <p className="text-slate-600 text-sm leading-relaxed mb-4">"{t.text}"</p>
                 <div>
-                  <div className="font-bold text-slate-900 text-sm">{t.name}</div>
-                  <div className="text-slate-400 text-xs">{t.role}</div>
+                  <div className="font-semibold text-slate-900 text-sm">{t.name}</div>
+                  <div className="text-slate-500 text-xs">{t.role}</div>
                 </div>
               </div>
             ))}
@@ -690,19 +674,18 @@ export function Home() {
         className="relative overflow-hidden py-24 text-white text-center bg-slate-900 bg-cover bg-center"
         style={{ backgroundImage: "url('/7-differences-between-book-keeping-and-accounting-1.jpeg.webp')" }}
       >
-        <div className="absolute inset-0 bg-slate-950/80" />
-        <div className="absolute inset-0 bg-gradient-to-br from-slate-950/95 via-slate-950/75 to-[#1BA37B]/35" />
+        <div className="absolute inset-0 bg-slate-950/85" />
         <div className="relative max-w-3xl mx-auto px-4">
-          <div className="mx-auto mb-6 h-14 w-14 rounded-2xl bg-[#1BA37B]/10 flex items-center justify-center">
-            <WalletCards className="h-7 w-7 text-[#1BA37B]" />
+          <div className="mx-auto mb-6 h-14 w-14 rounded-2xl bg-emerald-600/20 flex items-center justify-center">
+            <WalletCards className="h-7 w-7 text-emerald-400" />
           </div>
-          <h2 className="text-5xl font-black mb-6">Ready to take control of your business flow?</h2>
-          <p className="text-slate-400 text-lg mb-10">Try Rigel Business free and manage your invoices, VAT, inventory and reports from one beautiful dashboard.</p>
+          <h2 className="text-5xl font-bold mb-6">Ready to take control of your business flow?</h2>
+          <p className="text-slate-300 text-lg mb-10">Try Rigel Business free and manage your invoices, VAT, inventory and reports from one beautiful dashboard.</p>
           <div className="flex flex-wrap gap-4 justify-center">
-            <a href={`${APP_URL}/signup`} className="h-12 px-8 rounded-xl bg-[#1BA37B] hover:bg-[#158a66] text-white font-bold flex items-center gap-2 transition-colors">
+            <a href={`${APP_URL}/signup`} className="h-12 px-8 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold flex items-center gap-2 transition-colors">
               Get Started Free <ArrowRight className="h-4 w-4" />
             </a>
-            <Link to="/pricing" className="h-12 px-8 rounded-xl border border-slate-700 hover:border-slate-500 text-white font-bold flex items-center transition-colors">
+            <Link to="/pricing" className="h-12 px-8 rounded-xl border border-slate-600 hover:border-slate-400 text-white font-semibold flex items-center transition-colors">
               View Pricing
             </Link>
           </div>

@@ -76,44 +76,43 @@ export function Pricing() {
   return (
     <div>
       {/* Header */}
-      <section className="relative overflow-hidden bg-white py-20 lg:py-24">
-        <img src={APP_ICON} alt="" className="absolute -right-10 -top-10 h-52 w-52 rotate-12 rounded-[2.5rem] object-cover opacity-[0.06]" />
-        <div className="absolute right-0 top-0 h-full w-1/2 bg-[radial-gradient(circle_at_55%_42%,rgba(27,163,123,0.26),transparent_34%)] pointer-events-none" />
-        <div className="absolute right-[8%] top-14 h-[30rem] w-[30rem] rounded-full bg-[#00df5f]/90 opacity-90 pointer-events-none" />
+      <section
+        className="relative overflow-hidden bg-slate-900 bg-cover bg-center text-white py-20 lg:py-24"
+        style={{ backgroundImage: "url('/pricing-bg.webp')" }}
+      >
+        <div className="absolute inset-0 bg-slate-950/85" />
+        <div className="absolute right-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[32rem] w-[32rem] rounded-full bg-emerald-400/15 blur-3xl" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-14 items-center">
             <div>
-              <p className="text-xs font-black uppercase tracking-[0.22em] text-slate-700 mb-6">Small business accounting software | South Africa</p>
-              <h1 className="text-5xl lg:text-6xl font-black leading-tight tracking-tight text-slate-900 mb-6">
+              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-emerald-400 mb-6">Small business accounting software | South Africa</p>
+              <h1 className="text-5xl lg:text-6xl font-bold leading-tight tracking-tight mb-6">
                 Accounting plans for small and growing businesses
               </h1>
-              <p className="text-slate-500 text-lg leading-8 max-w-xl mb-8">
+              <p className="text-slate-300 text-lg leading-8 max-w-xl mb-8">
                 Choose the Rigel Business plan that fits your team, then manage invoices, VAT, inventory, payroll and reports from one connected dashboard.
               </p>
               <div className="flex flex-wrap gap-4">
-                <a href={`${APP_URL}/signup`} className="h-12 px-8 rounded-full bg-[#1BA37B] hover:bg-[#158a66] text-white font-black text-sm flex items-center gap-2 transition-colors">
+                <a href={`${APP_URL}/signup`} className="h-12 px-8 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm flex items-center gap-2 transition-colors shadow-lg shadow-emerald-600/30">
                   Choose a plan <ArrowRight className="h-4 w-4" />
                 </a>
-                <a href="#plans" className="h-12 px-8 rounded-full bg-slate-900 hover:bg-slate-800 text-white font-black text-sm flex items-center transition-colors">
+                <a href="#plans" className="h-12 px-8 rounded-xl border border-slate-500 hover:border-slate-300 text-white font-semibold text-sm flex items-center transition-colors">
                   See plans
                 </a>
               </div>
             </div>
 
             <div className="relative min-h-[390px]">
-              <div className="absolute left-0 right-0 top-4">
-                <div className="overflow-hidden rounded-[2rem] bg-white p-3 shadow-2xl shadow-slate-300/80 ring-1 ring-white/70">
-                  <div className="overflow-hidden rounded-[1.5rem] bg-white">
-                    <div className="flex items-center gap-2 border-b border-slate-100 bg-white px-5 py-3">
-                      <span className="h-3 w-3 rounded-full bg-red-400" />
-                      <span className="h-3 w-3 rounded-full bg-amber-400" />
-                      <span className="h-3 w-3 rounded-full bg-emerald-400" />
-                      <span className="ml-3 text-xs font-bold text-slate-500">Rigel Business Desktop</span>
+              <div className="absolute left-4 right-0 top-0 transform -rotate-2">
+                <div className="overflow-hidden rounded-2xl bg-white p-4 shadow-xl shadow-black/25 border border-slate-200">
+                  <div className="overflow-hidden rounded-xl bg-slate-50">
+                    <div className="flex items-center gap-2 border-b border-slate-200 bg-slate-50 px-4 py-2">
+                      <span className="h-2.5 w-2.5 rounded-full bg-red-400" />
+                      <span className="h-2.5 w-2.5 rounded-full bg-yellow-400" />
+                      <span className="h-2.5 w-2.5 rounded-full bg-green-400" />
+                      <span className="ml-3 text-xs text-slate-600">Rigel Business Desktop</span>
                     </div>
-                    <div className="relative bg-white">
-                      <div className="absolute inset-0 z-10 bg-gradient-to-br from-white/12 via-transparent to-transparent pointer-events-none" />
-                      <img src="/desktop%20app.png" alt="Rigel Business desktop app pricing preview" className="relative z-0 w-full object-cover" />
-                    </div>
+                    <img src="/desktop%20app.png" alt="Rigel Business desktop app pricing preview" className="w-full object-cover" />
                   </div>
                 </div>
               </div>
@@ -129,35 +128,35 @@ export function Pricing() {
             {plans.map(plan => (
               <div
                 key={plan.name}
-                className={`bg-white rounded-2xl border-2 ${plan.color} shadow-sm overflow-hidden flex flex-col relative ${plan.badge ? 'shadow-lg shadow-[#1BA37B]/10' : ''}`}
+                className={`bg-white rounded-2xl border ${plan.color} shadow-sm overflow-hidden flex flex-col relative ${plan.badge ? 'shadow-xl shadow-emerald-50/50' : ''}`}
               >
                 {plan.badge && (
-                  <div className="bg-[#1BA37B] text-white text-xs font-black text-center py-1.5 tracking-wider uppercase">{plan.badge}</div>
+                  <div className="bg-emerald-600 text-white text-xs font-semibold text-center py-1.5 tracking-wider uppercase">{plan.badge}</div>
                 )}
                 <div className="p-8 flex flex-col flex-1">
-                  <h3 className="text-xl font-black text-slate-900 mb-1">{plan.name}</h3>
-                  <p className="text-slate-500 text-sm mb-6">{plan.desc}</p>
+                  <h3 className="text-xl font-semibold text-slate-900 mb-1">{plan.name}</h3>
+                  <p className="text-slate-600 text-sm mb-6">{plan.desc}</p>
                   <div className="mb-8">
-                    <span className="text-5xl font-black text-slate-900">{plan.price}</span>
-                    {plan.period && <span className="text-slate-400 text-sm ml-2">/{plan.period}</span>}
+                    <span className="text-5xl font-bold text-slate-900">{plan.price}</span>
+                    {plan.period && <span className="text-slate-500 text-sm ml-2">/{plan.period}</span>}
                   </div>
                   <ul className="space-y-3 mb-8 flex-1">
                     {plan.features.map(f => (
                       <li key={f} className="flex items-start gap-2.5 text-sm text-slate-700">
-                        <CheckCircle2 className="h-4 w-4 text-[#1BA37B] shrink-0 mt-0.5" /> {f}
+                        <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0 mt-0.5" /> {f}
                       </li>
                     ))}
                     {plan.missing.map(f => (
                       <li key={f} className="flex items-start gap-2.5 text-sm text-slate-400 line-through">
-                        <CheckCircle2 className="h-4 w-4 text-slate-200 shrink-0 mt-0.5" /> {f}
+                        <CheckCircle2 className="h-4 w-4 text-slate-300 shrink-0 mt-0.5" /> {f}
                       </li>
                     ))}
                   </ul>
                   <a
                     href={`${APP_URL}/signup`}
-                    className={`w-full h-11 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-colors ${
+                    className={`w-full h-11 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 transition-colors ${
                       plan.badge
-                        ? 'bg-[#1BA37B] hover:bg-[#158a66] text-white'
+                        ? 'bg-emerald-600 hover:bg-emerald-700 text-white'
                         : 'bg-slate-100 hover:bg-slate-200 text-slate-800'
                     }`}
                   >
@@ -171,13 +170,13 @@ export function Pricing() {
       </section>
 
       {/* FAQ */}
-      <section className="py-20 bg-[#090d12] text-white">
+      <section className="py-20 bg-slate-900 text-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <div className="mb-12 text-center">
-            <p className="text-sm font-black uppercase tracking-[0.25em] text-[#1BA37B] mb-3">Questions</p>
-            <h2 className="text-4xl font-black">Frequently asked questions</h2>
+            <p className="text-sm font-semibold uppercase tracking-[0.25em] text-emerald-400 mb-3">Questions</p>
+            <h2 className="text-4xl font-bold">Frequently asked questions</h2>
           </div>
-          <div className="border-y border-white/15">
+          <div className="border-y border-white/10">
             {[
               { q: 'Which plan should I choose?', a: 'Basic is best for smaller teams, Standard is best for growing businesses, and Premium is best when you need unlimited companies and users.' },
               { q: 'Does Rigel support VAT for South African businesses?', a: 'Yes. Rigel includes VAT tracking, VAT periods and VAT reports designed for South African business workflows.' },
@@ -186,7 +185,7 @@ export function Pricing() {
               { q: 'Can I use Rigel on desktop and mobile?', a: 'Yes. You can use Rigel in the browser, install it as a PWA, or download the desktop app where available.' },
               { q: 'Can I upgrade or downgrade later?', a: 'Yes. You can start small and move to a larger plan when your company needs more features, users or companies.' },
             ].map((item, index) => (
-              <div key={item.q} className="group border-b border-white/15 last:border-b-0">
+              <div key={item.q} className="group border-b border-white/10 last:border-b-0">
                 <button
                   type="button"
                   onClick={() => setOpenFaq(openFaq === index ? null : index)}
@@ -194,7 +193,7 @@ export function Pricing() {
                   aria-expanded={openFaq === index}
                 >
                   <h4 className="text-base font-semibold text-slate-100">{item.q}</h4>
-                  <span className="text-2xl font-light text-white transition-colors group-hover:text-[#1BA37B]">
+                  <span className="text-2xl font-light text-white transition-colors group-hover:text-emerald-400">
                     {openFaq === index ? '−' : '+'}
                   </span>
                 </button>

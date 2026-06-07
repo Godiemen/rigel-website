@@ -228,32 +228,33 @@ export function BusinessResources() {
 
     return (
       <div className="bg-white">
-        <section className="relative overflow-hidden bg-slate-950 py-16 text-white">
-          <div className="absolute right-[8%] top-8 h-[28rem] w-[28rem] rounded-full bg-[#00df5f] opacity-20" />
+        <section className="relative overflow-hidden bg-slate-900 bg-cover bg-center py-16 text-white" style={{ backgroundImage: "url('/resources-bg.jpg')" }}>
+          <div className="absolute inset-0 bg-slate-950/70" />
+          <div className="absolute right-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[32rem] w-[32rem] rounded-full bg-emerald-400/15 blur-3xl" />
           <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <button onClick={() => setSelectedArticle(null)} className="mb-8 inline-flex items-center gap-2 text-sm font-black text-[#70e1bf]">
+            <button onClick={() => setSelectedArticle(null)} className="mb-8 inline-flex items-center gap-2 text-sm font-semibold text-emerald-400">
               <ArrowLeft className="h-4 w-4" /> Back to resources
             </button>
-            <div className="mb-5 flex flex-wrap items-center gap-3 text-xs font-black uppercase tracking-wider text-slate-400">
-              <span className="rounded-full bg-[#1BA37B]/20 px-3 py-1 text-[#70e1bf]">{selectedArticle.category}</span>
+            <div className="mb-5 flex flex-wrap items-center gap-3 text-xs font-semibold uppercase tracking-wider text-slate-300">
+              <span className="rounded-full bg-emerald-600/20 px-3 py-1 text-emerald-400">{selectedArticle.category}</span>
               <span className="flex items-center gap-1"><UserRound className="h-3.5 w-3.5" /> {selectedArticle.author}</span>
               <span className="flex items-center gap-1"><CalendarDays className="h-3.5 w-3.5" /> {selectedArticle.date}</span>
               <span className="flex items-center gap-1"><Clock className="h-3.5 w-3.5" /> {selectedArticle.read}</span>
             </div>
-            <h1 className="text-4xl lg:text-6xl font-black leading-tight tracking-tight">{selectedArticle.title}</h1>
+            <h1 className="text-4xl lg:text-6xl font-bold leading-tight tracking-tight">{selectedArticle.title}</h1>
           </div>
         </section>
 
         <article className="py-16">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             {selectedArticle.image ? (
-              <img src={selectedArticle.image} alt={selectedArticle.title} className="mb-10 h-[28rem] w-full rounded-[2rem] object-cover shadow-2xl shadow-slate-200/80" />
+              <img src={selectedArticle.image} alt={selectedArticle.title} className="mb-10 h-[28rem] w-full rounded-2xl object-cover shadow-xl" />
             ) : (
-              <div className="mb-10 h-80 rounded-[2rem] bg-slate-950 relative overflow-hidden">
-                <div className="absolute -right-12 -top-12 h-56 w-56 rounded-full bg-[#00df5f] opacity-70" />
+              <div className="mb-10 h-80 rounded-2xl bg-slate-900 relative overflow-hidden">
+                <div className="absolute -right-12 -top-12 h-56 w-56 rounded-full bg-emerald-400/70" />
                 <div className="absolute left-8 bottom-8">
-                  <FileText className="mb-4 h-10 w-10 text-[#70e1bf]" />
-                  <p className="text-sm font-black uppercase tracking-[0.25em] text-[#70e1bf]">{selectedArticle.category}</p>
+                  <FileText className="mb-4 h-10 w-10 text-emerald-400" />
+                  <p className="text-sm font-semibold uppercase tracking-[0.25em] text-emerald-400">{selectedArticle.category}</p>
                 </div>
               </div>
             )}
@@ -264,13 +265,13 @@ export function BusinessResources() {
 
             {hasFullArticle ? (
               <>
-                <div className="my-10 rounded-[2rem] border border-emerald-100 bg-emerald-50 p-6">
-                  <h2 className="mb-4 text-xl font-black text-slate-900">{selectedArticle.category} checklist</h2>
+                <div className="my-10 rounded-2xl border border-emerald-100 bg-emerald-50 p-6">
+                  <h2 className="mb-4 text-xl font-bold text-slate-900">{selectedArticle.category} checklist</h2>
                   <div className="grid sm:grid-cols-2 gap-3">
                     {selectedArticle.checklist.map(item => (
-                      <div key={item} className="flex gap-3 rounded-2xl bg-white p-4">
-                        <CheckCircle2 className="h-5 w-5 text-[#1BA37B] shrink-0" />
-                        <p className="text-sm font-semibold leading-6 text-slate-600">{item}</p>
+                      <div key={item} className="flex gap-3 rounded-xl bg-white p-4 border border-slate-100">
+                        <CheckCircle2 className="h-5 w-5 text-emerald-600 shrink-0" />
+                        <p className="text-sm font-medium leading-6 text-slate-600">{item}</p>
                       </div>
                     ))}
                   </div>
@@ -279,23 +280,23 @@ export function BusinessResources() {
                 <div className="space-y-10">
                   {selectedArticle.content.map(section => (
                     <section key={section.heading}>
-                      <h2 className="mb-4 text-3xl font-black text-slate-900">{section.heading}</h2>
+                      <h2 className="mb-4 text-3xl font-bold text-slate-900">{section.heading}</h2>
                       <p className="text-lg leading-9 text-slate-600">{section.body}</p>
                     </section>
                   ))}
                 </div>
 
-                <div className="mt-12 rounded-[2rem] bg-slate-950 p-8 text-white">
-                  <h2 className="mb-4 text-2xl font-black">Professional note</h2>
+                <div className="mt-12 rounded-2xl bg-slate-900 p-8 text-white border border-slate-700">
+                  <h2 className="mb-4 text-2xl font-bold">Professional note</h2>
                   <p className="leading-8 text-slate-300">
                     VAT rules can vary depending on your business activity and registration status. Use accounting software to keep records organised, but always confirm complex VAT treatment with a qualified accountant or tax practitioner.
                   </p>
                 </div>
               </>
             ) : (
-              <div className="mt-10 rounded-[2rem] bg-slate-50 p-8 text-center">
-                <h2 className="mb-3 text-2xl font-black text-slate-900">Full article coming soon</h2>
-                <p className="text-slate-500 leading-8">This article page is ready. The full professional guide will be added to the resources library soon.</p>
+              <div className="mt-10 rounded-2xl bg-slate-50 p-8 text-center border border-slate-200">
+                <h2 className="mb-3 text-2xl font-bold text-slate-900">Full article coming soon</h2>
+                <p className="text-slate-600 leading-8">This article page is ready. The full professional guide will be added to the resources library soon.</p>
               </div>
             )}
           </div>
@@ -306,64 +307,63 @@ export function BusinessResources() {
 
   return (
     <div className="bg-white">
-      <section className="relative overflow-hidden bg-[#06110e] py-20 lg:py-24 text-white">
-        <div className="absolute right-[8%] top-10 h-[30rem] w-[30rem] rounded-full bg-[#00df5f] opacity-25" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_12%_18%,rgba(27,163,123,0.34),transparent_30%),radial-gradient(circle_at_82%_70%,rgba(59,130,246,0.14),transparent_30%)] pointer-events-none" />
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-[0.95fr_1.05fr] gap-12 items-center">
-            <div>
-              <div className="inline-flex items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-400/10 px-4 py-2 text-sm font-black text-[#70e1bf] mb-6">
-                <BookOpen className="h-4 w-4" /> Business Resources
-              </div>
-              <h1 className="text-5xl lg:text-7xl font-black leading-[0.95] tracking-tight mb-6">Articles to help you run a smarter business.</h1>
-              <p className="max-w-xl text-lg leading-8 text-slate-300 mb-8">
-                Practical guides for VAT, accounting reports, sales, purchases, payroll, inventory and everyday business decisions in South Africa.
-              </p>
-              <div className="flex flex-wrap gap-3">
-                {categories.slice(0, 4).map(category => (
-                  <span key={category} className="rounded-full bg-white/10 px-4 py-2 text-xs font-black uppercase tracking-wider text-slate-200">{category}</span>
-                ))}
-              </div>
-            </div>
-
-            <div className="relative">
-              <div className="absolute -inset-8 rounded-[3rem] bg-[#1BA37B]/20 blur-3xl" />
-              <div className="relative rounded-[2rem] bg-white p-5 text-slate-900 shadow-2xl shadow-black/40">
-                <div className="mb-5 flex items-center gap-3 rounded-2xl bg-slate-50 px-4 py-3 ring-1 ring-slate-100">
-                  <Search className="h-5 w-5 text-slate-400" />
-                  <span className="text-sm font-semibold text-slate-400">Search VAT, reports, stock, payroll...</span>
+        <section className="relative overflow-hidden bg-slate-900 bg-cover bg-center py-20 lg:py-24 text-white" style={{ backgroundImage: "url('/resources-bg.jpg')" }}>
+          <div className="absolute inset-0 bg-slate-950/70" />
+          <div className="absolute right-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[32rem] w-[32rem] rounded-full bg-emerald-400/15 blur-3xl" />
+          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid lg:grid-cols-[0.95fr_1.05fr] gap-12 items-center">
+              <div>
+                <div className="inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-400/15 px-4 py-2 text-sm font-semibold text-emerald-400 mb-6">
+                  <BookOpen className="h-4 w-4" /> Business Resources
                 </div>
-                <div className="overflow-hidden rounded-3xl bg-slate-950 text-white">
-                  <img src={articles[0].image} alt={articles[0].title} className="h-48 w-full object-cover" />
-                  <div className="p-6">
-                  <div className="mb-5 flex items-center justify-between">
-                    <span className="rounded-full bg-[#1BA37B]/20 px-3 py-1 text-[10px] font-black uppercase tracking-wider text-[#70e1bf]">Featured</span>
-                    <Sparkles className="h-5 w-5 text-[#70e1bf]" />
+                <h1 className="text-5xl lg:text-7xl font-bold leading-[0.95] tracking-tight mb-6">Articles to help you run a smarter business.</h1>
+                <p className="max-w-xl text-lg leading-8 text-slate-300 mb-8">
+                  Practical guides for VAT, accounting reports, sales, purchases, payroll, inventory and everyday business decisions in South Africa.
+                </p>
+                <div className="flex flex-wrap gap-3">
+                  {categories.slice(0, 4).map(category => (
+                    <span key={category} className="rounded-full bg-white/10 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-slate-200">{category}</span>
+                  ))}
+                </div>
+              </div>
+
+              <div className="relative">
+                <div className="relative rounded-2xl bg-white p-5 text-slate-900 shadow-xl border border-slate-200">
+                  <div className="mb-5 flex items-center gap-3 rounded-xl bg-slate-50 px-4 py-3 border border-slate-200">
+                    <Search className="h-5 w-5 text-slate-400" />
+                    <span className="text-sm font-medium text-slate-500">Search VAT, reports, stock, payroll...</span>
                   </div>
-                  <h2 className="text-2xl font-black leading-tight mb-3">{articles[0].title}</h2>
-                  <p className="text-sm leading-7 text-slate-300 mb-5">{articles[0].desc}</p>
-                  <div className="flex flex-wrap items-center gap-3 text-xs font-bold text-slate-400">
-                    <span className="flex items-center gap-1"><UserRound className="h-3.5 w-3.5" /> {articles[0].author}</span>
-                    <span className="flex items-center gap-1"><Clock className="h-3.5 w-3.5" /> {articles[0].read}</span>
-                  </div>
+                  <div className="overflow-hidden rounded-2xl bg-slate-900 text-white">
+                    <img src={articles[0].image} alt={articles[0].title} className="h-48 w-full object-cover" />
+                    <div className="p-6">
+                    <div className="mb-5 flex items-center justify-between">
+                      <span className="rounded-full bg-emerald-600/20 px-3 py-1 text-[10px] font-semibold uppercase tracking-wider text-emerald-400">Featured</span>
+                      <Sparkles className="h-5 w-5 text-emerald-400" />
+                    </div>
+                    <h2 className="text-2xl font-bold leading-tight mb-3">{articles[0].title}</h2>
+                    <p className="text-sm leading-7 text-slate-300 mb-5">{articles[0].desc}</p>
+                    <div className="flex flex-wrap items-center gap-3 text-xs font-medium text-slate-400">
+                      <span className="flex items-center gap-1"><UserRound className="h-3.5 w-3.5" /> {articles[0].author}</span>
+                      <span className="flex items-center gap-1"><Clock className="h-3.5 w-3.5" /> {articles[0].read}</span>
+                    </div>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
       <section className="py-20 bg-slate-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mb-12 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
             <div>
-              <p className="text-sm font-black uppercase tracking-[0.25em] text-[#1BA37B] mb-3">Latest articles</p>
-              <h2 className="text-4xl font-black text-slate-900">Business knowledge library</h2>
+              <p className="text-sm font-semibold uppercase tracking-[0.25em] text-emerald-600 mb-3">Latest articles</p>
+              <h2 className="text-4xl font-bold text-slate-900">Business knowledge library</h2>
             </div>
             <div className="flex flex-wrap gap-2">
               {categories.map(category => (
-                <button key={category} className="rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-black text-slate-600 hover:border-[#1BA37B] hover:text-[#1BA37B] transition-colors">
+                <button key={category} className="rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-600 hover:border-emerald-600 hover:text-emerald-600 transition-colors">
                   {category}
                 </button>
               ))}
@@ -372,33 +372,33 @@ export function BusinessResources() {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {articles.map(article => (
-              <article key={article.title} className="group overflow-hidden rounded-3xl border border-slate-100 bg-white shadow-sm hover:shadow-xl hover:shadow-slate-200/80 transition-shadow">
+              <article key={article.title} className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm hover:shadow-xl transition-shadow">
                 {article.image ? (
                   <img src={article.image} alt={article.title} className="h-48 w-full object-cover" />
                 ) : (
-                  <div className="relative h-48 overflow-hidden bg-slate-950">
-                    <div className="absolute -right-8 -top-10 h-36 w-36 rounded-full bg-[#00df5f] opacity-70" />
+                  <div className="relative h-48 overflow-hidden bg-slate-900">
+                    <div className="absolute -right-8 -top-10 h-36 w-36 rounded-full bg-emerald-400/70" />
                     <div className="absolute left-6 bottom-6 right-6">
-                      <div className="mb-4 h-10 w-10 rounded-2xl bg-white/10 flex items-center justify-center">
-                        <FileText className="h-5 w-5 text-[#70e1bf]" />
+                      <div className="mb-4 h-10 w-10 rounded-xl bg-white/10 flex items-center justify-center">
+                        <FileText className="h-5 w-5 text-emerald-400" />
                       </div>
-                      <p className="text-xs font-black uppercase tracking-[0.25em] text-[#70e1bf]">{article.category}</p>
+                      <p className="text-xs font-semibold uppercase tracking-[0.25em] text-emerald-400">{article.category}</p>
                     </div>
                   </div>
                 )}
                 <div className="p-6">
                   <div className="mb-5 flex items-center justify-between gap-3">
-                    <span className="rounded-full bg-emerald-50 px-3 py-1 text-[10px] font-black uppercase tracking-wider text-[#1BA37B]">{article.category}</span>
+                    <span className="rounded-full bg-emerald-50 px-3 py-1 text-[10px] font-semibold uppercase tracking-wider text-emerald-600 border border-emerald-100">{article.category}</span>
                     {article.featured && <Star className="h-4 w-4 fill-amber-400 text-amber-400" />}
                   </div>
-                  <h3 className="mb-3 text-xl font-black leading-tight text-slate-900 group-hover:text-[#1BA37B] transition-colors">{article.title}</h3>
-                  <p className="mb-6 text-sm leading-7 text-slate-500">{article.desc}</p>
-                  <div className="mb-6 flex flex-wrap items-center gap-3 text-xs font-bold text-slate-400">
+                  <h3 className="mb-3 text-xl font-bold leading-tight text-slate-900 group-hover:text-emerald-600 transition-colors">{article.title}</h3>
+                  <p className="mb-6 text-sm leading-7 text-slate-600">{article.desc}</p>
+                  <div className="mb-6 flex flex-wrap items-center gap-3 text-xs font-medium text-slate-500">
                     <span className="flex items-center gap-1"><UserRound className="h-3.5 w-3.5" /> {article.author}</span>
                     <span className="flex items-center gap-1"><CalendarDays className="h-3.5 w-3.5" /> {article.date}</span>
                     <span className="flex items-center gap-1"><Clock className="h-3.5 w-3.5" /> {article.read}</span>
                   </div>
-                  <button onClick={() => setSelectedArticle(article)} className="inline-flex items-center gap-2 text-sm font-black text-[#1BA37B]">
+                  <button onClick={() => setSelectedArticle(article)} className="inline-flex items-center gap-2 text-sm font-semibold text-emerald-600">
                     Read article <ArrowRight className="h-4 w-4" />
                   </button>
                 </div>
@@ -410,10 +410,10 @@ export function BusinessResources() {
 
       <section className="py-20 bg-white">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="rounded-[2rem] bg-slate-950 px-6 py-14 text-white shadow-2xl shadow-slate-200/80">
-            <FileText className="mx-auto mb-5 h-10 w-10 text-[#70e1bf]" />
-            <h2 className="text-3xl font-black mb-4">More guides are coming soon</h2>
-            <p className="mx-auto max-w-2xl text-slate-400 leading-8">
+          <div className="rounded-2xl bg-slate-900 px-6 py-14 text-white shadow-xl border border-slate-700">
+            <FileText className="mx-auto mb-5 h-10 w-10 text-emerald-400" />
+            <h2 className="text-3xl font-bold mb-4">More guides are coming soon</h2>
+            <p className="mx-auto max-w-2xl text-slate-300 leading-8">
               This resource hub will grow into a full library for South African businesses using Rigel Business to manage accounting, VAT, stock, payroll and reporting.
             </p>
           </div>
