@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import { CheckCircle2, ArrowRight } from 'lucide-react';
 
-const APP_URL = 'https://biz-flow-sa.vercel.app';
-const APP_ICON = '/Screenshot%202026-02-25%20154513.png';
+const APP_URL = 'https://biz-flow-sa-delta.vercel.app';
 
 const plans = [
   {

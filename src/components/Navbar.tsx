@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 
-const APP_URL = 'https://biz-flow-sa.vercel.app';
+const APP_URL = 'https://biz-flow-sa-delta.vercel.app';
 const APP_ICON = '/Screenshot%202026-02-25%20154513.png';
 
 export function Navbar() {
@@ -23,12 +23,6 @@ export function Navbar() {
 
   return (
     <header className="sticky top-0 z-50">
-      <div className="bg-[#d8ffe5] border-b border-[#b9f3cd] py-2 text-center">
-        <a href={`${APP_URL}/signup`} className="inline-flex items-center gap-2 text-xs font-semibold text-slate-900 underline underline-offset-2 hover:text-[#1BA37B] transition-colors">
-          Get started with 30 days free on Rigel Business
-          <span className="text-base leading-none">›</span>
-        </a>
-      </div>
     <nav className="bg-white/95 backdrop-blur border-b border-slate-100 shadow-sm">
       <div className="w-full px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-[1fr_auto_1fr] items-center h-16">

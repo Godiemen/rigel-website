@@ -1,6 +1,6 @@
-import { Monitor, Globe, Smartphone, Download as DownloadIcon, ArrowRight } from 'lucide-react';
+import { Monitor, Globe, Smartphone, Users, Download as DownloadIcon, ArrowRight } from 'lucide-react';
 
-const APP_URL = 'https://biz-flow-sa.vercel.app';
+const APP_URL = 'https://biz-flow-sa-delta.vercel.app';
 const EXE_URL = 'https://github.com/Godiemen/rigel-business-releases/releases/download/v1.0.0/Rigel-Business_1.0.0_x64-setup.exe.exe';
 
 export function Download() {
@@ -67,45 +67,122 @@ export function Download() {
         </div>
       </section>
 
-      <section className="py-16 bg-slate-50">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="rounded-2xl bg-white p-6 sm:p-8 shadow-sm border border-slate-200">
-            <div className="grid gap-4 md:grid-cols-3">
-              {[
-                { icon: Monitor, title: 'Windows desktop', desc: 'Download and install the native desktop app.' },
-                { icon: Globe, title: 'Web app', desc: 'Open Rigel instantly from any modern browser.' },
-                { icon: Smartphone, title: 'Mobile app', desc: 'Android and iOS apps are coming soon.' },
-              ].map((item) => (
-                <div key={item.title} className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
-                  <div className="mb-4 h-11 w-11 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center">
-                    <item.icon className="h-5 w-5" />
-                  </div>
-                  <h3 className="font-semibold text-slate-900">{item.title}</h3>
-                  <p className="mt-2 text-sm leading-6 text-slate-600">{item.desc}</p>
-                </div>
-              ))}
+      {/* Platform Cards */}
+      <section className="py-24 bg-slate-50">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-14">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-emerald-600 mb-3">Choose your platform</p>
+            <h2 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">Select how you want to use Rigel Business</h2>
+          </div>
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+            {/* Desktop Card */}
+            <div className="bg-white border border-slate-200">
+              <div className="aspect-[16/10] bg-slate-100">
+                <img
+                  src="/Screenshot%202026-06-11%20211808.png"
+                  alt="Rigel Business desktop app"
+                  className="h-full w-full object-cover"
+                />
+              </div>
+              <div className="p-5">
+                <Monitor className="h-5 w-5 text-slate-900 mb-3" />
+                <h3 className="text-base font-bold text-slate-900 mb-1">Windows desktop</h3>
+                <p className="text-sm leading-6 text-slate-500 mb-4">Download and install the native desktop app for offline performance.</p>
+                <a href={EXE_URL} className="inline-flex items-center gap-2 text-sm font-semibold text-slate-900 hover:underline">
+                  Download <ArrowRight className="h-3.5 w-3.5" />
+                </a>
+              </div>
+            </div>
+
+            {/* Web App Card */}
+            <div className="bg-white border border-slate-200">
+              <div className="aspect-[16/10] bg-slate-100">
+                <img
+                  src="/Screenshot%202026-06-12%20084033.png"
+                  alt="Rigel Business web app"
+                  className="h-full w-full object-cover"
+                />
+              </div>
+              <div className="p-5">
+                <Globe className="h-5 w-5 text-slate-900 mb-3" />
+                <h3 className="text-base font-bold text-slate-900 mb-1">Web app</h3>
+                <p className="text-sm leading-6 text-slate-500 mb-4">Open Rigel instantly from any modern browser — nothing to install.</p>
+                <a href={APP_URL} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-sm font-semibold text-slate-900 hover:underline">
+                  Open app <ArrowRight className="h-3.5 w-3.5" />
+                </a>
+              </div>
+            </div>
+
+            {/* Mobile App Card */}
+            <div className="bg-white border border-slate-200">
+              <div className="aspect-[16/10] bg-slate-100">
+                <img
+                  src="/Screenshot%202026-06-12%20090016.png"
+                  alt="Rigel Business mobile app"
+                  className="h-full w-full object-cover"
+                />
+              </div>
+              <div className="p-5">
+                <Smartphone className="h-5 w-5 text-slate-900 mb-3" />
+                <h3 className="text-base font-bold text-slate-900 mb-1">Mobile app</h3>
+                <p className="text-sm leading-6 text-slate-500 mb-4">Android and iOS native apps are coming soon. Use PWA today.</p>
+                <a href="#pwa" className="inline-flex items-center gap-2 text-sm font-semibold text-slate-900 hover:underline">
+                  Learn more <ArrowRight className="h-3.5 w-3.5" />
+                </a>
+              </div>
+            </div>
+
+            {/* Payroll Portal Card */}
+            <div className="bg-white border border-slate-200">
+              <div className="aspect-[16/10] bg-slate-100">
+                <img
+                  src="/Screenshot%202026-06-12%20085452.png"
+                  alt="Rigel Business payroll portal"
+                  className="h-full w-full object-cover"
+                />
+              </div>
+              <div className="p-5">
+                <Users className="h-5 w-5 text-slate-900 mb-3" />
+                <h3 className="text-base font-bold text-slate-900 mb-1">Payroll portal</h3>
+                <p className="text-sm leading-6 text-slate-500 mb-4">Manage employee records, payslips, and SARS submissions from a dedicated portal.</p>
+                <a href={`${APP_URL}/login`} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-sm font-semibold text-slate-900 hover:underline">
+                  Access portal <ArrowRight className="h-3.5 w-3.5" />
+                </a>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
       {/* PWA Install guide */}
-      <section className="py-16 bg-white">
-        <div className="max-w-3xl mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold text-slate-900 mb-4">Install on your phone right now</h2>
-          <p className="text-slate-600 mb-10">You don't need to wait for the mobile app. Install the PWA in 3 steps:</p>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-            {[
-              { step: '1', title: 'Open in browser', desc: 'Go to biz-flow-sa.vercel.app in Chrome or Safari on your phone.' },
-              { step: '2', title: 'Tap Share / Menu', desc: 'Tap the share button (Safari) or three-dot menu (Chrome).' },
-              { step: '3', title: 'Add to Home Screen', desc: 'Tap "Add to Home Screen" — it installs like a native app.' },
-            ].map(s => (
-              <div key={s.step} className="text-center">
-                <div className="h-12 w-12 rounded-full bg-emerald-600 text-white font-semibold text-xl flex items-center justify-center mx-auto mb-3">{s.step}</div>
-                <h4 className="font-semibold text-slate-900 mb-1">{s.title}</h4>
-                <p className="text-slate-600 text-sm">{s.desc}</p>
-              </div>
-            ))}
+      <section id="pwa" className="py-24 bg-slate-900 relative overflow-hidden">
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[40rem] w-[40rem] rounded-full bg-emerald-400/5 blur-3xl" />
+        <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-14">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-emerald-400 mb-3">Progressive Web App</p>
+            <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight mb-4">Install on your phone right now</h2>
+            <p className="text-slate-400 text-lg max-w-2xl mx-auto">You don't need to wait for the mobile app. Install the PWA in 3 steps and get a native-like experience today.</p>
+          </div>
+
+          <div className="relative">
+            {/* Connecting line */}
+            <div className="hidden sm:block absolute top-8 left-[16%] right-[16%] h-0.5 bg-gradient-to-r from-emerald-500/20 via-emerald-500/60 to-emerald-500/20" />
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
+              {[
+                { step: '01', title: 'Open in browser', desc: 'Go to biz-flow-sa-delta.vercel.app in Chrome or Safari on your phone.' },
+                { step: '02', title: 'Tap Share / Menu', desc: 'Tap the share button (Safari) or three-dot menu (Chrome).' },
+                { step: '03', title: 'Add to Home Screen', desc: 'Tap "Add to Home Screen" — it installs like a native app.' },
+              ].map((s) => (
+                <div key={s.step} className="relative text-center">
+                  <div className="relative inline-flex h-16 w-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-black text-lg items-center justify-center mx-auto mb-5">
+                    {s.step}
+                  </div>
+                  <h4 className="font-bold text-white mb-2">{s.title}</h4>
+                  <p className="text-slate-400 text-sm leading-6 max-w-xs mx-auto">{s.desc}</p>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>

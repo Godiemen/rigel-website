@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
+import { CookieBanner } from './components/CookieBanner';
 import { Home } from './pages/Home';
 import { Pricing } from './pages/Pricing';
 import { Download } from './pages/Download';
@@ -35,6 +36,7 @@ function App() {
           </Routes>
         </main>
         <Footer />
+        <CookieBanner />
       </div>
     </BrowserRouter>
   );
