@@ -26,13 +26,14 @@ export function CookieBanner() {
   };
 
   const handleClose = () => {
+    localStorage.setItem(CONSENT_KEY, 'rejected');
     setVisible(false);
   };
 
   if (!visible) return null;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-slate-200 shadow-lg">
+    <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-slate-200 shadow-lg animate-[slideUp_0.3s_ease-out]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
         <div className="flex flex-col lg:flex-row lg:items-start gap-4">
           <div className="flex-1">
@@ -46,7 +47,7 @@ export function CookieBanner() {
                 href="/cookie-policy"
                 className="ml-1 text-[#1BA37B] font-semibold hover:underline"
               >
-                Settings
+                Read cookie policy
               </a>
             </p>
           </div>

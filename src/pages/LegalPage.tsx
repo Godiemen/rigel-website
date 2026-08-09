@@ -13,24 +13,36 @@ const legalPages = {
     ],
   },
   terms: {
-    title: 'Terms of Service',
-    intro: 'These Terms explain the basic rules for using Rigel Business and the responsibilities of users and the platform.',
+    title: 'Terms & Conditions',
+    intro: 'These Terms & Conditions govern your use of Rigel Business software, website and related services. By creating an account or using the platform, you agree to these terms.',
     sections: [
-      ['Use of the service', 'Users must use Rigel Business lawfully and must not attempt to disrupt, misuse or gain unauthorised access to the platform.'],
-      ['Account responsibility', 'Users are responsible for keeping login details secure and for activity that happens under their account.'],
-      ['Business records', 'Users are responsible for checking the accuracy of business, accounting, VAT, payroll and reporting information entered into the system.'],
-      ['Subscriptions', 'Paid plans are billed according to the selected package. Access to paid features may depend on successful subscription payment.'],
-      ['Limitation', 'Rigel Business provides software tools and information, but users should consult qualified professionals for accounting, tax, legal or compliance advice.'],
+      ['Acceptance of terms', 'By accessing or using Rigel Business, you confirm that you have read, understood and agree to be bound by these Terms & Conditions and all applicable laws and regulations. If you do not agree, you must not use the platform.'],
+      ['Eligibility', 'You must be at least 18 years old and have the legal capacity to enter into a binding agreement. If you use Rigel Business on behalf of a company, you confirm that you have the authority to bind that entity to these terms.'],
+      ['Use of the service', 'Users must use Rigel Business lawfully and must not attempt to disrupt, misuse, reverse engineer, or gain unauthorised access to the platform. You may not use the service to store fraudulent data, process illegal transactions, or violate any South African or international law.'],
+      ['Account responsibility', 'Users are responsible for keeping login details secure and for all activity that happens under their account. You must notify Rigel Business immediately if you suspect any unauthorised access or security breach.'],
+      ['Business records', 'Users are responsible for the accuracy and completeness of all business, accounting, VAT, payroll and reporting information entered into the system. Rigel Business is a tool to help manage records but does not guarantee the correctness of user-entered data.'],
+      ['Subscriptions and billing', 'Paid plans are billed monthly or annually according to the selected package. Access to paid features depends on successful subscription payment. Prices may change with reasonable notice. Unused portions of a paid period are not refundable unless required by law.'],
+      ['Intellectual property', 'Rigel Business, its logo, design, software code and content are the intellectual property of Rigel Business and its licensors. You may not copy, modify, distribute or create derivative works without written permission.'],
+      ['Data and backups', 'Rigel Business aims to maintain regular backups and high availability, but is not liable for data loss caused by factors outside its control. Users are encouraged to export critical records periodically.'],
+      ['Limitation of liability', 'Rigel Business provides software tools and information only. Users should consult qualified professionals for accounting, tax, legal or compliance advice. Rigel Business is not liable for indirect, incidental or consequential damages arising from use of the platform.'],
+      ['Termination', 'Rigel Business may suspend or terminate accounts that violate these terms. Users may cancel their subscription at any time. Upon termination, access to the platform and stored data may be removed after a reasonable grace period.'],
+      ['Changes to terms', 'These Terms & Conditions may be updated periodically. Continued use of the platform after changes constitutes acceptance of the updated terms. Material changes will be communicated where possible.'],
+      ['Governing law', 'These terms are governed by the laws of the Republic of South Africa. Any disputes shall be resolved in the appropriate South African courts.'],
     ],
   },
   cookies: {
     title: 'Cookie Policy',
-    intro: 'This Cookie Policy explains how cookies or similar technologies may be used on the Rigel Business website and platform.',
+    intro: 'This Cookie Policy explains how cookies and similar technologies are used on the Rigel Business website and platform, what types of cookies we set, and how you can manage them.',
     sections: [
-      ['What cookies are', 'Cookies are small files stored on a device to help websites remember preferences, manage sessions and understand website usage.'],
-      ['How we may use cookies', 'Cookies may be used for login sessions, security, performance, analytics and improving the user experience.'],
-      ['Managing cookies', 'Users can control or delete cookies through browser settings. Some features may not work correctly if essential cookies are disabled.'],
-      ['Third-party services', 'Some cookies may be provided by trusted third-party tools used for hosting, analytics, payments or support services.'],
+      ['What cookies are', 'Cookies are small text files stored on your device when you visit a website. They help websites remember your preferences, keep you logged in, manage sessions securely and understand how the site is used so improvements can be made.'],
+      ['Types of cookies we use', 'Essential cookies are required for core functionality like authentication and security. Preference cookies remember your settings such as language and theme. Analytics cookies help us understand visitor behaviour so we can improve the platform. Marketing cookies, if enabled, help measure the effectiveness of campaigns.'],
+      ['Essential cookies', 'These cookies are necessary for the website to function. They enable login sessions, form security (CSRF tokens) and load balancing. Without these cookies, parts of the platform will not work.'],
+      ['Analytics and performance', 'We may use analytics cookies to collect information about how visitors use the website — pages visited, time spent, error messages. This data is aggregated and anonymous, used only to improve user experience.'],
+      ['Functional cookies', 'These cookies allow the website to remember choices you make such as your preferred language, region or dashboard layout. They provide enhanced and personalised features.'],
+      ['Third-party services', 'Some cookies may be set by trusted third-party tools used for hosting, analytics, payments or support services. These third parties have their own privacy and cookie policies governing how they use the data collected.'],
+      ['Managing cookies', 'You can control or delete cookies through your browser settings at any time. Most browsers allow you to refuse cookies or alert you when cookies are being sent. Some features of Rigel Business may not function correctly if essential cookies are disabled.'],
+      ['Cookie consent', 'When you first visit Rigel Business, a cookie banner appears asking for your consent to non-essential cookies. You can change your preference at any time by clearing your browser cookies and revisiting the site, or through your browser settings.'],
+      ['Updates to this policy', 'This Cookie Policy may be updated as new features are introduced or regulations change. We encourage you to review this page periodically to stay informed about how cookies are used.'],
     ],
   },
   refunds: {
@@ -57,11 +69,11 @@ const legalPages = {
 };
 
 const policyLinks = [
-  { key: 'privacy', label: 'Privacy' },
-  { key: 'terms', label: 'Terms' },
-  { key: 'cookies', label: 'Cookies' },
-  { key: 'refunds', label: 'Refunds' },
-  { key: 'popia', label: 'POPIA' },
+  { key: 'privacy', path: '/privacy-policy', label: 'Privacy' },
+  { key: 'terms', path: '/terms-of-service', label: 'Terms' },
+  { key: 'cookies', path: '/cookie-policy', label: 'Cookies' },
+  { key: 'refunds', path: '/refund-policy', label: 'Refunds' },
+  { key: 'popia', path: '/popia-notice', label: 'POPIA' },
 ] as const;
 
 type LegalPageKey = keyof typeof legalPages;
@@ -89,7 +101,7 @@ export function LegalPage({ page }: { page: LegalPageKey }) {
             {policyLinks.map((item) => (
               <a
                 key={item.key}
-                href={`/${item.key}`}
+                href={item.path}
                 className={`rounded-full px-4 py-2 text-xs font-black uppercase tracking-wider transition-colors ${
                   page === item.key ? 'bg-[#00df5f] text-slate-950' : 'bg-white/10 text-slate-300 hover:bg-white/15'
                 }`}

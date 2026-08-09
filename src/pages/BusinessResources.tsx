@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ArrowLeft, ArrowRight, BookOpen, CalendarDays, CheckCircle2, Clock, FileText, Search, Sparkles, Star, UserRound } from 'lucide-react';
+import { ArrowLeft, ArrowRight, BookOpen, CalendarDays, CheckCircle2, Clock, FileText, Star, UserRound } from 'lucide-react';
 
 const articles = [
   {
@@ -228,21 +228,32 @@ export function BusinessResources() {
 
     return (
       <div className="bg-white">
-        <section className="relative overflow-hidden bg-slate-900 bg-cover bg-center py-16 text-white" style={{ backgroundImage: "url('/resources-bg.jpg')" }}>
-          <div className="absolute inset-0 bg-slate-950/70" />
-          <div className="absolute right-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[32rem] w-[32rem] rounded-full bg-emerald-400/15 blur-3xl" />
-          <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <button onClick={() => setSelectedArticle(null)} className="mb-8 inline-flex items-center gap-2 text-sm font-semibold text-emerald-400">
+        {/* Article hero */}
+        <section className="relative overflow-hidden">
+          <div className="absolute inset-0">
+            <img
+              src="/Gemini_Generated_Image_xefbhfxefbhfxefb.png"
+              alt="Rigel Business resources"
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-[#0B1220] via-[#0B1220]/90 to-[#0B1220]/50" />
+            <div className="absolute inset-0 bg-[#0B1220]/30" />
+          </div>
+
+          <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
+            <button onClick={() => setSelectedArticle(null)} className="mb-8 inline-flex items-center gap-2 text-sm font-semibold text-emerald-400 hover:text-emerald-300 transition-colors">
               <ArrowLeft className="h-4 w-4" /> Back to resources
             </button>
             <div className="mb-5 flex flex-wrap items-center gap-3 text-xs font-semibold uppercase tracking-wider text-slate-300">
-              <span className="rounded-full bg-emerald-600/20 px-3 py-1 text-emerald-400">{selectedArticle.category}</span>
+              <span className="rounded-full bg-emerald-600/20 px-3 py-1 text-emerald-400 border border-emerald-500/20">{selectedArticle.category}</span>
               <span className="flex items-center gap-1"><UserRound className="h-3.5 w-3.5" /> {selectedArticle.author}</span>
               <span className="flex items-center gap-1"><CalendarDays className="h-3.5 w-3.5" /> {selectedArticle.date}</span>
               <span className="flex items-center gap-1"><Clock className="h-3.5 w-3.5" /> {selectedArticle.read}</span>
             </div>
-            <h1 className="text-4xl lg:text-6xl font-bold leading-tight tracking-tight">{selectedArticle.title}</h1>
+            <h1 className="text-3xl lg:text-5xl font-bold leading-tight tracking-tight text-white" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{selectedArticle.title}</h1>
           </div>
+
+          <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-white to-transparent" />
         </section>
 
         <article className="py-16">
@@ -266,7 +277,7 @@ export function BusinessResources() {
             {hasFullArticle ? (
               <>
                 <div className="my-10 rounded-2xl border border-emerald-100 bg-emerald-50 p-6">
-                  <h2 className="mb-4 text-xl font-bold text-slate-900">{selectedArticle.category} checklist</h2>
+                  <h2 className="mb-4 text-lg font-bold text-slate-900" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{selectedArticle.category} checklist</h2>
                   <div className="grid sm:grid-cols-2 gap-3">
                     {selectedArticle.checklist.map(item => (
                       <div key={item} className="flex gap-3 rounded-xl bg-white p-4 border border-slate-100">
@@ -280,14 +291,14 @@ export function BusinessResources() {
                 <div className="space-y-10">
                   {selectedArticle.content.map(section => (
                     <section key={section.heading}>
-                      <h2 className="mb-4 text-3xl font-bold text-slate-900">{section.heading}</h2>
+                      <h2 className="mb-4 text-2xl lg:text-3xl font-bold text-slate-900" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{section.heading}</h2>
                       <p className="text-lg leading-9 text-slate-600">{section.body}</p>
                     </section>
                   ))}
                 </div>
 
                 <div className="mt-12 rounded-2xl bg-slate-900 p-8 text-white border border-slate-700">
-                  <h2 className="mb-4 text-2xl font-bold">Professional note</h2>
+                  <h2 className="mb-4 text-xl font-bold" style={{ fontFamily: "'Inter Tight', sans-serif" }}>Professional note</h2>
                   <p className="leading-8 text-slate-300">
                     VAT rules can vary depending on your business activity and registration status. Use accounting software to keep records organised, but always confirm complex VAT treatment with a qualified accountant or tax practitioner.
                   </p>
@@ -295,7 +306,7 @@ export function BusinessResources() {
               </>
             ) : (
               <div className="mt-10 rounded-2xl bg-slate-50 p-8 text-center border border-slate-200">
-                <h2 className="mb-3 text-2xl font-bold text-slate-900">Full article coming soon</h2>
+                <h2 className="mb-3 text-xl font-bold text-slate-900" style={{ fontFamily: "'Inter Tight', sans-serif" }}>Full article coming soon</h2>
                 <p className="text-slate-600 leading-8">This article page is ready. The full professional guide will be added to the resources library soon.</p>
               </div>
             )}
@@ -307,63 +318,53 @@ export function BusinessResources() {
 
   return (
     <div className="bg-white">
-        <section className="relative overflow-hidden bg-slate-900 bg-cover bg-center py-20 lg:py-24 text-white" style={{ backgroundImage: "url('/resources-bg.jpg')" }}>
-          <div className="absolute inset-0 bg-slate-950/70" />
-          <div className="absolute right-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[32rem] w-[32rem] rounded-full bg-emerald-400/15 blur-3xl" />
-          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid lg:grid-cols-[0.95fr_1.05fr] gap-12 items-center">
-              <div>
-                <div className="inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-400/15 px-4 py-2 text-sm font-semibold text-emerald-400 mb-6">
-                  <BookOpen className="h-4 w-4" /> Business Resources
-                </div>
-                <h1 className="text-5xl lg:text-7xl font-bold leading-[0.95] tracking-tight mb-6">Articles to help you run a smarter business.</h1>
-                <p className="max-w-xl text-lg leading-8 text-slate-300 mb-8">
-                  Practical guides for VAT, accounting reports, sales, purchases, payroll, inventory and everyday business decisions in South Africa.
-                </p>
-                <div className="flex flex-wrap gap-3">
-                  {categories.slice(0, 4).map(category => (
-                    <span key={category} className="rounded-full bg-white/10 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-slate-200">{category}</span>
-                  ))}
-                </div>
-              </div>
+        {/* Hero — full-bleed image banner */}
+        <section className="relative overflow-hidden">
+          <div className="absolute inset-0">
+            <img
+              src="/Gemini_Generated_Image_xefbhfxefbhfxefb.png"
+              alt="Rigel Business resources"
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-[#0B1220] via-[#0B1220]/90 to-[#0B1220]/50" />
+            <div className="absolute inset-0 bg-[#0B1220]/30" />
+            <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#0F9D6C]/15 to-transparent" />
+          </div>
 
-              <div className="relative">
-                <div className="relative rounded-2xl bg-white p-5 text-slate-900 shadow-xl border border-slate-200">
-                  <div className="mb-5 flex items-center gap-3 rounded-xl bg-slate-50 px-4 py-3 border border-slate-200">
-                    <Search className="h-5 w-5 text-slate-400" />
-                    <span className="text-sm font-medium text-slate-500">Search VAT, reports, stock, payroll...</span>
-                  </div>
-                  <div className="overflow-hidden rounded-2xl bg-slate-900 text-white">
-                    <img src={articles[0].image} alt={articles[0].title} className="h-48 w-full object-cover" />
-                    <div className="p-6">
-                    <div className="mb-5 flex items-center justify-between">
-                      <span className="rounded-full bg-emerald-600/20 px-3 py-1 text-[10px] font-semibold uppercase tracking-wider text-emerald-400">Featured</span>
-                      <Sparkles className="h-5 w-5 text-emerald-400" />
-                    </div>
-                    <h2 className="text-2xl font-bold leading-tight mb-3">{articles[0].title}</h2>
-                    <p className="text-sm leading-7 text-slate-300 mb-5">{articles[0].desc}</p>
-                    <div className="flex flex-wrap items-center gap-3 text-xs font-medium text-slate-400">
-                      <span className="flex items-center gap-1"><UserRound className="h-3.5 w-3.5" /> {articles[0].author}</span>
-                      <span className="flex items-center gap-1"><Clock className="h-3.5 w-3.5" /> {articles[0].read}</span>
-                    </div>
-                    </div>
-                  </div>
-                </div>
+          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-36">
+            <div className="max-w-2xl">
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/15 mb-6">
+                <BookOpen className="h-3.5 w-3.5 text-emerald-400" />
+                <span className="text-xs font-semibold text-emerald-300 tracking-wide uppercase">Business Resources</span>
+              </div>
+              <h1 className="text-4xl lg:text-6xl font-bold text-white mb-6 leading-tight tracking-tight" style={{ fontFamily: "'Inter Tight', sans-serif" }}>
+                Articles to help you run a smarter business
+              </h1>
+              <p className="text-lg lg:text-xl text-slate-200 leading-8 max-w-xl mb-8">
+                Practical guides for VAT, accounting reports, sales, purchases, payroll, inventory and everyday business decisions in South Africa.
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {categories.map(category => (
+                  <span key={category} className="rounded-full bg-white/10 backdrop-blur-sm border border-white/15 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-slate-200">{category}</span>
+                ))}
               </div>
             </div>
           </div>
+
+          <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-white to-transparent" />
         </section>
 
-      <section className="py-20 bg-slate-50">
+      {/* Articles grid */}
+      <section className="py-16 lg:py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="mb-12 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+          <div className="mb-10 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
             <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.25em] text-emerald-600 mb-3">Latest articles</p>
-              <h2 className="text-4xl font-bold text-slate-900">Business knowledge library</h2>
+              <p className="text-sm font-semibold text-emerald-600 mb-2 tracking-wide">Latest articles</p>
+              <h2 className="text-2xl lg:text-3xl font-bold text-slate-900 tracking-tight" style={{ fontFamily: "'Inter Tight', sans-serif" }}>Business knowledge library</h2>
             </div>
             <div className="flex flex-wrap gap-2">
               {categories.map(category => (
-                <button key={category} className="rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-600 hover:border-emerald-600 hover:text-emerald-600 transition-colors">
+                <button key={category} className="rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-600 hover:border-emerald-500 hover:text-emerald-600 transition-colors">
                   {category}
                 </button>
               ))}
@@ -372,11 +373,13 @@ export function BusinessResources() {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {articles.map(article => (
-              <article key={article.title} className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm hover:shadow-xl transition-shadow">
+              <article key={article.title} className="card-lift group overflow-hidden rounded-2xl border border-slate-200 bg-white">
                 {article.image ? (
-                  <img src={article.image} alt={article.title} className="h-48 w-full object-cover" />
+                  <div className="aspect-[16/10] overflow-hidden bg-slate-100">
+                    <img src={article.image} alt={article.title} className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                  </div>
                 ) : (
-                  <div className="relative h-48 overflow-hidden bg-slate-900">
+                  <div className="relative aspect-[16/10] overflow-hidden bg-slate-900">
                     <div className="absolute -right-8 -top-10 h-36 w-36 rounded-full bg-emerald-400/70" />
                     <div className="absolute left-6 bottom-6 right-6">
                       <div className="mb-4 h-10 w-10 rounded-xl bg-white/10 flex items-center justify-center">
@@ -387,18 +390,18 @@ export function BusinessResources() {
                   </div>
                 )}
                 <div className="p-6">
-                  <div className="mb-5 flex items-center justify-between gap-3">
+                  <div className="mb-4 flex items-center justify-between gap-3">
                     <span className="rounded-full bg-emerald-50 px-3 py-1 text-[10px] font-semibold uppercase tracking-wider text-emerald-600 border border-emerald-100">{article.category}</span>
                     {article.featured && <Star className="h-4 w-4 fill-amber-400 text-amber-400" />}
                   </div>
-                  <h3 className="mb-3 text-xl font-bold leading-tight text-slate-900 group-hover:text-emerald-600 transition-colors">{article.title}</h3>
-                  <p className="mb-6 text-sm leading-7 text-slate-600">{article.desc}</p>
-                  <div className="mb-6 flex flex-wrap items-center gap-3 text-xs font-medium text-slate-500">
+                  <h3 className="mb-3 text-lg font-bold leading-tight text-slate-900 group-hover:text-emerald-600 transition-colors" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{article.title}</h3>
+                  <p className="mb-5 text-sm leading-7 text-slate-600">{article.desc}</p>
+                  <div className="mb-5 flex flex-wrap items-center gap-3 text-xs font-medium text-slate-500">
                     <span className="flex items-center gap-1"><UserRound className="h-3.5 w-3.5" /> {article.author}</span>
                     <span className="flex items-center gap-1"><CalendarDays className="h-3.5 w-3.5" /> {article.date}</span>
                     <span className="flex items-center gap-1"><Clock className="h-3.5 w-3.5" /> {article.read}</span>
                   </div>
-                  <button onClick={() => setSelectedArticle(article)} className="inline-flex items-center gap-2 text-sm font-semibold text-emerald-600">
+                  <button onClick={() => setSelectedArticle(article)} className="inline-flex items-center gap-1.5 text-sm font-semibold text-emerald-600 hover:text-emerald-700 transition-colors">
                     Read article <ArrowRight className="h-4 w-4" />
                   </button>
                 </div>
@@ -408,15 +411,19 @@ export function BusinessResources() {
         </div>
       </section>
 
-      <section className="py-20 bg-white">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="rounded-2xl bg-slate-900 px-6 py-14 text-white shadow-xl border border-slate-700">
-            <FileText className="mx-auto mb-5 h-10 w-10 text-emerald-400" />
-            <h2 className="text-3xl font-bold mb-4">More guides are coming soon</h2>
-            <p className="mx-auto max-w-2xl text-slate-300 leading-8">
-              This resource hub will grow into a full library for South African businesses using Rigel Business to manage accounting, VAT, stock, payroll and reporting.
-            </p>
+      {/* CTA */}
+      <section className="py-16 lg:py-20 bg-slate-50">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="h-14 w-14 rounded-full icon-gradient text-emerald-600 flex items-center justify-center mx-auto mb-5">
+            <FileText className="h-6 w-6" />
           </div>
+          <h2 className="text-2xl lg:text-3xl font-bold text-slate-900 mb-4 tracking-tight" style={{ fontFamily: "'Inter Tight', sans-serif" }}>More guides are coming soon</h2>
+          <p className="text-slate-600 text-base mb-8 max-w-xl mx-auto leading-7">
+            This resource hub will grow into a full library for South African businesses using Rigel Business to manage accounting, VAT, stock, payroll and reporting.
+          </p>
+          <a href="/book-demo" className="btn-pill inline-flex h-12 items-center bg-[#0F9D6C] hover:bg-[#0B7A52] px-8 font-semibold text-white">
+            Book a demo <ArrowRight className="h-4 w-4 ml-2" />
+          </a>
         </div>
       </section>
     </div>

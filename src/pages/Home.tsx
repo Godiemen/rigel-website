@@ -1,54 +1,22 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   ArrowRight, CheckCircle2, FileText,
   Users, Star, Building2,
-  TrendingUp, Receipt, Smartphone, LockKeyhole,
+  TrendingUp, Receipt, LockKeyhole,
   FileSpreadsheet, CalendarClock, ShoppingCart,
-  Truck, CreditCard
+  Truck, CreditCard, BarChart3,
+  Wallet, Landmark, Package,
+  ShieldCheck, Clock, ChevronDown,
+  PieChart
 } from 'lucide-react';
 
 const APP_URL = 'https://biz-flow-sa-delta.vercel.app';
 
 const testimonials = [
-  { name: 'Sipho M.', role: 'Small Business Owner', text: 'Rigel Business replaced my spreadsheets completely. My VAT returns now take 10 minutes instead of 2 hours.' },
-  { name: 'Naledi K.', role: 'Accountant', text: 'The multi-company feature is a game changer. I manage all my clients from one dashboard.' },
-  { name: 'Thabo R.', role: 'Retailer', text: 'The desktop app works perfectly even with slow internet. Perfect for my shop.' },
-];
-
-const vatFeatures = [
-  {
-    icon: CalendarClock,
-    title: 'Track every VAT period',
-    desc: 'See active, previous and archived VAT periods with submission dates, due dates and balances in one place.',
-  },
-  {
-    icon: LockKeyhole,
-    title: 'Close periods with confidence',
-    desc: 'Review included transactions before locking a VAT return so late entries do not change your submitted numbers.',
-  },
-  {
-    icon: FileSpreadsheet,
-    title: 'Generate VAT reports',
-    desc: 'View output VAT, input VAT, refundable amounts and payable totals with clean reports your accountant can understand.',
-  },
-];
-
-const vatScreenshots = [
-  { src: '/vat%20layout.png', title: 'VAT layout' },
-  { src: '/view%20transaction%20report.png', title: 'Transaction report' },
-  { src: '/vat%20graph%20report%20.png', title: 'VAT graph report' },
-  { src: '/close%20vat%20period%20.png', title: 'Close VAT period' },
-];
-
-const afsScreenshots = [
-  { src: '/trial%20balance%20.png', title: 'Trial balance' },
-  { src: '/general%20ledger%20.png', title: 'General ledger' },
-  { src: '/balance%20sheet%201.png', title: 'Balance sheet' },
-  { src: '/balance%20sheet%202.png', title: 'Balance sheet details' },
-  { src: '/income%20statement.png', title: 'Income statement' },
-  { src: '/changes%20in%20equity.png', title: 'Changes in equity' },
-  { src: '/note%20to%20afs%20.png', title: 'Notes to AFS' },
+  { name: 'Sipho M.', role: 'Owner, Mthaba Trading', text: 'Rigel replaced my spreadsheets completely. My VAT returns now take 10 minutes instead of 2 hours.', metric: '90% faster VAT filing' },
+  { name: 'Naledi K.', role: 'Accountant, KZN Bookkeeping', text: 'The multi-company feature is a game changer. I manage 14 clients from one dashboard without switching logins.', metric: '14 clients in one dashboard' },
+  { name: 'Thabo R.', role: 'Retailer, Rigel Hardware', text: 'The desktop app works perfectly even with slow internet. Stock control and invoicing never stops.', metric: 'Zero downtime since 2024' },
 ];
 
 const purchaseScreenshots = [
@@ -75,37 +43,6 @@ const salesScreenshots = [
   { src: '/aging%20for%20debtors%20.png', title: 'Aging for debtors' },
   { src: '/customer%20statement%20.png', title: 'Customer statement' },
   { src: '/account%20reciable%20dash%20board%20.png', title: 'Accounts receivable dashboard' },
-];
-
-const payrollScreenshots = [
-  { src: '/rip%205%20for%20sars%20.png', title: 'RIP 5 for SARS' },
-  { src: '/payroll%20graphs.png', title: 'Payroll graphs' },
-  { src: '/payslip%20templete%20.png', title: 'Payslip template' },
-  { src: '/payroll%20history%20.png', title: 'Payroll history' },
-  { src: '/run%20payroll.png', title: 'Run payroll' },
-];
-
-const inventoryScreenshots = [
-  { src: '/inventory%20stock%20.png', title: 'Inventory stock' },
-  { src: '/services%20.png', title: 'Services' },
-  { src: '/stock%20control%20graph.png', title: 'Stock control graph' },
-  { src: '/services%20tracking.png', title: 'Services tracking' },
-  { src: '/inventory%20turn%20over%20.png', title: 'Inventory turnover' },
-  { src: '/supplier%20list.png', title: 'Supplier list' },
-  { src: '/sales%20by%20supplier%20.png', title: 'Sales by supplier' },
-  { src: '/purchase%20by%20item.png', title: 'Purchase by item' },
-];
-
-const assetScreenshots = [
-  { src: '/impairment%20calculator.png', title: 'Impairment calculator' },
-  { src: '/add%20assets%20form%20.png', title: 'Add assets form' },
-  { src: '/depreciation%20policies%20.png', title: 'Depreciation policies' },
-  { src: '/assets%20report%20graphs%20.png', title: 'Assets report graphs' },
-  { src: '/assets%20register%20.png', title: 'Assets register' },
-  { src: '/overviw%20.png', title: 'Overview' },
-  { src: '/depreciation%20schedule%204.png', title: 'Depreciation schedule' },
-  { src: '/deprciation%20schedule.png', title: 'Depreciation schedule details' },
-  { src: '/assets%20manangement.png', title: 'Assets management' },
 ];
 
 const SLIDESHOW_INTERVAL_MS = 10000;
@@ -147,29 +84,9 @@ const customerFeatures = [
 ];
 
 export function Home() {
-  const [activeVatScreenshot, setActiveVatScreenshot] = useState(0);
-  const [activeAfsScreenshot, setActiveAfsScreenshot] = useState(0);
   const [activePurchaseScreenshot, setActivePurchaseScreenshot] = useState(0);
   const [activeSalesScreenshot, setActiveSalesScreenshot] = useState(0);
-  const [activePayrollScreenshot, setActivePayrollScreenshot] = useState(0);
-  const [activeInventoryScreenshot, setActiveInventoryScreenshot] = useState(0);
-  const [activeAssetScreenshot, setActiveAssetScreenshot] = useState(0);
-
-  useEffect(() => {
-    const interval = window.setInterval(() => {
-      setActiveVatScreenshot(current => (current + 1) % vatScreenshots.length);
-    }, SLIDESHOW_INTERVAL_MS);
-
-    return () => window.clearInterval(interval);
-  }, []);
-
-  useEffect(() => {
-    const interval = window.setInterval(() => {
-      setActiveAfsScreenshot(current => (current + 1) % afsScreenshots.length);
-    }, SLIDESHOW_INTERVAL_MS);
-
-    return () => window.clearInterval(interval);
-  }, []);
+  const [procurementTab, setProcurementTab] = useState<'purchase' | 'sales'>('purchase');
 
   useEffect(() => {
     const interval = window.setInterval(() => {
@@ -187,72 +104,102 @@ export function Home() {
     return () => window.clearInterval(interval);
   }, []);
 
-  useEffect(() => {
-    const interval = window.setInterval(() => {
-      setActivePayrollScreenshot(current => (current + 1) % payrollScreenshots.length);
-    }, SLIDESHOW_INTERVAL_MS);
-
-    return () => window.clearInterval(interval);
-  }, []);
+  const sliderRef = useRef<HTMLDivElement>(null);
+  const [solutionsPaused, setSolutionsPaused] = useState(false);
 
   useEffect(() => {
+    if (solutionsPaused) return;
     const interval = window.setInterval(() => {
-      setActiveInventoryScreenshot(current => (current + 1) % inventoryScreenshots.length);
-    }, SLIDESHOW_INTERVAL_MS);
+      const el = sliderRef.current;
+      if (!el) return;
+      const cardWidth = el.firstElementChild?.clientWidth ?? 300;
+      const gap = 24;
+      if (el.scrollLeft + el.clientWidth >= el.scrollWidth - 10) {
+        el.scrollTo({ left: 0, behavior: 'smooth' });
+      } else {
+        el.scrollBy({ left: cardWidth + gap, behavior: 'smooth' });
+      }
+    }, 3000);
 
     return () => window.clearInterval(interval);
-  }, []);
-
-  useEffect(() => {
-    const interval = window.setInterval(() => {
-      setActiveAssetScreenshot(current => (current + 1) % assetScreenshots.length);
-    }, SLIDESHOW_INTERVAL_MS);
-
-    return () => window.clearInterval(interval);
-  }, []);
+  }, [solutionsPaused]);
 
   return (
     <div className="bg-white">
-      <section className="relative overflow-hidden bg-[#04100d] text-white">
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          className="absolute inset-0 w-full h-full object-cover pointer-events-none"
-        >
-          <source src="/runway-agent-first-login-20260611-200753.mp4" type="video/mp4" />
-        </video>
-        <div className="absolute inset-0 bg-gradient-to-br from-black/75 via-black/55 to-black/85 pointer-events-none" />
+      {/* Hero — editorial fintech with gradient mesh */}
+      <section className="relative overflow-hidden mesh-bg text-white">
+        {/* Background image overlay */}
+        <div className="absolute inset-0 pointer-events-none">
+          <img src="/Gemini_Generated_Image_xefbhfxefbhfxefb.png" alt="" className="w-full h-full object-cover" />
+          {/* Left-side dark scrim for text legibility — keeps image original colors on the right */}
+          <div className="absolute inset-0 bg-gradient-to-r from-[#0B1220]/85 via-[#0B1220]/45 to-transparent" />
+          {/* Bottom fade for smooth transition */}
+          <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#0B1220]/60 to-transparent" />
+        </div>
+        {/* Animated gradient blobs */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <div className="mesh-drift absolute top-[10%] left-[5%] h-[400px] w-[400px] bg-[#0F9D6C]/15 blur-[100px] rounded-full" />
+          <div className="mesh-drift absolute bottom-[5%] right-[10%] h-[350px] w-[350px] bg-[#1BA37B]/10 blur-[90px] rounded-full" style={{ animationDelay: '5s' }} />
+          <div className="mesh-drift absolute top-[40%] left-[50%] h-[300px] w-[300px] bg-[#0F9D6C]/8 blur-[80px] rounded-full" style={{ animationDelay: '10s' }} />
+          {/* Rotating rings */}
+          <div className="ring-rotate absolute top-[15%] left-[8%] h-40 w-40 border border-emerald-500/15 rounded-full" />
+          <div className="ring-rotate-reverse absolute top-[60%] left-[5%] h-24 w-24 border border-emerald-500/10 rounded-full" />
+          <div className="ring-rotate absolute top-[20%] right-[12%] h-56 w-56 border border-slate-500/10 rounded-full" />
+          <div className="ring-rotate-reverse absolute bottom-[15%] right-[8%] h-32 w-32 border border-emerald-500/15 rounded-full" />
+          {/* Bouncing dots */}
+          <div className="dot-bounce absolute top-[50%] left-[12%] h-1.5 w-1.5 bg-emerald-400/50 rounded-full" />
+          <div className="dot-bounce absolute top-[30%] right-[18%] h-1.5 w-1.5 bg-slate-300/30 rounded-full" style={{ animationDelay: '1.5s' }} />
+          <div className="dot-bounce absolute bottom-[35%] right-[40%] h-1.5 w-1.5 bg-emerald-400/40 rounded-full" style={{ animationDelay: '2.5s' }} />
+          {/* Pulsing lines */}
+          <div className="line-pulse absolute top-[10%] left-[35%] h-32 w-px bg-emerald-500/20" />
+          <div className="line-pulse absolute top-[50%] left-[55%] h-24 w-px bg-slate-400/15" style={{ animationDelay: '1s' }} />
+          <div className="line-pulse absolute top-[15%] right-[30%] h-40 w-px bg-emerald-500/15" style={{ animationDelay: '2s' }} />
+        </div>
+
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-28 relative">
-          <div className="max-w-3xl mx-auto">
-            <div>
-              <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black leading-[0.95] tracking-tight mb-6">
-                Keep your business moving in one smart flow.
+          <div className="grid lg:grid-cols-[1.15fr_0.85fr] gap-12 lg:gap-16 items-center">
+            {/* Left column — text */}
+            <div className="reveal reveal-visible">
+              <p className="text-xs font-semibold uppercase tracking-[0.25em] text-emerald-400 mb-6">
+                Accounting &amp; ERP Software · South Africa
+              </p>
+              <h1
+                className="text-[2.5rem] sm:text-5xl lg:text-[4rem] font-bold leading-[1.02] tracking-[-0.02em] mb-6"
+                style={{ fontFamily: "'Inter Tight', sans-serif" }}
+              >
+                Run your entire business on one connected platform
               </h1>
-              <p className="text-lg text-slate-200 max-w-xl mb-9 leading-8">
-                Rigel Business brings sales, stock, VAT, cash flow and reporting together so you can work faster and make better decisions.
+              <p className="text-lg text-slate-300 max-w-xl mb-10 leading-8">
+                From first invoice to annual financial statements — Rigel Business brings accounting, VAT, payroll, inventory and reporting together so your team works faster and makes better decisions.
               </p>
-              <div className="flex flex-wrap gap-4 mb-10">
-              <a
-                href={`${APP_URL}/signup`}
-                className="h-12 px-7 rounded-full bg-[#00df5f] hover:bg-[#16c957] text-slate-950 font-black text-sm flex items-center gap-2 transition-colors shadow-xl shadow-emerald-500/20"
-              >
-                Start your free account <ArrowRight className="h-4 w-4" />
-              </a>
-              <Link
-                to="/pricing"
-                className="h-12 px-2 text-white font-bold text-sm flex items-center gap-2 underline underline-offset-4 decoration-white/60 hover:decoration-white transition-colors"
-              >
-                Explore pricing
-              </Link>
+              <div className="flex flex-wrap items-center gap-4 mb-12">
+                <a
+                  href={`${APP_URL}/signup`}
+                  className="btn-pill h-12 px-8 bg-[#0F9D6C] hover:bg-[#0B7A52] text-white font-semibold text-sm flex items-center gap-2"
+                >
+                  Start free trial <ArrowRight className="h-4 w-4" />
+                </a>
+                <Link
+                  to="/book-demo"
+                  className="btn-pill h-12 px-8 border border-white/25 hover:border-white/60 hover:bg-white/5 text-white font-semibold text-sm flex items-center gap-2"
+                >
+                  Book a demo
+                </Link>
               </div>
-              <div className="flex flex-wrap gap-5 text-sm text-slate-300">
-                {['No credit card required', 'SARS-ready VAT', 'Cloud + desktop access'].map(t => (
-                  <div key={t} className="flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4 text-[#00df5f]" /> {t}
+              {/* Trust bar */}
+              <div className="flex flex-wrap items-center gap-x-8 gap-y-4 pt-8 border-t border-white/10">
+                <div className="flex items-center gap-2">
+                  <div className="flex gap-0.5">
+                    {[...Array(5)].map((_, i) => <Star key={i} className="h-4 w-4 fill-emerald-400 text-emerald-400" />)}
                   </div>
-                ))}
+                  <span className="text-sm text-slate-400">Rated by SA businesses</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm text-slate-400">
+                  <ShieldCheck className="h-4 w-4 text-emerald-400" /> SARS-compliant VAT201
+                </div>
+                <div className="flex items-center gap-2 text-sm text-slate-400">
+                  <Clock className="h-4 w-4 text-emerald-400" /> Cancel anytime
+                </div>
               </div>
             </div>
 
@@ -260,466 +207,529 @@ export function Home() {
         </div>
       </section>
 
-      {/* Why Rigel */}
-      <section className="py-24 bg-white">
+      {/* Solutions grid — staggered cards with gradient icons */}
+      <section className="py-20 lg:py-28 bg-slate-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            <div>
-              <h2 className="text-4xl font-black text-slate-900 mb-6">Why South African businesses choose Rigel</h2>
-              <div className="space-y-5">
-                {[
-                  { icon: Building2, title: 'Built for SA', desc: 'VAT201, fiscal periods aligned to SARS requirements, ZAR currency by default.' },
-                  { icon: TrendingUp, title: 'Clear dashboard', desc: 'See revenue, expenses, profit, cash balance and overdue invoices without digging.' },
-                  { icon: Receipt, title: 'Documents done properly', desc: 'Create quotes, invoices, credit notes and statements that look professional.' },
-                  { icon: Smartphone, title: 'Works on every screen', desc: 'Use the web app, install it on mobile, or download the desktop version.' },
-                ].map(item => (
-                  <div key={item.title} className="flex gap-4">
-                    <div className="h-10 w-10 rounded-xl bg-[#1BA37B]/10 flex items-center justify-center shrink-0">
-                      <item.icon className="h-5 w-5 text-[#1BA37B]" />
-                    </div>
-                    <div>
-                      <h4 className="font-bold text-slate-900 mb-1">{item.title}</h4>
-                      <p className="text-slate-500 text-sm">{item.desc}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="bg-gradient-to-br from-[#1BA37B] to-teal-700 rounded-3xl p-8 text-white">
-              <h3 className="text-2xl font-black mb-6">Start in minutes</h3>
-              {['Create your free account', 'Add your company details', 'Create your first invoice', 'Track VAT, cash and reports'].map((step, i) => (
-                <div key={step} className="flex items-center gap-4 mb-4">
-                  <div className="h-8 w-8 rounded-full bg-white/20 flex items-center justify-center text-sm font-bold shrink-0">{i + 1}</div>
-                  <span className="font-medium">{step}</span>
-                </div>
-              ))}
-              <a href={`${APP_URL}/signup`} className="mt-6 w-full h-12 rounded-xl bg-white text-[#1BA37B] font-bold flex items-center justify-center gap-2 hover:bg-slate-50 transition-colors">
-                Get Started Free <ArrowRight className="h-4 w-4" />
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="relative overflow-hidden bg-slate-900 bg-cover bg-center py-24 text-white" style={{ backgroundImage: "url('/afs-balance-sheet.jpg')" }}>
-        <div className="absolute inset-0 bg-slate-950/85" />
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-[0.9fr_1.1fr] gap-12 items-center">
-            <div>
-              <p className="text-sm font-semibold uppercase tracking-wider text-emerald-400 mb-4">Financial reporting</p>
-              <h2 className="text-4xl lg:text-5xl font-bold leading-tight mb-6">Generate full AFS, trial balance and general ledger reports.</h2>
-              <p className="text-slate-300 text-lg leading-8 mb-8">
-                Rigel turns your captured transactions into structured accounting reports, so you can review balances, trace ledger movement and prepare financial statements faster.
-              </p>
-              <div className="grid sm:grid-cols-3 gap-4">
-                {['Annual Financial Statements', 'Trial Balance', 'General Ledger'].map(item => (
-                  <div key={item} className="rounded-xl border border-slate-700 bg-slate-800/50 p-4">
-                    <CheckCircle2 className="mb-3 h-5 w-5 text-emerald-400" />
-                    <p className="text-sm font-medium">{item}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="relative">
-              <div className="relative overflow-hidden rounded-2xl bg-white p-4 text-slate-900 shadow-xl border border-slate-200">
-                <div className="relative overflow-hidden rounded-xl bg-slate-50">
-                  <div className="absolute left-4 top-4 bg-white px-3 py-1 rounded-full text-xs font-semibold text-emerald-700 shadow-sm">
-                    {afsScreenshots[activeAfsScreenshot].title}
-                  </div>
-                  <img
-                    src={afsScreenshots[activeAfsScreenshot].src}
-                    alt={afsScreenshots[activeAfsScreenshot].title}
-                    className="w-full object-cover transition-all duration-500"
-                  />
-                </div>
-                <div className="mt-4 flex items-center justify-center gap-2">
-                  {afsScreenshots.map((screenshot, index) => (
-                    <button
-                      key={screenshot.title}
-                      type="button"
-                      aria-label={`Show ${screenshot.title}`}
-                      onClick={() => setActiveAfsScreenshot(index)}
-                      className={`h-2.5 rounded-full transition-all ${
-                        activeAfsScreenshot === index ? 'w-7 bg-emerald-600' : 'w-2.5 bg-slate-300 hover:bg-slate-400'
-                      }`}
-                    />
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="py-24 bg-slate-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-14">
-            <p className="text-sm font-semibold uppercase tracking-wider text-emerald-700 mb-3">VAT management</p>
-            <h2 className="text-4xl lg:text-5xl font-bold text-slate-900 mb-5">Create VAT returns without the spreadsheet stress</h2>
-            <p className="text-slate-600 text-lg max-w-3xl mx-auto leading-8">
-              Rigel helps you prepare, review and close VAT periods with the transactions, totals and reports already connected to your business records.
+          <div className="max-w-2xl mb-14">
+            <p className="text-sm font-semibold text-emerald-600 mb-3 tracking-wide">Solutions</p>
+            <h2 className="text-3xl lg:text-[2.5rem] font-bold text-slate-900 mb-4 leading-tight tracking-tight" style={{ fontFamily: "'Inter Tight', sans-serif" }}>
+              Everything your business needs, in one system
+            </h2>
+            <p className="text-slate-600 text-lg leading-8">
+              From day-to-day transactions to year-end financial statements, Rigel connects every part of your operation.
             </p>
           </div>
 
-          <div className="grid lg:grid-cols-[0.8fr_1.2fr] gap-12 items-center">
-            <div className="space-y-4">
-              {vatFeatures.map((item, index) => (
-                <div key={item.title} className={`rounded-2xl border p-6 transition-colors ${index === 0 ? 'bg-white border-emerald-200 shadow-lg shadow-emerald-50' : 'bg-white border-slate-200'}`}>
-                  <div className="flex gap-4">
-                    <div className="h-12 w-12 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
-                      <item.icon className="h-6 w-6" />
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-semibold text-slate-900 mb-2">{item.title}</h3>
-                      <p className="text-sm leading-7 text-slate-600">{item.desc}</p>
-                    </div>
+          {/* Auto-sliding square cards */}
+          <div
+            className="relative group/slider"
+            onMouseEnter={() => setSolutionsPaused(true)}
+            onMouseLeave={() => setSolutionsPaused(false)}
+          >
+            <div
+              ref={sliderRef}
+              id="solutions-slider"
+              className="flex gap-6 overflow-x-auto no-scrollbar snap-x snap-mandatory pb-8 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8"
+            >
+              {[
+                { icon: BarChart3, title: 'Accounting & Reporting', desc: 'Trial balance, general ledger and full AFS.', accent: '#0F9D6C', tag: 'AFS-ready', image: '/MOQWE.jpg', link: '/reporting' },
+                { icon: Landmark, title: 'VAT Management', desc: 'VAT periods, returns and SARS-ready reports.', accent: '#2563EB', tag: 'SARS', image: '/Gemini_Generated_Image_f1imttf1imttf1im.png', link: '/tax' },
+                { icon: PieChart, title: 'Investments', desc: 'Fixed deposits, shares and month-end processing.', accent: '#1BA37B', tag: 'FD & Shares', image: '/Gemini_Generated_Image_h5kk1uh5kk1uh5kk.png', link: '/investments' },
+                { icon: Landmark, title: 'Banking', desc: 'Bank accounts, reconciliation and cash flow.', accent: '#2563EB', tag: 'Auto-match', image: '/tRPrb.jpg', link: '/banking' },
+                { icon: Wallet, title: 'Sales & Invoicing', desc: 'Quotes, orders, invoices and magic links.', accent: '#0F9D6C', tag: 'Magic links', image: '/3QRJb.jpg', link: '/sales' },
+                { icon: ShoppingCart, title: 'Purchase & Payables', desc: 'POs, supplier invoices and receipts.', accent: '#2563EB', tag: 'PO tracking', image: '/Gemini_Generated_Image_cq6dxlcq6dxlcq6d.png', link: '/purchase' },
+                { icon: Package, title: 'Inventory & Stock', desc: 'Multi-warehouse stock and reorder alerts.', accent: '#0F9D6C', tag: 'Multi-warehouse', image: '/PL2ri.jpg', link: '/inventory' },
+                { icon: Users, title: 'Payroll & HR', desc: 'Compliant payroll, payslips and SARS.', accent: '#2563EB', tag: 'Payslips', image: '/vp9tD.jpg', link: '/payroll' },
+              ].map((item) => (
+                <Link
+                  key={item.title}
+                  to={item.link}
+                  className="snap-start shrink-0 w-[280px] h-[280px] sm:w-[320px] sm:h-[320px] rounded-2xl relative overflow-hidden shadow-md hover:shadow-2xl transition-all duration-500 hover:-translate-y-1.5 group/card"
+                >
+                  <img
+                    src={item.image}
+                    alt={item.title}
+                    className="absolute inset-0 h-full w-full object-cover group-hover/card:scale-110 transition-transform duration-700"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900/95 via-slate-900/50 to-transparent" />
+                  <div className="absolute top-3 right-3 text-[10px] font-semibold uppercase tracking-wide text-slate-700 bg-white/95 backdrop-blur-sm border border-white/20 rounded-full px-2.5 py-1">
+                    {item.tag}
                   </div>
-                </div>
+                  <div className="absolute bottom-0 left-0 right-0 p-5 text-white">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="h-8 w-8 rounded-lg bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                        <item.icon className="h-4 w-4" style={{ color: item.accent === '#2563EB' ? '#93C5FD' : '#6EE7B7' }} />
+                      </div>
+                      <h3 className="text-sm font-bold" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{item.title}</h3>
+                    </div>
+                    <p className="text-xs text-slate-200/80 leading-5 mb-3 line-clamp-2">{item.desc}</p>
+                    <span className="inline-flex items-center gap-1.5 text-xs font-semibold" style={{ color: item.accent === '#2563EB' ? '#93C5FD' : '#6EE7B7' }}>
+                      Read more <ArrowRight className="h-3 w-3 group-hover/card:translate-x-1 transition-transform" />
+                    </span>
+                  </div>
+                </Link>
               ))}
             </div>
 
-            <div className="relative">
-              <div className="absolute -right-4 -top-4 h-[20rem] w-[20rem] rounded-full bg-emerald-400/20 blur-3xl" />
-              <div className="relative overflow-hidden rounded-2xl bg-white p-4 shadow-xl shadow-slate-200 border border-slate-200">
-                <div className="relative overflow-hidden rounded-xl bg-slate-50">
-                  <div className="absolute left-4 top-4 bg-white px-3 py-1 rounded-full text-xs font-semibold text-emerald-700 shadow-sm">
-                    {vatScreenshots[activeVatScreenshot].title}
-                  </div>
-                  <img
-                    src={vatScreenshots[activeVatScreenshot].src}
-                    alt={vatScreenshots[activeVatScreenshot].title}
-                    className="w-full object-cover transition-all duration-500"
-                  />
-                </div>
-                <div className="mt-4 flex items-center justify-center gap-2">
-                  {vatScreenshots.map((screenshot, index) => (
-                    <button
-                      key={screenshot.title}
-                      type="button"
-                      aria-label={`Show ${screenshot.title}`}
-                      onClick={() => setActiveVatScreenshot(index)}
-                      className={`h-2.5 rounded-full transition-all ${
-                        activeVatScreenshot === index ? 'w-7 bg-emerald-600' : 'w-2.5 bg-slate-300 hover:bg-slate-400'
-                      }`}
-                    />
-                  ))}
-                </div>
-              </div>
+            {/* Fade masks */}
+            <div className="pointer-events-none absolute inset-y-0 left-0 w-12 bg-gradient-to-r from-slate-50 to-transparent hidden sm:block" />
+            <div className="pointer-events-none absolute inset-y-0 right-0 w-12 bg-gradient-to-l from-slate-50 to-transparent hidden sm:block" />
+
+            {/* Arrow buttons */}
+            <button
+              type="button"
+              onClick={() => sliderRef.current?.scrollBy({ left: -336, behavior: 'smooth' })}
+              className="absolute left-2 top-1/2 -translate-y-1/2 h-10 w-10 rounded-full bg-white shadow-lg border border-slate-200 flex items-center justify-center text-slate-600 hover:bg-slate-50 hover:text-emerald-600 transition-colors hidden sm:flex"
+            >
+              <ArrowRight className="h-4 w-4 rotate-180" />
+            </button>
+            <button
+              type="button"
+              onClick={() => sliderRef.current?.scrollBy({ left: 336, behavior: 'smooth' })}
+              className="absolute right-2 top-1/2 -translate-y-1/2 h-10 w-10 rounded-full bg-white shadow-lg border border-slate-200 flex items-center justify-center text-slate-600 hover:bg-slate-50 hover:text-emerald-600 transition-colors hidden sm:flex"
+            >
+              <ArrowRight className="h-4 w-4" />
+            </button>
+
+            {/* Progress dots */}
+            <div className="flex justify-center gap-2 mt-4">
+              {Array.from({ length: 8 }).map((_, i) => (
+                <div key={i} className="h-1.5 w-1.5 rounded-full bg-slate-300" />
+              ))}
             </div>
           </div>
         </div>
       </section>
 
-      <section className="bg-slate-50 py-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-12 items-center">
-            <div className="relative order-2 lg:order-1">
-              <div className="absolute -left-4 -top-4 h-[20rem] w-[20rem] rounded-full bg-emerald-400/20 blur-3xl" />
-              <div className="relative rounded-3xl bg-gradient-to-b from-slate-800 to-slate-900 p-3 shadow-2xl">
-                <div className="flex items-center gap-2 px-3 pb-2">
-                  <span className="h-2.5 w-2.5 rounded-full bg-red-400" />
-                  <span className="h-2.5 w-2.5 rounded-full bg-yellow-400" />
-                  <span className="h-2.5 w-2.5 rounded-full bg-green-400" />
-                  <span className="ml-2 text-[10px] text-slate-400 font-mono tracking-wide">{purchaseScreenshots[activePurchaseScreenshot].title}</span>
-                </div>
-                <div className="relative overflow-hidden rounded-2xl bg-slate-950">
-                  <img
-                    src={purchaseScreenshots[activePurchaseScreenshot].src}
-                    alt={purchaseScreenshots[activePurchaseScreenshot].title}
-                    className="w-full object-cover transition-all duration-500"
-                  />
-                </div>
-                <div className="mt-3 flex items-center justify-center gap-2">
-                  {purchaseScreenshots.map((screenshot, index) => (
-                    <button
-                      key={screenshot.title}
-                      type="button"
-                      aria-label={`Show ${screenshot.title}`}
-                      onClick={() => setActivePurchaseScreenshot(index)}
-                      className={`h-2 rounded-full transition-all ${
-                        activePurchaseScreenshot === index ? 'w-6 bg-emerald-500' : 'w-2 bg-slate-600 hover:bg-slate-500'
-                      }`}
-                    />
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            <div className="order-1 lg:order-2">
-              <div className="inline-flex items-center gap-2 rounded-full bg-emerald-100 px-4 py-1.5 mb-5">
-                <ShoppingCart className="h-3.5 w-3.5 text-emerald-700" />
-                <span className="text-xs font-bold uppercase tracking-wider text-emerald-700">Purchase management</span>
-              </div>
-              <h2 className="text-4xl lg:text-[2.75rem] font-black text-slate-900 mb-5 leading-tight">Know what you ordered, received and still owe</h2>
-              <p className="text-slate-500 text-lg leading-8 mb-10 max-w-lg">
-                Rigel connects suppliers, purchase orders, supplier invoices and accounts payable so your buying process stays organised from request to payment.
-              </p>
-              <div className="space-y-5">
-                {purchaseFeatures.map((item) => (
-                  <div key={item.title} className="group flex gap-5 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm hover:shadow-md hover:border-emerald-200 transition-all duration-300">
-                    <div className="h-11 w-11 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 group-hover:bg-emerald-600 group-hover:text-white transition-all duration-300">
-                      <item.icon className="h-5 w-5" />
-                    </div>
-                    <div>
-                      <h3 className="text-base font-bold text-slate-900 mb-1">{item.title}</h3>
-                      <p className="text-sm leading-6 text-slate-500">{item.desc}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="bg-slate-900 py-24 overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-12 items-center">
-            {/* Screenshot — now on the LEFT like the reference */}
-            <div className="relative order-1">
-              <div className="relative rounded-3xl bg-gradient-to-b from-slate-800 to-slate-900 p-3 shadow-2xl">
-                <div className="flex items-center gap-2 px-3 pb-2">
-                  <span className="h-2.5 w-2.5 rounded-full bg-red-400" />
-                  <span className="h-2.5 w-2.5 rounded-full bg-yellow-400" />
-                  <span className="h-2.5 w-2.5 rounded-full bg-green-400" />
-                  <span className="ml-2 text-[10px] text-slate-400 font-mono tracking-wide">{salesScreenshots[activeSalesScreenshot].title}</span>
-                </div>
-                <div className="relative overflow-hidden rounded-2xl bg-slate-950">
-                  <img
-                    src={salesScreenshots[activeSalesScreenshot].src}
-                    alt={salesScreenshots[activeSalesScreenshot].title}
-                    className="w-full object-cover transition-all duration-500"
-                  />
-                </div>
-                <div className="mt-3 flex items-center justify-center gap-2">
-                  {salesScreenshots.map((screenshot, index) => (
-                    <button
-                      key={screenshot.title}
-                      type="button"
-                      aria-label={`Show ${screenshot.title}`}
-                      onClick={() => setActiveSalesScreenshot(index)}
-                      className={`h-2 rounded-full transition-all ${
-                        activeSalesScreenshot === index ? 'w-6 bg-emerald-500' : 'w-2 bg-slate-600 hover:bg-slate-500'
-                      }`}
-                    />
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Text content — on the RIGHT, white text */}
-            <div className="order-2">
-              <p className="text-xs font-bold uppercase tracking-widest text-emerald-400 mb-4">Customer management</p>
-              <h2 className="text-4xl lg:text-[2.75rem] font-black text-white mb-6 leading-tight uppercase tracking-tight">
-                Turn quotes into paid invoices without losing the trail
-              </h2>
-              <p className="text-slate-400 text-lg leading-8 mb-8">
-                Rigel keeps customers, quotes, sales orders, invoices, delivery status and receipts in one connected revenue workspace.
-              </p>
-              <div className="space-y-4 mb-10">
-                {customerFeatures.map((item) => (
-                  <div key={item.title} className="flex gap-4 rounded-2xl border border-slate-700 bg-slate-800/50 p-5">
-                    <div className="h-10 w-10 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center shrink-0">
-                      <item.icon className="h-5 w-5" />
-                    </div>
-                    <div>
-                      <h3 className="text-sm font-bold text-white mb-1">{item.title}</h3>
-                      <p className="text-sm leading-6 text-slate-400">{item.desc}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <a
-                href={`${APP_URL}/signup`}
-                className="inline-flex h-12 items-center gap-2 rounded-full bg-white px-8 font-bold text-[#1BA37B] hover:bg-emerald-50 transition-colors shadow-lg"
-              >
-                Learn more <ArrowRight className="h-4 w-4" />
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section
-        className="relative overflow-hidden bg-cover bg-center py-24"
-        style={{ backgroundImage: "url('/The-importance-of-effective-financial-management-in-todays-businesses-1024x570.jpg')" }}
-      >
-        <div className="absolute inset-0 bg-white/95" />
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-14">
-            <p className="text-sm font-semibold uppercase tracking-wider text-emerald-700 mb-3">More business modules</p>
-            <h2 className="text-4xl lg:text-5xl font-bold text-slate-900 mb-5">Run payroll, stock and assets from the same workspace</h2>
-            <p className="text-slate-600 text-lg max-w-3xl mx-auto leading-8">
-              Rigel keeps operational records connected to your accounts, so payroll, inventory movement and asset values stay visible in your reports.
-            </p>
-          </div>
-
-          <div className="relative grid lg:grid-cols-3 gap-6">
-            {/* Payroll Card */}
-            <div className="group overflow-hidden rounded-2xl bg-slate-900 shadow-xl shadow-slate-900/30">
-              <div className="relative overflow-hidden aspect-[16/10]">
-                <img
-                  src={payrollScreenshots[activePayrollScreenshot].src}
-                  alt={payrollScreenshots[activePayrollScreenshot].title}
-                  className="h-full w-full object-cover transition-all duration-500 group-hover:scale-105"
-                />
-                <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-slate-900 to-transparent" />
-              </div>
-              <div className="p-6">
-                <h3 className="text-lg font-bold text-white mb-2">{payrollScreenshots[activePayrollScreenshot].title}</h3>
-                <p className="text-sm leading-6 text-slate-400 mb-4">
-                  Manage employee records, generate compliant payslips, and submit SARS returns directly from Rigel.
-                </p>
-                <div className="flex items-center justify-between">
-                  <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-emerald-400 hover:text-emerald-300 transition-colors cursor-pointer">
-                    Read more <ArrowRight className="h-3.5 w-3.5" />
-                  </span>
-                  <div className="flex items-center gap-1.5">
-                    {payrollScreenshots.map((screenshot, index) => (
-                      <button
-                        key={screenshot.title}
-                        type="button"
-                        aria-label={`Show ${screenshot.title}`}
-                        onClick={() => setActivePayrollScreenshot(index)}
-                        className={`h-1.5 rounded-full transition-all ${
-                          activePayrollScreenshot === index ? 'w-5 bg-emerald-500' : 'w-1.5 bg-slate-600 hover:bg-slate-500'
-                        }`}
-                      />
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Inventory Card */}
-            <div className="group overflow-hidden rounded-2xl bg-slate-900 shadow-xl shadow-slate-900/30">
-              <div className="relative overflow-hidden aspect-[16/10]">
-                <img
-                  src={inventoryScreenshots[activeInventoryScreenshot].src}
-                  alt={inventoryScreenshots[activeInventoryScreenshot].title}
-                  className="h-full w-full object-cover transition-all duration-500 group-hover:scale-105"
-                />
-                <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-slate-900 to-transparent" />
-              </div>
-              <div className="p-6">
-                <h3 className="text-lg font-bold text-white mb-2">{inventoryScreenshots[activeInventoryScreenshot].title}</h3>
-                <p className="text-sm leading-6 text-slate-400 mb-4">
-                  Track stock levels across warehouses, monitor turnover trends, and automate reorder alerts.
-                </p>
-                <div className="flex items-center justify-between">
-                  <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-blue-400 hover:text-blue-300 transition-colors cursor-pointer">
-                    Read more <ArrowRight className="h-3.5 w-3.5" />
-                  </span>
-                  <div className="flex items-center gap-1.5">
-                    {inventoryScreenshots.map((screenshot, index) => (
-                      <button
-                        key={screenshot.title}
-                        type="button"
-                        aria-label={`Show ${screenshot.title}`}
-                        onClick={() => setActiveInventoryScreenshot(index)}
-                        className={`h-1.5 rounded-full transition-all ${
-                          activeInventoryScreenshot === index ? 'w-5 bg-blue-500' : 'w-1.5 bg-slate-600 hover:bg-slate-500'
-                        }`}
-                      />
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Assets Card */}
-            <div className="group overflow-hidden rounded-2xl bg-slate-900 shadow-xl shadow-slate-900/30">
-              <div className="relative overflow-hidden aspect-[16/10]">
-                <img
-                  src={assetScreenshots[activeAssetScreenshot].src}
-                  alt={assetScreenshots[activeAssetScreenshot].title}
-                  className="h-full w-full object-cover transition-all duration-500 group-hover:scale-105"
-                />
-                <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-slate-900 to-transparent" />
-              </div>
-              <div className="p-6">
-                <h3 className="text-lg font-bold text-white mb-2">{assetScreenshots[activeAssetScreenshot].title}</h3>
-                <p className="text-sm leading-6 text-slate-400 mb-4">
-                  Register assets, calculate depreciation, and generate impairment reports for accurate books.
-                </p>
-                <div className="flex items-center justify-between">
-                  <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-purple-400 hover:text-purple-300 transition-colors cursor-pointer">
-                    Read more <ArrowRight className="h-3.5 w-3.5" />
-                  </span>
-                  <div className="flex items-center gap-1.5">
-                    {assetScreenshots.map((screenshot, index) => (
-                      <button
-                        key={screenshot.title}
-                        type="button"
-                        aria-label={`Show ${screenshot.title}`}
-                        onClick={() => setActiveAssetScreenshot(index)}
-                        className={`h-1.5 rounded-full transition-all ${
-                          activeAssetScreenshot === index ? 'w-5 bg-purple-500' : 'w-1.5 bg-slate-600 hover:bg-slate-500'
-                        }`}
-                      />
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Testimonials */}
-      <section className="py-24 bg-slate-50">
+      {/* How it works — dashed path with glowing circles */}
+      <section className="py-20 lg:py-28 bg-white border-y border-slate-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-slate-900 mb-4">Loved by businesses across SA</h2>
+            <p className="text-sm font-semibold text-emerald-600 mb-3 tracking-wide">How it works</p>
+            <h2 className="text-3xl lg:text-[2.5rem] font-bold text-slate-900 mb-4 leading-tight tracking-tight" style={{ fontFamily: "'Inter Tight', sans-serif" }}>
+              Get started in minutes, not weeks
+            </h2>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {testimonials.map(t => (
-              <div key={t.name} className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
-                <div className="flex gap-1 mb-4">
-                  {[...Array(5)].map((_, i) => <Star key={i} className="h-4 w-4 fill-amber-400 text-amber-400" />)}
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 relative">
+            {/* Dashed connecting path */}
+            <div className="hidden lg:block absolute top-9 left-[12.5%] right-[12.5%] border-t-2 border-dashed border-emerald-200" />
+            {[
+              { step: '01', icon: Users, title: 'Create your account', desc: 'Sign up free and add your company details in under 5 minutes.' },
+              { step: '02', icon: Receipt, title: 'Capture transactions', desc: 'Record invoices, bills, payments and receipts as they happen.' },
+              { step: '03', icon: BarChart3, title: 'Run reports', desc: 'Generate trial balance, AFS and VAT201 with one click.' },
+              { step: '04', icon: ShieldCheck, title: 'Stay compliant', desc: 'Close VAT periods, submit SARS returns and keep audit trails.' },
+            ].map(item => (
+              <div key={item.step} className="text-center relative">
+                <div className="relative inline-flex mb-6">
+                  <div className="h-[72px] w-[72px] rounded-full bg-white text-emerald-600 flex items-center justify-center relative z-10" style={{ boxShadow: '0 0 0 4px rgba(15, 157, 108, 0.1), 0 0 24px rgba(15, 157, 108, 0.15)' }}>
+                    <item.icon className="h-7 w-7" />
+                  </div>
+                  <div className="absolute -top-1.5 -right-1.5 h-7 w-7 rounded-full bg-emerald-600 text-white text-[10px] font-bold flex items-center justify-center z-20" style={{ boxShadow: '0 4px 12px rgba(15, 157, 108, 0.3)' }}>
+                    {item.step}
+                  </div>
                 </div>
-                <p className="text-slate-600 text-sm leading-relaxed mb-4">"{t.text}"</p>
-                <div>
-                  <div className="font-semibold text-slate-900 text-sm">{t.name}</div>
-                  <div className="text-slate-500 text-xs">{t.role}</div>
-                </div>
+                <h3 className="text-base font-bold text-slate-900 mb-2" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{item.title}</h3>
+                <p className="text-sm text-slate-500 leading-6 max-w-xs mx-auto">{item.desc}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="py-24 bg-slate-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 items-center gap-0">
-            {/* Image */}
-            <div className="relative order-1 lg:order-1">
-              <div className="overflow-hidden rounded-2xl shadow-2xl shadow-slate-900/20">
-                <img
-                  src="/Screenshot%202026-06-11%20211808.png"
-                  alt="Rigel Business dashboard on desktop and mobile"
-                  className="w-full h-auto object-cover"
-                />
+      {/* Rigel vs the alternatives */}
+      <section className="py-20 lg:py-28 relative overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none">
+          <img src="/home-bg.jpg" alt="" className="h-full w-full object-cover" />
+          <div className="absolute inset-0 bg-[#0B1220]/85" />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#0B1220]/40 via-transparent to-[#0B1220]/80" />
+        </div>
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <div className="ring-rotate absolute top-[15%] right-[10%] h-32 w-32 border border-emerald-500/15 rounded-full" />
+          <div className="ring-rotate-reverse absolute bottom-[20%] left-[8%] h-24 w-24 border border-slate-500/10 rounded-full" />
+          <div className="dot-bounce absolute top-[25%] left-[15%] h-1.5 w-1.5 bg-emerald-400/40 rounded-full" />
+          <div className="dot-bounce absolute bottom-[30%] right-[20%] h-1.5 w-1.5 bg-slate-300/20 rounded-full" style={{ animationDelay: '2s' }} />
+        </div>
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+          <div className="text-center mb-14">
+            <p className="text-sm font-semibold text-emerald-400 mb-3 tracking-wide">Why switch</p>
+            <h2 className="text-3xl lg:text-[2.5rem] font-bold text-white mb-4 leading-tight tracking-tight" style={{ fontFamily: "'Inter Tight', sans-serif" }}>
+              Rigel vs spreadsheets and stitched-together apps
+            </h2>
+            <p className="text-slate-400 text-lg max-w-2xl mx-auto leading-8">
+              Most businesses juggle spreadsheets, a separate accounting app, a payroll tool, a bank feed and an inventory tracker. Rigel replaces all of them.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-6">
+            <div className="bg-slate-800/50 rounded-2xl p-8 border border-white/5">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="h-10 w-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center">
+                  <FileText className="h-5 w-5 text-slate-400" />
+                </div>
+                <h3 className="text-xl font-bold text-slate-300" style={{ fontFamily: "'Inter Tight', sans-serif" }}>Spreadsheets</h3>
+              </div>
+              <ul className="space-y-4">
+                {['Manual data entry and formulas', 'No audit trail or version control', 'VAT calculated by hand', 'Reports take hours to build', 'One person at a time', 'No backup or sync'].map(item => (
+                  <li key={item} className="flex items-center gap-3 text-sm text-slate-400">
+                    <span className="h-5 w-5 rounded-full border border-slate-600 flex items-center justify-center shrink-0 text-slate-600 text-xs">✕</span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="bg-slate-800/50 rounded-2xl p-8 border border-white/5">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="h-10 w-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center">
+                  <Building2 className="h-5 w-5 text-slate-400" />
+                </div>
+                <h3 className="text-xl font-bold text-slate-300" style={{ fontFamily: "'Inter Tight', sans-serif" }}>Separate systems</h3>
+              </div>
+              <ul className="space-y-4">
+                {['Accounting, payroll and stock apps never talk', 'Double-captured data across tools', 'Monthly reconciliations between systems', 'Extra subscriptions for every module', 'Limited SA tax and VAT support', 'Fragmented reporting'].map(item => (
+                  <li key={item} className="flex items-center gap-3 text-sm text-slate-400">
+                    <span className="h-5 w-5 rounded-full border border-slate-600 flex items-center justify-center shrink-0 text-slate-600 text-xs">✕</span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="bg-slate-800 rounded-2xl p-8 relative" style={{ boxShadow: '0 0 0 1px rgba(15, 157, 108, 0.3), 0 0 40px rgba(15, 157, 108, 0.15)' }}>
+              <div className="absolute top-0 left-0 right-0 h-1 bg-[#0F9D6C] rounded-t-2xl" />
+              <div className="flex items-center gap-3 mb-6">
+                <div className="h-10 w-10 rounded-full bg-[#0F9D6C] flex items-center justify-center">
+                  <ShieldCheck className="h-5 w-5 text-white" />
+                </div>
+                <h3 className="text-xl font-bold text-white" style={{ fontFamily: "'Inter Tight', sans-serif" }}>Rigel Business</h3>
+              </div>
+              <ul className="space-y-4">
+                {['One platform for every department', 'Automatic double-entry bookkeeping', 'Full audit trail on every transaction', 'VAT201, EMP201 and AFS in one click', 'SARS-compliant payroll built in', 'Cloud sync + offline desktop app'].map(item => (
+                  <li key={item} className="flex items-center gap-3 text-sm text-slate-200">
+                    <CheckCircle2 className="h-5 w-5 text-emerald-400 shrink-0" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          {/* All-in-one banner */}
+          <div className="mt-10 rounded-2xl border border-emerald-500/30 bg-gradient-to-r from-emerald-900/30 to-slate-800/50 p-8 text-center relative overflow-hidden">
+            <div className="absolute -top-10 -right-10 h-40 w-40 bg-[#0F9D6C]/20 blur-3xl rounded-full" />
+            <h3 className="text-2xl font-bold text-white mb-3" style={{ fontFamily: "'Inter Tight', sans-serif" }}>Why run four tools when one does it all?</h3>
+            <p className="text-slate-300 max-w-2xl mx-auto mb-6 leading-7">
+              Rigel combines accounting, VAT, banking, sales, purchases, inventory, investments, payroll and full IFRS reporting in a single connected system. No integrations. No exports. No double capture.
+            </p>
+            <div className="flex flex-wrap justify-center gap-3">
+              {[
+                { icon: BarChart3, label: 'Accounting & Reporting' },
+                { icon: Landmark, label: 'VAT' },
+                { icon: Landmark, label: 'Banking' },
+                { icon: Wallet, label: 'Sales' },
+                { icon: ShoppingCart, label: 'Purchases' },
+                { icon: Package, label: 'Inventory' },
+                { icon: PieChart, label: 'Investments' },
+                { icon: Users, label: 'Payroll' },
+              ].map(m => (
+                <div key={m.label} className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-900/60 border border-emerald-500/20 text-xs text-slate-200">
+                  <m.icon className="h-3.5 w-3.5 text-emerald-400" />
+                  {m.label}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Buy & Sell — combined advanced section with tabbed viewer */}
+      <section className="py-20 lg:py-28 bg-white relative overflow-hidden">
+        <div className="absolute left-0 top-1/4 h-72 w-72 bg-blue-100/30 blur-3xl rounded-full pointer-events-none" />
+        <div className="absolute right-0 bottom-1/4 h-72 w-72 bg-emerald-100/40 blur-3xl rounded-full pointer-events-none" />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+          <div className="text-center mb-12">
+            <p className="text-sm font-semibold text-emerald-600 mb-3 tracking-wide">Procurement & Sales</p>
+            <h2 className="text-3xl lg:text-[2.5rem] font-bold text-slate-900 mb-4 leading-tight tracking-tight" style={{ fontFamily: "'Inter Tight', sans-serif" }}>
+              From supplier invoice to customer payment — one connected flow
+            </h2>
+            <p className="text-slate-600 text-lg leading-8 max-w-2xl mx-auto">
+              Rigel links every purchase order, supplier bill, customer quote, sales invoice and payment receipt so your buying and selling stay in sync with your accounts.
+            </p>
+          </div>
+
+          {/* Tab switcher */}
+          <div className="flex justify-center mb-10">
+            <div className="inline-flex gap-1 p-1 bg-slate-100 rounded-full">
+              <button
+                type="button"
+                onClick={() => setProcurementTab('purchase')}
+                className={`px-6 py-2.5 rounded-full text-sm font-semibold transition-all ${procurementTab === 'purchase' ? 'bg-white text-emerald-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+              >
+                Purchase & Payables
+              </button>
+              <button
+                type="button"
+                onClick={() => setProcurementTab('sales')}
+                className={`px-6 py-2.5 rounded-full text-sm font-semibold transition-all ${procurementTab === 'sales' ? 'bg-white text-emerald-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+              >
+                Sales & Invoicing
+              </button>
+            </div>
+          </div>
+
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            {/* Screenshot viewer */}
+            <div className="relative">
+              <div className={`absolute -inset-6 blur-2xl rounded-3xl pointer-events-none transition-all duration-500 ${procurementTab === 'purchase' ? 'bg-gradient-to-bl from-blue-100/40 to-transparent' : 'bg-gradient-to-br from-emerald-100/50 to-transparent'}`} />
+              <div className="relative bg-white rounded-xl shadow-xl overflow-hidden">
+                <div className="bg-slate-50 overflow-hidden">
+                  <img
+                    src={procurementTab === 'purchase'
+                      ? purchaseScreenshots[activePurchaseScreenshot].src
+                      : salesScreenshots[activeSalesScreenshot].src}
+                    alt={procurementTab === 'purchase'
+                      ? purchaseScreenshots[activePurchaseScreenshot].title
+                      : salesScreenshots[activeSalesScreenshot].title}
+                    className="w-full object-cover transition-all duration-500"
+                  />
+                </div>
+                <div className="h-1 bg-slate-100">
+                  <div className="h-full bg-emerald-600 transition-all duration-300" style={{ width: `${((procurementTab === 'purchase' ? activePurchaseScreenshot + 1 : activeSalesScreenshot + 1) / (procurementTab === 'purchase' ? purchaseScreenshots.length : salesScreenshots.length)) * 100}%` }} />
+                </div>
+                <div className="px-4 py-3 flex items-center justify-between">
+                  <span className="text-[10px] text-slate-500 font-mono">
+                    {procurementTab === 'purchase'
+                      ? purchaseScreenshots[activePurchaseScreenshot].title
+                      : salesScreenshots[activeSalesScreenshot].title}
+                  </span>
+                  <div className="flex items-center gap-1.5">
+                    {(procurementTab === 'purchase' ? purchaseScreenshots : salesScreenshots).map((screenshot, index) => (
+                      <button
+                        key={screenshot.title}
+                        type="button"
+                        aria-label={`Show ${screenshot.title}`}
+                        onClick={() => procurementTab === 'purchase' ? setActivePurchaseScreenshot(index) : setActiveSalesScreenshot(index)}
+                        className={`h-1.5 rounded-full transition-all ${
+                          (procurementTab === 'purchase' ? activePurchaseScreenshot : activeSalesScreenshot) === index ? 'w-5 bg-emerald-600' : 'w-1.5 bg-slate-300 hover:bg-slate-400'
+                        }`}
+                      />
+                    ))}
+                  </div>
+                </div>
               </div>
             </div>
 
-            {/* Overlapping Panel */}
-            <div className="relative order-2 lg:order-2 lg:-ml-20 z-10">
-              <div className="bg-[#1BA37B] rounded-2xl p-8 sm:p-12 shadow-2xl shadow-emerald-900/30">
-                <h2 className="text-3xl sm:text-4xl font-black text-white mb-4 leading-tight">
-                  Ready to take control of your business flow?
-                </h2>
-                <p className="text-emerald-50 text-lg leading-8 mb-8">
-                  Try Rigel Business free and manage your invoices, VAT, inventory and reports from one beautiful dashboard.
-                </p>
+            {/* Feature content */}
+            <div>
+              {procurementTab === 'purchase' ? (
+                <>
+                  <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 border border-blue-100 mb-4">
+                    <ShoppingCart className="h-3.5 w-3.5 text-blue-600" />
+                    <span className="text-xs font-semibold text-blue-600 tracking-wide uppercase">Purchase management</span>
+                  </div>
+                  <h3 className="text-2xl lg:text-3xl font-bold text-slate-900 mb-4 leading-tight tracking-tight" style={{ fontFamily: "'Inter Tight', sans-serif" }}>
+                    Know what you ordered, received and still owe
+                  </h3>
+                  <p className="text-slate-600 text-base leading-7 mb-6">
+                    Rigel connects suppliers, purchase orders, supplier invoices and accounts payable so your buying process stays organised from request to payment.
+                  </p>
+                  <div className="space-y-4">
+                    {purchaseFeatures.map((item) => (
+                      <div key={item.title} className="feature-item flex gap-4 group">
+                        <div className="h-10 w-10 rounded-full icon-gradient text-emerald-600 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
+                          <item.icon className="h-5 w-5" />
+                        </div>
+                        <div>
+                          <h4 className="text-base font-semibold text-slate-900 mb-1" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{item.title}</h4>
+                          <p className="text-sm leading-6 text-slate-500">{item.desc}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-100 mb-4">
+                    <Wallet className="h-3.5 w-3.5 text-emerald-600" />
+                    <span className="text-xs font-semibold text-emerald-600 tracking-wide uppercase">Customer management</span>
+                  </div>
+                  <h3 className="text-2xl lg:text-3xl font-bold text-slate-900 mb-4 leading-tight tracking-tight" style={{ fontFamily: "'Inter Tight', sans-serif" }}>
+                    Turn quotes into paid invoices without losing the trail
+                  </h3>
+                  <p className="text-slate-600 text-base leading-7 mb-6">
+                    Rigel keeps customers, quotes, sales orders, invoices, delivery status and receipts in one connected revenue workspace.
+                  </p>
+                  <div className="space-y-4">
+                    {customerFeatures.map((item) => (
+                      <div key={item.title} className="feature-item flex gap-4 group">
+                        <div className="h-10 w-10 rounded-full icon-gradient text-emerald-600 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
+                          <item.icon className="h-5 w-5" />
+                        </div>
+                        <div>
+                          <h4 className="text-base font-semibold text-slate-900 mb-1" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{item.title}</h4>
+                          <p className="text-sm leading-6 text-slate-500">{item.desc}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
+              <a
+                href={`${APP_URL}/signup`}
+                className="btn-pill mt-8 inline-flex h-12 items-center bg-[#0F9D6C] hover:bg-[#0B7A52] px-8 font-semibold text-white"
+              >
+                Try it free <ArrowRight className="h-4 w-4 ml-2" />
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials — avatars, pill tags, featured card */}
+      <section className="py-20 lg:py-28 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-[0.7fr_1.3fr] gap-12 items-start">
+            <div>
+              <p className="text-sm font-semibold text-emerald-600 mb-3 tracking-wide">Customer stories</p>
+              <h2 className="text-3xl lg:text-[2.5rem] font-bold text-slate-900 mb-4 leading-tight tracking-tight" style={{ fontFamily: "'Inter Tight', sans-serif" }}>
+                See what high-performance finance looks like
+              </h2>
+              <p className="text-slate-600 text-lg leading-8 mb-6">
+                Real businesses across South Africa use Rigel to run accounting, VAT, payroll and inventory from one dashboard.
+              </p>
+              <div className="flex items-center gap-3 pt-4 border-t border-slate-200">
+                <div className="flex gap-0.5">
+                  {[...Array(5)].map((_, i) => <Star key={i} className="h-5 w-5 fill-emerald-500 text-emerald-500" />)}
+                </div>
+                <span className="text-sm text-slate-600 font-medium">Rated by SA businesses</span>
+              </div>
+            </div>
+            <div className="grid sm:grid-cols-2 gap-6">
+              {testimonials.map((t, i) => (
+                <div key={t.name} className={`card-lift bg-slate-50 rounded-2xl border border-slate-200 p-7 ${i === 0 ? 'lg:-rotate-1 lg:shadow-lg' : ''}`}>
+                  <div className="flex gap-1 mb-4">
+                    {[...Array(5)].map((_, i) => <Star key={i} className="h-4 w-4 fill-emerald-500 text-emerald-500" />)}
+                  </div>
+                  <p className="text-slate-700 text-sm leading-7 mb-5">“{t.text}”</p>
+                  <div className="pt-4 border-t border-slate-200">
+                    <span className="inline-block text-[10px] font-bold text-emerald-700 bg-emerald-100 rounded-full px-3 py-1 mb-3 uppercase tracking-wide">{t.metric}</span>
+                    <div className="flex items-center gap-3">
+                      <div className="h-10 w-10 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 text-white flex items-center justify-center text-sm font-bold shrink-0">
+                        {t.name.charAt(0)}
+                      </div>
+                      <div>
+                        <div className="font-semibold text-slate-900 text-sm">{t.name}</div>
+                        <div className="text-slate-500 text-xs mt-0.5">{t.role}</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Trust badges — tinted bg, gradient circles */}
+      <section className="py-20 lg:py-28 bg-slate-50 border-t border-slate-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              { icon: ShieldCheck, title: 'Audit trail', desc: 'Every transaction records who, what and when. Full traceability for auditors and SARS reviews.' },
+              { icon: Users, title: 'Multi-company', desc: 'Switch between entities without logging out. Manage holding companies and subsidiaries in one place.' },
+              { icon: CalendarClock, title: 'Fiscal periods', desc: 'Lock closed periods to prevent changes. Keep current and historical data clean and accurate.' },
+              { icon: FileText, title: 'Document templates', desc: 'Customise invoices, quotes and statements with your logo, colours and banking details.' },
+            ].map(item => (
+              <div key={item.title} className="card-lift bg-white rounded-2xl p-8 group">
+                <div className="h-14 w-14 rounded-full icon-gradient text-emerald-600 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
+                  <item.icon className="h-6 w-6" />
+                </div>
+                <h3 className="text-base font-bold text-slate-900 mb-3" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{item.title}</h3>
+                <p className="text-sm text-slate-600 leading-7">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ — chevron accordion */}
+      <section className="py-20 lg:py-28 bg-slate-50 border-t border-slate-100">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-14">
+            <p className="text-sm font-semibold text-emerald-600 mb-3 tracking-wide">FAQ</p>
+            <h2 className="text-3xl lg:text-[2.5rem] font-bold text-slate-900 mb-4 leading-tight tracking-tight" style={{ fontFamily: "'Inter Tight', sans-serif" }}>
+              Questions, answered
+            </h2>
+          </div>
+          <div className="space-y-3">
+            {[
+              { q: 'Is Rigel SARS-compliant?', a: 'Yes. Rigel generates VAT201 reports aligned to SARS requirements, tracks fiscal periods and supports ZAR currency by default.' },
+              { q: 'Can I manage multiple companies?', a: 'Yes. Rigel supports multiple companies from a single dashboard. Switch between entities without logging out.' },
+              { q: 'Do I need an internet connection?', a: 'The desktop app works offline. Your data syncs automatically when you reconnect to the internet.' },
+              { q: 'Is there a free trial?', a: 'Yes. Start free with no credit card required. Cancel anytime with no setup or hidden fees.' },
+              { q: 'Can my accountant access my books?', a: 'Yes. Invite your accountant with view or edit access. They can manage multiple clients from one login.' },
+            ].map((faq, i) => (
+              <details key={i} className="group bg-white rounded-xl border border-slate-200 hover:border-emerald-200 transition-colors">
+                <summary className="flex items-center justify-between cursor-pointer p-5 list-none">
+                  <span className="text-base font-semibold text-slate-900" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{faq.q}</span>
+                  <ChevronDown className="faq-chevron h-5 w-5 text-emerald-600 shrink-0 ml-4" />
+                </summary>
+                <div className="faq-answer px-5 text-sm text-slate-600 leading-7">{faq.a}</div>
+              </details>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA — gradient mesh bookend */}
+      <section className="mesh-bg py-20 lg:py-28 relative overflow-hidden">
+        <div className="absolute bottom-0 left-0 h-1 w-full bg-gradient-to-r from-transparent via-[#0F9D6C] to-transparent" />
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <div className="mesh-drift absolute top-[20%] left-[8%] h-[300px] w-[300px] bg-[#0F9D6C]/10 blur-[80px] rounded-full" />
+          <div className="mesh-drift absolute bottom-[25%] right-[12%] h-[250px] w-[250px] bg-[#1BA37B]/8 blur-[70px] rounded-full" style={{ animationDelay: '5s' }} />
+          <div className="ring-rotate absolute top-[20%] left-[8%] h-32 w-32 border border-emerald-500/15 rounded-full" />
+          <div className="ring-rotate-reverse absolute bottom-[25%] right-[12%] h-24 w-24 border border-slate-500/10 rounded-full" />
+          <div className="dot-bounce absolute top-[40%] left-[15%] h-1.5 w-1.5 bg-emerald-400/40 rounded-full" />
+          <div className="dot-bounce absolute top-[60%] right-[20%] h-1.5 w-1.5 bg-slate-300/20 rounded-full" style={{ animationDelay: '2s' }} />
+        </div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <h2 className="text-3xl lg:text-[2.5rem] font-bold text-white mb-5 leading-tight tracking-tight" style={{ fontFamily: "'Inter Tight', sans-serif" }}>
+                Ready to take control of your business flow?
+              </h2>
+              <p className="text-slate-400 text-lg leading-8 mb-10">
+                Try Rigel Business free and manage your invoices, VAT, inventory and reports from one connected dashboard. No credit card required.
+              </p>
+              <div className="flex flex-wrap items-center gap-4">
                 <a
                   href={`${APP_URL}/signup`}
-                  className="inline-flex h-12 items-center gap-2 rounded-xl bg-white px-8 font-bold text-[#1BA37B] hover:bg-emerald-50 transition-colors shadow-lg"
+                  className="btn-pill inline-flex h-12 items-center bg-[#0F9D6C] hover:bg-[#0B7A52] px-8 font-semibold text-white"
                 >
-                  Get Started Free <ArrowRight className="h-4 w-4" />
+                  Start free trial <ArrowRight className="h-4 w-4 ml-2" />
                 </a>
+                <Link
+                  to="/book-demo"
+                  className="btn-pill inline-flex h-12 items-center border border-white/25 hover:border-white/60 hover:bg-white/5 px-8 font-semibold text-white"
+                >
+                  Book a demo
+                </Link>
+              </div>
+            </div>
+            <div className="hidden lg:block">
+              <div className="glass-chip rounded-2xl p-8">
+                <div className="flex items-center gap-3 mb-6">
+                  <ShieldCheck className="h-6 w-6 text-emerald-400" />
+                  <span className="text-white font-semibold" style={{ fontFamily: "'Inter Tight', sans-serif" }}>Why businesses choose Rigel</span>
+                </div>
+                <div className="space-y-4">
+                  {['No setup fees or hidden costs', 'Works on desktop, web and mobile', 'SARS-compliant VAT201 filing', 'Multi-company from one dashboard'].map(benefit => (
+                    <div key={benefit} className="flex items-center gap-3 text-slate-300">
+                      <CheckCircle2 className="h-5 w-5 text-emerald-400 shrink-0" />
+                      <span className="text-sm">{benefit}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>

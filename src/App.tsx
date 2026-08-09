@@ -8,9 +8,17 @@ import { Download } from './pages/Download';
 import { Contact } from './pages/Contact';
 import { RigelHub } from './pages/RigelHub';
 import { BusinessResources } from './pages/BusinessResources';
-import { Forum } from './pages/Forum';
 import { LegalPage } from './pages/LegalPage';
 import { BookDemo } from './pages/BookDemo';
+import { Services } from './pages/Services';
+import { Payroll } from './pages/Payroll';
+import { Sales } from './pages/Sales';
+import { Purchase } from './pages/Purchase';
+import { Inventory } from './pages/Inventory';
+import { Tax } from './pages/Tax';
+import { Reporting } from './pages/Reporting';
+import { Investments } from './pages/Investments';
+import { Banking } from './pages/Banking';
 import './index.css';
 
 function App() {
@@ -21,11 +29,19 @@ function App() {
         <main className="flex-1">
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/services" element={<Services />} />
+            <Route path="/payroll" element={<Payroll />} />
+            <Route path="/sales" element={<Sales />} />
+            <Route path="/purchase" element={<Purchase />} />
+            <Route path="/inventory" element={<Inventory />} />
+            <Route path="/tax" element={<Tax />} />
+            <Route path="/reporting" element={<Reporting />} />
+            <Route path="/investments" element={<Investments />} />
+            <Route path="/banking" element={<Banking />} />
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/download" element={<Download />} />
             <Route path="/rigel-hub" element={<RigelHub />} />
             <Route path="/business-resources" element={<BusinessResources />} />
-            <Route path="/forum" element={<Forum />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/book-demo" element={<BookDemo />} />
             <Route path="/privacy-policy" element={<LegalPage page="privacy" />} />

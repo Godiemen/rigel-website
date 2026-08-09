@@ -18,86 +18,81 @@ export function Contact() {
   };
 
   return (
-    <div>
-      <section className="relative overflow-hidden bg-slate-900 text-white py-20 lg:py-24">
-        <div className="absolute inset-0 bg-slate-950/60" />
-        <div className="absolute right-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[32rem] w-[32rem] rounded-full bg-emerald-400/15 blur-3xl" />
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-[0.95fr_1.05fr] gap-12 items-center">
-            <div>
-              <div className="inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-400/15 px-4 py-2 text-sm font-semibold text-emerald-400 mb-6">
-                <MessageSquare className="h-4 w-4" /> Rigel support desk
-              </div>
-              <h1 className="text-5xl lg:text-7xl font-bold leading-[0.95] tracking-tight mb-6">Talk to the Rigel Business team.</h1>
-              <p className="text-slate-300 text-lg leading-8 max-w-xl mb-8">
-                Need help choosing a plan, setting up your company, or understanding VAT, payroll, inventory or reporting? Send us a message and we’ll guide you.
-              </p>
-              <div className="flex flex-wrap gap-3">
-                {['Sales enquiries', 'Technical support', 'Setup guidance'].map(item => (
-                  <span key={item} className="rounded-full bg-white/10 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-slate-200">{item}</span>
-                ))}
-              </div>
-            </div>
+    <div className="bg-white">
+      {/* Hero — full-bleed image banner */}
+      <section className="relative overflow-hidden">
+        <div className="absolute inset-0">
+          <img
+            src="/Gemini_Generated_Image_u5wb3gu5wb3gu5wb.png"
+            alt="Rigel Business contact"
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#0B1220] via-[#0B1220]/90 to-[#0B1220]/50" />
+          <div className="absolute inset-0 bg-[#0B1220]/30" />
+          <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#0F9D6C]/15 to-transparent" />
+        </div>
 
-            <div className="relative">
-              <div className="relative overflow-hidden rounded-2xl bg-white text-slate-900 shadow-xl border border-slate-200">
-                <iframe
-                  title="Rigel Business Durban office map"
-                  src={MAP_URL}
-                  className="h-96 w-full border-0"
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                />
-                <a
-                  href={MAP_LINK}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="absolute bottom-4 left-4 rounded-full bg-white px-4 py-2 text-xs font-semibold text-slate-900 shadow-md border border-slate-200 hover:text-emerald-600 transition-colors"
-                >
-                  Open exact location
-                </a>
-              </div>
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-36">
+          <div className="max-w-2xl">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/15 mb-6">
+              <MessageSquare className="h-3.5 w-3.5 text-emerald-400" />
+              <span className="text-xs font-semibold text-emerald-300 tracking-wide uppercase">Rigel Support Desk</span>
+            </div>
+            <h1 className="text-4xl lg:text-6xl font-bold text-white mb-6 leading-tight tracking-tight" style={{ fontFamily: "'Inter Tight', sans-serif" }}>
+              Talk to the Rigel Business team
+            </h1>
+            <p className="text-lg lg:text-xl text-slate-200 leading-8 max-w-xl mb-8">
+              Need help choosing a plan, setting up your company, or understanding VAT, payroll, inventory or reporting? Send us a message and we'll guide you.
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {['Sales enquiries', 'Technical support', 'Setup guidance'].map(item => (
+                <span key={item} className="rounded-full bg-white/10 backdrop-blur-sm border border-white/15 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-slate-200">{item}</span>
+              ))}
             </div>
           </div>
         </div>
+
+        <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-white to-transparent" />
       </section>
 
-      <section className="py-20 bg-slate-50">
+      {/* Contact info cards + form */}
+      <section className="py-16 lg:py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-            <div className="space-y-6">
-              <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
-                <div className="h-10 w-10 rounded-xl bg-emerald-100 flex items-center justify-center mb-3">
-                  <Mail className="h-5 w-5 text-emerald-600" />
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Info cards */}
+            <div className="space-y-4">
+              <div className="card-lift bg-white rounded-2xl border border-slate-200 p-5">
+                <div className="h-10 w-10 rounded-full icon-gradient text-emerald-600 flex items-center justify-center mb-3">
+                  <Mail className="h-5 w-5" />
                 </div>
-                <h4 className="font-semibold text-slate-900 mb-1">Email us</h4>
-                <p className="text-slate-600 text-sm">support@rigelbusiness.co.za</p>
+                <h4 className="text-sm font-bold text-slate-900 mb-1" style={{ fontFamily: "'Inter Tight', sans-serif" }}>Email us</h4>
+                <p className="text-slate-500 text-sm">support@rigelbusiness.co.za</p>
               </div>
-              <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
-                <div className="h-10 w-10 rounded-xl bg-emerald-100 flex items-center justify-center mb-3">
-                  <Clock className="h-5 w-5 text-emerald-600" />
+              <div className="card-lift bg-white rounded-2xl border border-slate-200 p-5">
+                <div className="h-10 w-10 rounded-full icon-gradient text-emerald-600 flex items-center justify-center mb-3">
+                  <Clock className="h-5 w-5" />
                 </div>
-                <h4 className="font-semibold text-slate-900 mb-1">Response time</h4>
-                <p className="text-slate-600 text-sm">We reply within 24 hours on business days.</p>
+                <h4 className="text-sm font-bold text-slate-900 mb-1" style={{ fontFamily: "'Inter Tight', sans-serif" }}>Response time</h4>
+                <p className="text-slate-500 text-sm">We reply within 24 hours on business days.</p>
               </div>
-              <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
-                <div className="h-10 w-10 rounded-xl bg-emerald-100 flex items-center justify-center mb-3">
-                  <Building2 className="h-5 w-5 text-emerald-600" />
+              <div className="card-lift bg-white rounded-2xl border border-slate-200 p-5">
+                <div className="h-10 w-10 rounded-full icon-gradient text-emerald-600 flex items-center justify-center mb-3">
+                  <Building2 className="h-5 w-5" />
                 </div>
-                <h4 className="font-semibold text-slate-900 mb-1">Office location</h4>
-                <p className="text-slate-600 text-sm leading-6">52 Norfolk Terrace<br />11 Westville Centre<br />Durban, KwaZulu-Natal 3629, ZA</p>
+                <h4 className="text-sm font-bold text-slate-900 mb-1" style={{ fontFamily: "'Inter Tight', sans-serif" }}>Office location</h4>
+                <p className="text-slate-500 text-sm leading-6">52 Norfolk Terrace, 11 Westville Centre<br />Durban, KwaZulu-Natal 3629, ZA</p>
               </div>
-              <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
-                <div className="h-10 w-10 rounded-xl bg-emerald-100 flex items-center justify-center mb-3">
-                  <Phone className="h-5 w-5 text-emerald-600" />
+              <div className="card-lift bg-white rounded-2xl border border-slate-200 p-5">
+                <div className="h-10 w-10 rounded-full icon-gradient text-emerald-600 flex items-center justify-center mb-3">
+                  <Phone className="h-5 w-5" />
                 </div>
-                <h4 className="font-semibold text-slate-900 mb-1">Priority support</h4>
-                <p className="text-slate-600 text-sm">Sign in and use in-app chat for account-specific assistance.</p>
+                <h4 className="text-sm font-bold text-slate-900 mb-1" style={{ fontFamily: "'Inter Tight', sans-serif" }}>Priority support</h4>
+                <p className="text-slate-500 text-sm">Sign in and use in-app chat for account-specific assistance.</p>
               </div>
-              <div className="bg-emerald-600 rounded-2xl p-6 text-white">
-                <h4 className="font-semibold mb-2">Need help fast?</h4>
-                <p className="text-emerald-100 text-sm mb-5">Sign in to your account and use the in-app support chat for priority assistance.</p>
-                <a href="https://biz-flow-sa.vercel.app/login" className="inline-flex items-center gap-2 text-sm font-semibold text-white">
+              <div className="rounded-2xl bg-[#0F9D6C] p-5 text-white">
+                <h4 className="text-sm font-bold mb-2" style={{ fontFamily: "'Inter Tight', sans-serif" }}>Need help fast?</h4>
+                <p className="text-emerald-50 text-sm mb-4">Sign in to your account and use the in-app support chat for priority assistance.</p>
+                <a href="https://biz-flow-sa.vercel.app/login" className="inline-flex items-center gap-1.5 text-sm font-semibold text-white hover:text-emerald-100 transition-colors">
                   Sign in to Rigel <ArrowRight className="h-4 w-4" />
                 </a>
               </div>
@@ -110,13 +105,13 @@ export function Contact() {
                   <div className="h-16 w-16 rounded-full bg-emerald-100 flex items-center justify-center mb-4">
                     <CheckCircle2 className="h-8 w-8 text-emerald-600" />
                   </div>
-                  <h3 className="text-2xl font-bold text-slate-900 mb-2">Message sent!</h3>
+                  <h3 className="text-2xl font-bold text-slate-900 mb-2" style={{ fontFamily: "'Inter Tight', sans-serif" }}>Message sent!</h3>
                   <p className="text-slate-600">Your email client should have opened. We'll reply within 24 hours.</p>
                   <button onClick={() => setSent(false)} className="mt-6 text-emerald-600 text-sm font-semibold hover:underline">Send another message</button>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-5">
-                  <h3 className="text-xl font-bold text-slate-900 mb-6">Send us a message</h3>
+                  <h3 className="text-xl font-bold text-slate-900 mb-6" style={{ fontFamily: "'Inter Tight', sans-serif" }}>Send us a message</h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <div>
                       <label className="block text-sm font-semibold text-slate-700 mb-1.5">Your name</label>
@@ -125,7 +120,7 @@ export function Contact() {
                         type="text"
                         value={form.name}
                         onChange={e => setForm({ ...form, name: e.target.value })}
-                        className="w-full h-11 px-4 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600/30 focus:border-emerald-600 transition-colors"
+                        className="w-full h-11 px-4 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#0F9D6C]/30 focus:border-[#0F9D6C] transition-colors"
                         placeholder="John Smith"
                       />
                     </div>
@@ -136,7 +131,7 @@ export function Contact() {
                         type="email"
                         value={form.email}
                         onChange={e => setForm({ ...form, email: e.target.value })}
-                        className="w-full h-11 px-4 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600/30 focus:border-emerald-600 transition-colors"
+                        className="w-full h-11 px-4 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#0F9D6C]/30 focus:border-[#0F9D6C] transition-colors"
                         placeholder="john@company.co.za"
                       />
                     </div>
@@ -147,7 +142,7 @@ export function Contact() {
                       type="text"
                       value={form.subject}
                       onChange={e => setForm({ ...form, subject: e.target.value })}
-                      className="w-full h-11 px-4 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600/30 focus:border-emerald-600 transition-colors"
+                      className="w-full h-11 px-4 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#0F9D6C]/30 focus:border-[#0F9D6C] transition-colors"
                       placeholder="Sales enquiry / Technical support / Other"
                     />
                   </div>
@@ -158,19 +153,42 @@ export function Contact() {
                       rows={5}
                       value={form.message}
                       onChange={e => setForm({ ...form, message: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600/30 focus:border-emerald-600 transition-colors resize-none"
+                      className="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#0F9D6C]/30 focus:border-[#0F9D6C] transition-colors resize-none"
                       placeholder="Tell us how we can help..."
                     />
                   </div>
                   <button
                     type="submit"
-                    className="w-full h-12 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold transition-colors"
+                    className="btn-pill w-full h-12 bg-[#0F9D6C] hover:bg-[#0B7A52] text-white font-semibold"
                   >
                     Send Message
                   </button>
                 </form>
               )}
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Map */}
+      <section className="pb-16 lg:pb-24 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="relative overflow-hidden rounded-2xl border border-slate-200 shadow-md">
+            <iframe
+              title="Rigel Business Durban office map"
+              src={MAP_URL}
+              className="h-80 w-full border-0"
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+            />
+            <a
+              href={MAP_LINK}
+              target="_blank"
+              rel="noreferrer"
+              className="absolute bottom-4 left-4 rounded-full bg-white px-4 py-2 text-xs font-semibold text-slate-900 shadow-md border border-slate-200 hover:text-emerald-600 transition-colors"
+            >
+              Open exact location
+            </a>
           </div>
         </div>
       </section>

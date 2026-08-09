@@ -6,8 +6,14 @@ const COMPANY_LOGO = '/images%20(2).jpeg';
 
 export function Footer() {
   return (
-    <footer className="bg-slate-900 text-slate-400">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <footer className="relative bg-slate-900 text-slate-400 overflow-hidden">
+      <img
+        src="/7-differences-between-book-keeping-and-accounting-1.jpeg.webp"
+        alt=""
+        className="absolute inset-0 w-full h-full object-cover opacity-20 pointer-events-none"
+      />
+      <div className="absolute inset-0 bg-slate-900/80 pointer-events-none" />
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-10">
           {/* Brand */}
           <div className="md:col-span-1">
@@ -57,7 +63,7 @@ export function Footer() {
             <h4 className="text-white font-bold text-sm mb-4 uppercase tracking-wider">Legal</h4>
             <ul className="space-y-3 text-sm">
               <li><Link to="/privacy-policy" className="hover:text-white transition-colors">Privacy Policy</Link></li>
-              <li><Link to="/terms-of-service" className="hover:text-white transition-colors">Terms of Service</Link></li>
+              <li><Link to="/terms-of-service" className="hover:text-white transition-colors">Terms &amp; Conditions</Link></li>
               <li><Link to="/cookie-policy" className="hover:text-white transition-colors">Cookie Policy</Link></li>
               <li><Link to="/refund-policy" className="hover:text-white transition-colors">Refund Policy</Link></li>
               <li><Link to="/popia-notice" className="hover:text-white transition-colors">POPIA Notice</Link></li>
