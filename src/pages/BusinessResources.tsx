@@ -236,24 +236,22 @@ export function BusinessResources() {
               alt="Rigel Business resources"
               className="w-full h-full object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-[#0B1220] via-[#0B1220]/90 to-[#0B1220]/50" />
-            <div className="absolute inset-0 bg-[#0B1220]/30" />
+            <div className="absolute inset-0 bg-gradient-to-r from-white via-white/85 to-transparent" />
+            <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-white to-transparent" />
           </div>
 
           <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
-            <button onClick={() => setSelectedArticle(null)} className="mb-8 inline-flex items-center gap-2 text-sm font-semibold text-emerald-400 hover:text-emerald-300 transition-colors">
+            <button onClick={() => setSelectedArticle(null)} className="mb-8 inline-flex items-center gap-2 text-sm font-semibold text-[#0F9D6C] hover:text-emerald-700 transition-colors">
               <ArrowLeft className="h-4 w-4" /> Back to resources
             </button>
-            <div className="mb-5 flex flex-wrap items-center gap-3 text-xs font-semibold uppercase tracking-wider text-slate-300">
-              <span className="rounded-full bg-emerald-600/20 px-3 py-1 text-emerald-400 border border-emerald-500/20">{selectedArticle.category}</span>
+            <div className="mb-5 flex flex-wrap items-center gap-3 text-xs font-semibold uppercase tracking-wider text-slate-600">
+              <span className="rounded-full bg-emerald-50 px-3 py-1 text-emerald-700 border border-emerald-100">{selectedArticle.category}</span>
               <span className="flex items-center gap-1"><UserRound className="h-3.5 w-3.5" /> {selectedArticle.author}</span>
               <span className="flex items-center gap-1"><CalendarDays className="h-3.5 w-3.5" /> {selectedArticle.date}</span>
               <span className="flex items-center gap-1"><Clock className="h-3.5 w-3.5" /> {selectedArticle.read}</span>
             </div>
-            <h1 className="text-3xl lg:text-5xl font-bold leading-tight tracking-tight text-white" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{selectedArticle.title}</h1>
+            <h1 className="text-3xl lg:text-5xl font-bold leading-tight tracking-tight text-slate-900" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{selectedArticle.title}</h1>
           </div>
-
-          <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-white to-transparent" />
         </section>
 
         <article className="py-16">
@@ -318,7 +316,7 @@ export function BusinessResources() {
 
   return (
     <div className="bg-white">
-        {/* Hero — full-bleed image banner */}
+        {/* Hero — split layout with image showcase */}
         <section className="relative overflow-hidden">
           <div className="absolute inset-0">
             <img
@@ -326,32 +324,29 @@ export function BusinessResources() {
               alt="Rigel Business resources"
               className="w-full h-full object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-[#0B1220] via-[#0B1220]/90 to-[#0B1220]/50" />
-            <div className="absolute inset-0 bg-[#0B1220]/30" />
-            <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#0F9D6C]/15 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-r from-white via-white/85 to-transparent" />
+            <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-white to-transparent" />
           </div>
 
           <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-36">
-            <div className="max-w-2xl">
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/15 mb-6">
-                <BookOpen className="h-3.5 w-3.5 text-emerald-400" />
-                <span className="text-xs font-semibold text-emerald-300 tracking-wide uppercase">Business Resources</span>
+            <div className="max-w-xl">
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-50 border border-emerald-100 mb-6">
+                <BookOpen className="h-3.5 w-3.5 text-[#0F9D6C]" />
+                <span className="text-xs font-semibold text-emerald-700 tracking-wide uppercase">Business Resources</span>
               </div>
-              <h1 className="text-4xl lg:text-6xl font-bold text-white mb-6 leading-tight tracking-tight" style={{ fontFamily: "'Inter Tight', sans-serif" }}>
+              <h1 className="text-4xl lg:text-5xl font-bold text-slate-900 mb-5 leading-tight tracking-tight" style={{ fontFamily: "'Inter Tight', sans-serif" }}>
                 Articles to help you run a smarter business
               </h1>
-              <p className="text-lg lg:text-xl text-slate-200 leading-8 max-w-xl mb-8">
+              <p className="text-lg text-slate-600 leading-8 max-w-lg mb-8">
                 Practical guides for VAT, accounting reports, sales, purchases, payroll, inventory and everyday business decisions in South Africa.
               </p>
               <div className="flex flex-wrap gap-2">
                 {categories.map(category => (
-                  <span key={category} className="rounded-full bg-white/10 backdrop-blur-sm border border-white/15 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-slate-200">{category}</span>
+                  <span key={category} className="rounded-full bg-white/80 border border-slate-200 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-slate-600">{category}</span>
                 ))}
               </div>
             </div>
           </div>
-
-          <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-white to-transparent" />
         </section>
 
       {/* Articles grid */}

@@ -1,22 +1,95 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  ChevronDown, ArrowRight, CheckCircle2, X, Maximize2,
+  ChevronDown, ArrowRight, ChevronLeft, ChevronRight, CheckCircle2, X, Play,
   Calculator, Users, FileText, CreditCard, BarChart3,
   ShieldCheck, Clock, LockKeyhole, Mail, Download,
   AlertTriangle, Landmark, RefreshCw,
   TrendingUp, GraduationCap,
   Wallet, Gift, MapPin, Calendar, Building2,
+  Briefcase, UserPlus, Search, Columns, Star,
 } from 'lucide-react';
 
 const APP_URL = 'https://biz-flow-sa-delta.vercel.app';
 
-const screenshots = [
-  { src: '/run payroll.png', title: 'Run payroll', desc: 'Create pay periods and process employees with live gross/net calculations.' },
-  { src: '/payroll history .png', title: 'Payroll history', desc: 'Filter runs by status, date and type with pay status badges.' },
-  { src: '/payroll graphs.png', title: 'Payroll dashboard', desc: 'Department spend breakdown with charts and KPIs.' },
-  { src: '/payslip templete .png', title: 'Payslip template', desc: 'Branded payslip with earnings, deductions, statutory taxes and net pay.' },
+const avatarGradients = [
+  'from-emerald-400 to-teal-600',
+  'from-blue-400 to-indigo-600',
+  'from-amber-400 to-orange-600',
+  'from-purple-400 to-pink-600',
+  'from-cyan-400 to-blue-600',
+  'from-rose-400 to-red-600',
+  'from-lime-400 to-green-600',
+  'from-violet-400 to-purple-600',
+  'from-sky-400 to-cyan-600',
+  'from-fuchsia-400 to-pink-600',
 ];
+
+function CardAvatar({ icon: Icon, index, label }: { icon: typeof Calculator; index: number; label?: string }) {
+  const gradient = avatarGradients[index % avatarGradients.length];
+  return (
+    <div className={`relative h-20 bg-gradient-to-br ${gradient} overflow-hidden rounded-t-xl`}>
+      <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(circle, white 1.5px, transparent 1.5px)', backgroundSize: '14px 14px' }} />
+      <div className="absolute -right-5 -top-5 h-16 w-16 rounded-full bg-white/10" />
+      <div className="absolute -left-3 -bottom-6 h-14 w-14 rounded-full bg-white/10" />
+      <div className="absolute inset-0 flex items-center justify-center">
+        <Icon className="h-9 w-9 text-white drop-shadow-sm" />
+      </div>
+      <span className="absolute top-2 right-2.5 text-[10px] font-mono font-bold text-white/60">
+        {label ?? String(index + 1).padStart(2, '0')}
+      </span>
+    </div>
+  );
+}
+
+const PAYROLL_DEMO_VIDEOS = [
+  { url: 'https://youtu.be/VF_xy9tNYbs', title: 'payroll -rigel', desc: 'by Rigel Team' },
+  { url: 'https://youtu.be/nUVTI9piFd0', title: 'payroll 2', desc: 'by Rigel Team' },
+  { url: 'https://youtu.be/QNEycsQ8Cu8', title: 'time sheet and clock in rigel', desc: 'by Rigel Team' },
+  { url: 'https://youtu.be/Uo7k2u5Vvlg', title: 'rigel payslip', desc: 'by Rigel Team' },
+  { url: 'https://youtu.be/n30WPsWEqXI', title: 'hiriring module', desc: 'by Rigel Team' },
+];
+
+function getYouTubeEmbedUrl(url: string) {
+  try {
+    const u = new URL(url);
+    if (u.hostname === 'youtu.be') {
+      return `https://www.youtube.com/embed${u.pathname}?rel=0&modestbranding=1&playsinline=1`;
+    }
+    const v = u.searchParams.get('v');
+    if (v) return `https://www.youtube.com/embed/${v}?rel=0&modestbranding=1&playsinline=1`;
+  } catch {}
+  return `https://www.youtube.com/embed/${url}?rel=0&modestbranding=1&playsinline=1`;
+}
+
+function getYouTubeId(url: string) {
+  try {
+    const u = new URL(url);
+    if (u.hostname === 'youtu.be') return u.pathname.slice(1);
+    return u.searchParams.get('v') ?? url;
+  } catch {
+    return url;
+  }
+}
+
+function getYouTubeThumb(url: string) {
+  const id = getYouTubeId(url);
+  return `https://img.youtube.com/vi/${id}/0.jpg`;
+}
+
+function PayrollVideoPlayer({ src }: { src: string }) {
+  return (
+    <div className="relative overflow-hidden rounded-2xl bg-black shadow-2xl aspect-video">
+      <iframe
+        src={getYouTubeEmbedUrl(src)}
+        title="Payroll demo video"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        allowFullScreen
+        className="absolute inset-0 w-full h-full"
+      />
+    </div>
+  );
+}
 
 type Section = {
   icon: typeof Calculator;
@@ -145,6 +218,25 @@ const sections: Section[] = [
       'Shift schedules: start time, duration (4h/8h/9h/12h), working days',
       'Configurable late grace period (0, 5, 10, 15, 30 minutes)',
       'Quick presets: Standard 9–5, Retail Shift, 24h Warehouse',
+    ],
+  },
+  {
+    icon: Briefcase,
+    name: 'Hiring Module',
+    tagline: 'Full recruitment from job posting to offer and employee conversion.',
+    description:
+      'Manage the entire recruitment process without a separate HR system. Create job postings with public apply links, customize application forms, track candidates through a drag-and-drop pipeline, screen CVs automatically, schedule interviews, complete scorecards, send branded offer letters and convert accepted candidates directly into employee records.',
+    features: [
+      'Job postings with public shareable application links',
+      'Customizable application forms with required and custom questions',
+      'Candidate list with CV, contact details and application source',
+      'Kanban pipeline: Applied, Screening, Interview, Offer, Hired, Rejected',
+      'Automatic CV scoring against job requirements',
+      'Interview scheduling with email invitations and calendar links',
+      'Scorecards with competency ratings and overall hire recommendations',
+      'Branded offer letter PDFs with contract terms and e-signing',
+      'One-step convert to employee for payroll onboarding',
+      'Professional rejection handling with optional email',
     ],
   },
 ];
@@ -281,21 +373,236 @@ function AccordionItem({
   );
 }
 
+const hiringModules = [
+  {
+    icon: Briefcase,
+    title: 'Job Postings',
+    desc: 'Create and manage job adverts for open positions. Add title, department, location, employment type, status, closing date, salary range and full description. Open postings generate a public shareable application link.',
+    bullets: ['Title, department and work location', 'Employment type and status', 'Closing date and salary range', 'Public apply link for LinkedIn, job boards, WhatsApp'],
+  },
+  {
+    icon: FileText,
+    title: 'Customizable Application Forms',
+    desc: 'Choose what every candidate must fill in. Standard fields are included, with optional and custom question types available.',
+    bullets: ['Standard and optional fields', 'Custom questions: short text, long text, dropdown, date, number, URL', 'Mark questions as required'],
+  },
+  {
+    icon: UserPlus,
+    title: 'Candidates',
+    desc: 'The central list of applicants. View CVs, contact details, source and applied role. Add walk-ins or referrals manually.',
+    bullets: ['Full applicant list', 'CV and contact details', 'Manual candidate entry', 'Application source tracking'],
+  },
+  {
+    icon: Columns,
+    title: 'Recruitment Pipeline',
+    desc: 'Drag-and-drop Kanban board with six columns giving a clear visual view of every applicant.',
+    bullets: ['Applied → Screening → Interview', 'Offer → Hired → Rejected', 'Drag-and-drop or dropdown stage changes'],
+  },
+  {
+    icon: Search,
+    title: 'CV Screening',
+    desc: 'The system compares uploaded CVs against job requirements and gives a matching score, so you can quickly spot top applicants.',
+  },
+  {
+    icon: Calendar,
+    title: 'Interview Scheduling',
+    desc: 'Schedule one or more interview stages with date, time, interviewer, attendance type and meeting details. Email invitations with calendar links are sent automatically.',
+    bullets: ['In-person, video call or phone', 'Interviewer from employee list', 'Assessment with questions, duration and test link'],
+  },
+  {
+    icon: Star,
+    title: 'Scorecards & Ratings',
+    desc: 'After each interview, the team rates competencies and gets an overall recommendation with a star ranking.',
+    bullets: ['Technical skills, communication, cultural fit', 'Strong Hire / Hire / Lean Hire', 'No Hire / Strong No Hire', 'Quick star ratings'],
+  },
+  {
+    icon: Mail,
+    title: 'Offers',
+    desc: 'Generate professional, branded offer letter PDFs with salary, start date, terms and signing method.',
+    bullets: ['Custom contract body and attachments', 'Online or in-office signing', 'Statuses: draft, sent, accepted, declined, expired'],
+  },
+  {
+    icon: RefreshCw,
+    title: 'Convert to Employee',
+    desc: 'Accepted candidates convert to employee records in one step, linking directly into payroll with bank, tax and PAYE/UIF details.',
+    bullets: ['ID, department, position, start date', 'Salary, bank and tax details', 'PAYE and UIF registration'],
+  },
+  {
+    icon: X,
+    title: 'Rejection Handling',
+    desc: 'Decline candidates with a reason and an optional polite rejection email, keeping communication professional and consistent.',
+  },
+];
+
 export function Payroll() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
-  const [lightbox, setLightbox] = useState<number | null>(0);
-  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [playingVideo, setPlayingVideo] = useState<typeof PAYROLL_DEMO_VIDEOS[number] | null>(null);
+  const [activeVideoIndex, setActiveVideoIndex] = useState(0);
+  const hiringSliderRef = useRef<HTMLDivElement>(null);
+  const [hiringPaused, setHiringPaused] = useState(false);
+  const moduleSliderRef = useRef<HTMLDivElement>(null);
+  const [modulePaused, setModulePaused] = useState(false);
+  const benefitsSliderRef = useRef<HTMLDivElement>(null);
+  const [benefitsPaused, setBenefitsPaused] = useState(false);
+  const kpiSliderRef = useRef<HTMLDivElement>(null);
+  const [kpiPaused, setKpiPaused] = useState(false);
+  const portalSliderRef = useRef<HTMLDivElement>(null);
+  const [portalPaused, setPortalPaused] = useState(false);
+  const taxSliderRef = useRef<HTMLDivElement>(null);
+  const [taxPaused, setTaxPaused] = useState(false);
+  const reportsSliderRef = useRef<HTMLDivElement>(null);
+  const [reportsPaused, setReportsPaused] = useState(false);
+  const tutorialSliderRef = useRef<HTMLDivElement>(null);
+  const [tutorialPaused, setTutorialPaused] = useState(false);
+  const videoSliderRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!lightboxOpen) return;
+    if (hiringPaused) return;
+    const interval = window.setInterval(() => {
+      const el = hiringSliderRef.current;
+      if (!el) return;
+      const card = el.firstElementChild as HTMLElement | null;
+      const cardWidth = (card?.offsetWidth ?? 340) + 16;
+      if (el.scrollLeft + el.clientWidth >= el.scrollWidth - 10) {
+        el.scrollTo({ left: 0, behavior: 'smooth' });
+      } else {
+        el.scrollBy({ left: cardWidth, behavior: 'smooth' });
+      }
+    }, 4000);
+
+    return () => window.clearInterval(interval);
+  }, [hiringPaused]);
+
+  useEffect(() => {
+    if (modulePaused) return;
+    const interval = window.setInterval(() => {
+      const el = moduleSliderRef.current;
+      if (!el) return;
+      const card = el.firstElementChild as HTMLElement | null;
+      const cardWidth = (card?.offsetWidth ?? 300) + 16;
+      if (el.scrollLeft + el.clientWidth >= el.scrollWidth - 10) {
+        el.scrollTo({ left: 0, behavior: 'smooth' });
+      } else {
+        el.scrollBy({ left: cardWidth, behavior: 'smooth' });
+      }
+    }, 4500);
+
+    return () => window.clearInterval(interval);
+  }, [modulePaused]);
+
+  useEffect(() => {
+    if (benefitsPaused) return;
+    const interval = window.setInterval(() => {
+      const el = benefitsSliderRef.current;
+      if (!el) return;
+      const card = el.firstElementChild as HTMLElement | null;
+      const cardWidth = (card?.offsetWidth ?? 300) + 16;
+      if (el.scrollLeft + el.clientWidth >= el.scrollWidth - 10) {
+        el.scrollTo({ left: 0, behavior: 'smooth' });
+      } else {
+        el.scrollBy({ left: cardWidth, behavior: 'smooth' });
+      }
+    }, 5000);
+
+    return () => window.clearInterval(interval);
+  }, [benefitsPaused]);
+
+  const slideByCard = (ref: React.RefObject<HTMLDivElement | null>, dir: 1 | -1, fallback = 300) => {
+    const el = ref.current;
+    if (!el) return;
+    const card = el.firstElementChild as HTMLElement | null;
+    const step = (card?.offsetWidth ?? fallback) + 16;
+    el.scrollBy({ left: step * dir, behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    if (kpiPaused) return;
+    const interval = window.setInterval(() => {
+      const el = kpiSliderRef.current;
+      if (!el) return;
+      const card = el.firstElementChild as HTMLElement | null;
+      const cardWidth = (card?.offsetWidth ?? 260) + 16;
+      if (el.scrollLeft + el.clientWidth >= el.scrollWidth - 10) {
+        el.scrollTo({ left: 0, behavior: 'smooth' });
+      } else {
+        el.scrollBy({ left: cardWidth, behavior: 'smooth' });
+      }
+    }, 5000);
+    return () => window.clearInterval(interval);
+  }, [kpiPaused]);
+
+  useEffect(() => {
+    if (portalPaused) return;
+    const interval = window.setInterval(() => {
+      const el = portalSliderRef.current;
+      if (!el) return;
+      const card = el.firstElementChild as HTMLElement | null;
+      const cardWidth = (card?.offsetWidth ?? 300) + 16;
+      if (el.scrollLeft + el.clientWidth >= el.scrollWidth - 10) {
+        el.scrollTo({ left: 0, behavior: 'smooth' });
+      } else {
+        el.scrollBy({ left: cardWidth, behavior: 'smooth' });
+      }
+    }, 5000);
+    return () => window.clearInterval(interval);
+  }, [portalPaused]);
+
+  useEffect(() => {
+    if (taxPaused) return;
+    const interval = window.setInterval(() => {
+      const el = taxSliderRef.current;
+      if (!el) return;
+      const card = el.firstElementChild as HTMLElement | null;
+      const cardWidth = (card?.offsetWidth ?? 300) + 16;
+      if (el.scrollLeft + el.clientWidth >= el.scrollWidth - 10) {
+        el.scrollTo({ left: 0, behavior: 'smooth' });
+      } else {
+        el.scrollBy({ left: cardWidth, behavior: 'smooth' });
+      }
+    }, 5000);
+    return () => window.clearInterval(interval);
+  }, [taxPaused]);
+
+  useEffect(() => {
+    if (reportsPaused) return;
+    const interval = window.setInterval(() => {
+      const el = reportsSliderRef.current;
+      if (!el) return;
+      const card = el.firstElementChild as HTMLElement | null;
+      const cardWidth = (card?.offsetWidth ?? 300) + 16;
+      if (el.scrollLeft + el.clientWidth >= el.scrollWidth - 10) {
+        el.scrollTo({ left: 0, behavior: 'smooth' });
+      } else {
+        el.scrollBy({ left: cardWidth, behavior: 'smooth' });
+      }
+    }, 5000);
+    return () => window.clearInterval(interval);
+  }, [reportsPaused]);
+
+  useEffect(() => {
+    if (tutorialPaused) return;
+    const interval = window.setInterval(() => {
+      const el = tutorialSliderRef.current;
+      if (!el) return;
+      const card = el.firstElementChild as HTMLElement | null;
+      const cardWidth = (card?.offsetWidth ?? 200) + 16;
+      if (el.scrollLeft + el.clientWidth >= el.scrollWidth - 10) {
+        el.scrollTo({ left: 0, behavior: 'smooth' });
+      } else {
+        el.scrollBy({ left: cardWidth, behavior: 'smooth' });
+      }
+    }, 5000);
+    return () => window.clearInterval(interval);
+  }, [tutorialPaused]);
+
+  useEffect(() => {
+    if (!playingVideo) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setLightboxOpen(false);
-      if (e.key === 'ArrowLeft' && lightbox !== null) setLightbox(lightbox === 0 ? screenshots.length - 1 : lightbox - 1);
-      if (e.key === 'ArrowRight' && lightbox !== null) setLightbox(lightbox === screenshots.length - 1 ? 0 : lightbox + 1);
+      if (e.key === 'Escape') setPlayingVideo(null);
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [lightboxOpen, lightbox]);
+  }, [playingVideo]);
 
   return (
     <div className="bg-white">
@@ -355,7 +662,7 @@ export function Payroll() {
             {/* Left — staggered images */}
             <div className="relative h-[420px] lg:h-[480px]">
               {/* Construction image — larger, top-left */}
-              <div className="absolute top-0 left-0 w-[65%] rounded-2xl overflow-hidden shadow-xl">
+              <div className="absolute top-0 left-0 w-[65%] rounded-2xl overflow-hidden shadow-xl hover:-translate-y-2 hover:scale-105 hover:shadow-2xl hover:z-30 transition-all duration-500 ease-out">
                 <img
                   src="/Gemini_Generated_Image_c5hbowc5hbowc5hb.png"
                   alt="Construction workers on site"
@@ -363,10 +670,18 @@ export function Payroll() {
                 />
               </div>
               {/* App image — smaller, bottom-right, overlapping */}
-              <div className="absolute bottom-0 right-0 w-[55%] rounded-2xl overflow-hidden shadow-2xl border-4 border-white">
+              <div className="absolute bottom-0 right-0 w-[55%] rounded-2xl overflow-hidden shadow-2xl border-4 border-white hover:-translate-y-2 hover:scale-105 hover:z-30 transition-all duration-500 ease-out">
                 <img
                   src="/Gemini_Generated_Image_54wy9954wy9954wy.png"
                   alt="Employee clocking in on the Rigel app"
+                  className="w-full h-[220px] object-cover"
+                />
+              </div>
+              {/* Hiring image — bottom-left, completing the collage */}
+              <div className="absolute bottom-0 left-0 w-[45%] rounded-2xl overflow-hidden shadow-2xl border-4 border-white z-10 hover:-translate-y-2 hover:scale-105 hover:z-30 transition-all duration-500 ease-out">
+                <img
+                  src="/7f312e71b7b87b5da8826c9484050d98.jpg"
+                  alt="Hiring and onboarding with Rigel"
                   className="w-full h-[220px] object-cover"
                 />
               </div>
@@ -429,160 +744,181 @@ export function Payroll() {
             <p className="text-sm text-slate-500 mt-3 max-w-xl mx-auto leading-6">
               From salary runs to fringe benefits, leave and timesheets — all in one integrated module.
             </p>
+            <div className="flex items-center justify-center gap-3 mt-5">
+              <button
+                type="button"
+                onClick={() => {
+                  const el = moduleSliderRef.current;
+                  if (!el) return;
+                  const card = el.firstElementChild as HTMLElement | null;
+                  const step = (card?.offsetWidth ?? 300) + 16;
+                  el.scrollBy({ left: -step, behavior: 'smooth' });
+                }}
+                className="h-10 w-10 rounded-full border border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:text-emerald-600 flex items-center justify-center transition-colors"
+                aria-label="Previous module"
+              >
+                <ChevronLeft className="h-5 w-5" />
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  const el = moduleSliderRef.current;
+                  if (!el) return;
+                  const card = el.firstElementChild as HTMLElement | null;
+                  const step = (card?.offsetWidth ?? 300) + 16;
+                  el.scrollBy({ left: step, behavior: 'smooth' });
+                }}
+                className="h-10 w-10 rounded-full border border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:text-emerald-600 flex items-center justify-center transition-colors"
+                aria-label="Next module"
+              >
+                <ChevronRight className="h-5 w-5" />
+              </button>
+            </div>
           </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div
+            ref={moduleSliderRef}
+            onMouseEnter={() => setModulePaused(true)}
+            onMouseLeave={() => setModulePaused(false)}
+            className="flex gap-4 overflow-x-auto no-scrollbar snap-x snap-mandatory pb-4 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8"
+          >
             {moduleTabs.map((p, i) => (
-              <div key={p.title} className="card-lift bg-white rounded-2xl border border-slate-200 p-6 relative overflow-hidden">
-                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#0F9D6C] to-[#1BA37B]" />
-                <div className="h-12 w-12 rounded-full icon-gradient text-emerald-600 flex items-center justify-center mb-4">
-                  <p.icon className="h-5 w-5" />
+              <div key={p.title} className="snap-start shrink-0 w-[260px] sm:w-[300px] card-lift bg-white rounded-2xl border border-slate-200 overflow-hidden">
+                <CardAvatar icon={p.icon} index={i} />
+                <div className="p-5">
+                  <h3 className="text-sm font-bold text-slate-900 mb-2" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{p.title}</h3>
+                  <p className="text-xs text-slate-500 leading-5">{p.desc}</p>
                 </div>
-                <span className="text-[10px] font-mono text-slate-300 absolute top-4 right-4">{String(i + 1).padStart(2, '0')}</span>
-                <h3 className="text-sm font-bold text-slate-900 mb-2" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{p.title}</h3>
-                <p className="text-xs text-slate-500 leading-5">{p.desc}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Screenshots carousel */}
+      {/* Payroll videos */}
       <section className="py-16 lg:py-20 bg-slate-50">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10">
             <p className="text-sm font-semibold text-emerald-600 mb-2 tracking-wide">See it in action</p>
             <h2 className="text-2xl lg:text-3xl font-bold text-slate-900 tracking-tight" style={{ fontFamily: "'Inter Tight', sans-serif" }}>
-              Payroll management, screen by screen
+              Payroll management, in action
             </h2>
             <p className="text-sm text-slate-500 mt-3 max-w-xl mx-auto leading-6">
-              From pay runs to history, dashboards and branded payslips — explore the actual Rigel Business payroll interface.
+              Click a thumbnail to open the YouTube walkthrough in a dialog.
             </p>
           </div>
-
-          <div className="grid lg:grid-cols-[1fr_280px] gap-4 lg:gap-6">
-            <div className="relative group">
-              <div
-                className="relative overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-lg cursor-pointer"
-                onClick={() => lightbox !== null && setLightboxOpen(true)}
+          <div className="relative">
+            <div className="absolute -top-14 right-0 flex items-center gap-3">
+              <span className="text-sm font-mono text-slate-500">
+                {String(activeVideoIndex + 1).padStart(2, '0')} / {String(PAYROLL_DEMO_VIDEOS.length).padStart(2, '0')}
+              </span>
+              <button
+                onClick={() => {
+                  const el = videoSliderRef.current;
+                  if (!el) return;
+                  const card = el.firstElementChild as HTMLElement | null;
+                  if (!card) return;
+                  const i = Math.max(0, activeVideoIndex - 1);
+                  const target = i * (card.offsetWidth + 16) + card.offsetWidth / 2 - el.clientWidth / 2;
+                  el.scrollTo({ left: Math.max(0, target), behavior: 'smooth' });
+                }}
+                className="h-10 w-10 rounded-full border border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:text-emerald-600 flex items-center justify-center transition-colors"
               >
-                <div className="aspect-[16/10] overflow-hidden bg-slate-100">
-                  {lightbox !== null && (
+                <ChevronLeft className="h-5 w-5" />
+              </button>
+              <button
+                onClick={() => {
+                  const el = videoSliderRef.current;
+                  if (!el) return;
+                  const card = el.firstElementChild as HTMLElement | null;
+                  if (!card) return;
+                  const i = Math.min(PAYROLL_DEMO_VIDEOS.length - 1, activeVideoIndex + 1);
+                  const target = i * (card.offsetWidth + 16) + card.offsetWidth / 2 - el.clientWidth / 2;
+                  el.scrollTo({ left: Math.max(0, target), behavior: 'smooth' });
+                }}
+                className="h-10 w-10 rounded-full border border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:text-emerald-600 flex items-center justify-center transition-colors"
+              >
+                <ChevronRight className="h-5 w-5" />
+              </button>
+            </div>
+            <div
+              ref={videoSliderRef}
+              onScroll={() => {
+                const el = videoSliderRef.current;
+                if (!el) return;
+                const card = el.firstElementChild as HTMLElement | null;
+                if (!card) return;
+                const center = el.scrollLeft + el.clientWidth / 2;
+                const index = Math.round((center - card.offsetWidth / 2) / (card.offsetWidth + 16));
+                setActiveVideoIndex(Math.max(0, Math.min(index, PAYROLL_DEMO_VIDEOS.length - 1)));
+              }}
+              className="flex gap-4 overflow-x-auto no-scrollbar snap-x snap-mandatory py-4 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8"
+            >
+              {PAYROLL_DEMO_VIDEOS.map((video, i) => (
+                <button
+                  key={video.url}
+                  onClick={() => setPlayingVideo(video)}
+                  className={`group text-left shrink-0 snap-center w-[85%] sm:w-[60%] lg:w-[45%] bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-500 ease-out focus:outline-none focus:ring-2 focus:ring-emerald-500 ${i === activeVideoIndex ? 'ring-2 ring-emerald-500 scale-[1.07] shadow-2xl z-10' : 'opacity-70 scale-95 hover:opacity-100 hover:scale-100 hover:shadow-xl'}`}
+                >
+                  <div className="relative aspect-video">
                     <img
-                      src={screenshots[lightbox].src}
-                      alt={screenshots[lightbox].title}
+                      src={getYouTubeThumb(video.url)}
+                      alt={video.title}
                       className="h-full w-full object-cover"
                     />
-                  )}
-                </div>
-                <div className="absolute top-3 left-3 h-9 w-9 rounded-full bg-white/90 backdrop-blur-sm border border-slate-200 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                  <Maximize2 className="h-4 w-4 text-slate-700" />
-                </div>
-                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#0B1220]/85 via-[#0B1220]/40 to-transparent p-6 lg:p-8">
-                  <div className="flex items-end justify-between gap-4">
-                    <div>
-                      <p className="text-xs font-semibold text-emerald-400 uppercase tracking-wide mb-1.5">
-                        {lightbox !== null ? String(lightbox + 1).padStart(2, '0') : '01'} / {String(screenshots.length).padStart(2, '0')}
-                      </p>
-                      <h3 className="text-lg lg:text-xl font-bold text-white mb-1" style={{ fontFamily: "'Inter Tight', sans-serif" }}>
-                        {lightbox !== null ? screenshots[lightbox].title : ''}
-                      </h3>
-                      <p className="text-sm text-slate-300 leading-6 max-w-md hidden sm:block">
-                        {lightbox !== null ? screenshots[lightbox].desc : ''}
-                      </p>
-                    </div>
-                    <div className="flex gap-2 shrink-0">
-                      <button
-                        onClick={(e) => { e.stopPropagation(); setLightbox(lightbox === 0 ? screenshots.length - 1 : lightbox! - 1); }}
-                        className="h-10 w-10 rounded-full bg-white/15 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-white/25 transition-colors"
-                      >
-                        <ArrowRight className="h-4 w-4 rotate-180" />
-                      </button>
-                      <button
-                        onClick={(e) => { e.stopPropagation(); setLightbox(lightbox === screenshots.length - 1 ? 0 : lightbox! + 1); }}
-                        className="h-10 w-10 rounded-full bg-white/15 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-white/25 transition-colors"
-                      >
-                        <ArrowRight className="h-4 w-4" />
-                      </button>
+                    <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors flex items-center justify-center">
+                      <div className="h-16 w-16 rounded-full bg-white/95 shadow-2xl flex items-center justify-center group-hover:scale-105 transition-transform">
+                        <Play className="h-7 w-7 text-[#0F9D6C] ml-1" fill="#0F9D6C" />
+                      </div>
                     </div>
                   </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex lg:flex-col gap-2 lg:gap-2.5 overflow-x-auto lg:overflow-y-auto lg:max-h-[460px] pb-2 lg:pb-0">
-              {screenshots.map((shot, i) => (
-                <button
-                  key={shot.title}
-                  onClick={() => setLightbox(i)}
-                  className={`relative shrink-0 w-32 lg:w-full overflow-hidden rounded-xl border-2 transition-all duration-200 text-left ${
-                    lightbox === i ? 'border-[#0F9D6C] shadow-md' : 'border-slate-200 hover:border-emerald-300 opacity-70 hover:opacity-100'
-                  }`}
-                >
-                  <div className="aspect-[4/3] overflow-hidden bg-slate-100">
-                    <img src={shot.src} alt={shot.title} className="h-full w-full object-cover" />
+                  <div className="p-4">
+                    <h3 className="text-lg font-bold text-slate-900" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{video.title}</h3>
+                    {video.desc && <p className="text-sm text-slate-500 mt-1">{video.desc}</p>}
                   </div>
-                  <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/70 to-transparent px-2 py-1.5">
-                    <p className="text-[10px] font-semibold text-white truncate">{shot.title}</p>
-                  </div>
-                  {lightbox === i && (
-                    <div className="absolute top-1.5 right-1.5 h-5 w-5 rounded-full bg-[#0F9D6C] flex items-center justify-center">
-                      <CheckCircle2 className="h-3 w-3 text-white" />
-                    </div>
-                  )}
                 </button>
+              ))}
+            </div>
+            <div className="flex items-center justify-center gap-2 mt-4">
+              {PAYROLL_DEMO_VIDEOS.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => {
+                    const el = videoSliderRef.current;
+                    if (!el) return;
+                    const card = el.firstElementChild as HTMLElement | null;
+                    if (!card) return;
+                    const target = i * (card.offsetWidth + 16) + card.offsetWidth / 2 - el.clientWidth / 2;
+                    el.scrollTo({ left: Math.max(0, target), behavior: 'smooth' });
+                  }}
+                  className={`h-2 rounded-full transition-all duration-300 ${i === activeVideoIndex ? 'w-8 bg-[#0F9D6C]' : 'w-2 bg-slate-300 hover:bg-slate-400'}`}
+                />
               ))}
             </div>
           </div>
         </div>
       </section>
 
-      {/* Lightbox */}
-      {lightboxOpen && lightbox !== null && (
+      {/* Payroll video dialog */}
+      {playingVideo && (
         <div
-          className="fixed inset-0 z-[100] bg-[#0B1220]/95 backdrop-blur-md flex items-center justify-center p-4"
-          onClick={() => setLightboxOpen(false)}
+          className="fixed inset-0 z-[100] bg-[#0B1220]/90 backdrop-blur-md flex items-center justify-center p-4"
+          onClick={() => setPlayingVideo(null)}
         >
-          <div className="relative max-w-6xl w-full bg-white rounded-2xl overflow-hidden shadow-2xl" onClick={(e) => e.stopPropagation()}>
-            <button onClick={() => setLightboxOpen(false)} className="absolute top-3 right-3 z-10 h-10 w-10 rounded-full bg-white/90 backdrop-blur-sm border border-slate-200 flex items-center justify-center hover:bg-white transition-colors">
-              <X className="h-5 w-5 text-slate-700" />
+          <div className="relative w-full max-w-4xl" onClick={(e) => e.stopPropagation()}>
+            <button
+              onClick={() => setPlayingVideo(null)}
+              className="absolute -top-10 right-0 h-8 w-8 rounded-full bg-white/10 text-white flex items-center justify-center hover:bg-white/20 transition-colors"
+            >
+              <X className="h-5 w-5" />
             </button>
-            <button onClick={() => setLightbox(lightbox === 0 ? screenshots.length - 1 : lightbox - 1)} className="absolute left-3 top-1/2 -translate-y-1/2 z-10 h-12 w-12 rounded-full bg-white/90 backdrop-blur-sm border border-slate-200 flex items-center justify-center hover:bg-white transition-colors">
-              <ArrowRight className="h-5 w-5 text-slate-700 rotate-180" />
-            </button>
-            <button onClick={() => setLightbox(lightbox === screenshots.length - 1 ? 0 : lightbox + 1)} className="absolute right-3 top-1/2 -translate-y-1/2 z-10 h-12 w-12 rounded-full bg-white/90 backdrop-blur-sm border border-slate-200 flex items-center justify-center hover:bg-white transition-colors">
-              <ArrowRight className="h-5 w-5 text-slate-700" />
-            </button>
-            <div className="flex flex-col lg:flex-row">
-              <div className="flex-1 bg-slate-100 flex items-center justify-center min-h-[300px] lg:min-h-[600px] p-4">
-                <img src={screenshots[lightbox].src} alt={screenshots[lightbox].title} className="max-h-[280px] lg:max-h-[560px] w-full object-contain" />
-              </div>
-              <div className="lg:w-80 p-6 lg:p-8 flex flex-col justify-center border-t lg:border-t-0 lg:border-l border-slate-200">
-                <div className="flex items-center gap-2 mb-4">
-                  <span className="text-xs font-bold text-emerald-600 uppercase tracking-wide">{String(lightbox + 1).padStart(2, '0')}</span>
-                  <span className="text-xs text-slate-300">/ {String(screenshots.length).padStart(2, '0')}</span>
-                  <div className="flex-1 h-px bg-slate-100" />
-                </div>
-                <h3 className="text-xl font-bold text-slate-900 mb-3" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{screenshots[lightbox].title}</h3>
-                <p className="text-sm text-slate-500 leading-7 mb-8">{screenshots[lightbox].desc}</p>
-                <div className="flex flex-wrap gap-1.5 mb-6">
-                  {screenshots.map((_, i) => (
-                    <button key={i} onClick={() => setLightbox(i)} className={`h-1.5 rounded-full transition-all duration-300 ${lightbox === i ? 'w-6 bg-[#0F9D6C]' : 'w-1.5 bg-slate-200 hover:bg-slate-300'}`} />
-                  ))}
-                </div>
-                <div className="flex gap-2">
-                  <button onClick={() => setLightbox(lightbox === 0 ? screenshots.length - 1 : lightbox - 1)} className="flex-1 h-11 rounded-lg border border-slate-200 hover:border-slate-300 text-sm font-semibold text-slate-600 flex items-center justify-center gap-1.5 transition-colors">
-                    <ArrowRight className="h-3.5 w-3.5 rotate-180" /> Prev
-                  </button>
-                  <button onClick={() => setLightbox(lightbox === screenshots.length - 1 ? 0 : lightbox + 1)} className="flex-1 h-11 rounded-lg bg-[#0F9D6C] hover:bg-[#0B7A52] text-sm font-semibold text-white flex items-center justify-center gap-1.5 transition-colors">
-                    Next <ArrowRight className="h-3.5 w-3.5" />
-                  </button>
-                </div>
-              </div>
+            <PayrollVideoPlayer src={playingVideo.url} />
+            <div className="mt-4 text-center">
+              <h3 className="text-lg font-bold text-white" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{playingVideo.title}</h3>
+              <p className="text-sm text-slate-300 mt-1">{playingVideo.desc}</p>
             </div>
           </div>
         </div>
       )}
-
       {/* Accordion */}
       <section className="py-16 lg:py-20 bg-slate-50">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -608,15 +944,50 @@ export function Payroll() {
             <h2 className="text-2xl lg:text-3xl font-bold text-slate-900 tracking-tight" style={{ fontFamily: "'Inter Tight', sans-serif" }}>
               Payroll that saves time and keeps you compliant
             </h2>
+            <div className="flex items-center justify-center gap-3 mt-5">
+              <button
+                type="button"
+                onClick={() => {
+                  const el = benefitsSliderRef.current;
+                  if (!el) return;
+                  const card = el.firstElementChild as HTMLElement | null;
+                  const step = (card?.offsetWidth ?? 300) + 16;
+                  el.scrollBy({ left: -step, behavior: 'smooth' });
+                }}
+                className="h-10 w-10 rounded-full border border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:text-emerald-600 flex items-center justify-center transition-colors"
+                aria-label="Previous benefit"
+              >
+                <ChevronLeft className="h-5 w-5" />
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  const el = benefitsSliderRef.current;
+                  if (!el) return;
+                  const card = el.firstElementChild as HTMLElement | null;
+                  const step = (card?.offsetWidth ?? 300) + 16;
+                  el.scrollBy({ left: step, behavior: 'smooth' });
+                }}
+                className="h-10 w-10 rounded-full border border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:text-emerald-600 flex items-center justify-center transition-colors"
+                aria-label="Next benefit"
+              >
+                <ChevronRight className="h-5 w-5" />
+              </button>
+            </div>
           </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div
+            ref={benefitsSliderRef}
+            onMouseEnter={() => setBenefitsPaused(true)}
+            onMouseLeave={() => setBenefitsPaused(false)}
+            className="flex gap-4 overflow-x-auto no-scrollbar snap-x snap-mandatory pb-4 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8"
+          >
             {benefits.map((b) => (
-              <div key={b.title} className="card-lift bg-white rounded-xl border border-slate-200 p-5">
-                <div className="h-10 w-10 rounded-full icon-gradient text-emerald-600 flex items-center justify-center mb-3">
-                  <b.icon className="h-5 w-5" />
+              <div key={b.title} className="snap-start shrink-0 w-[260px] sm:w-[300px] card-lift bg-white rounded-xl border border-slate-200 overflow-hidden">
+                <CardAvatar icon={b.icon} index={benefits.indexOf(b)} />
+                <div className="p-5">
+                  <h3 className="text-sm font-bold text-slate-900 mb-1.5" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{b.title}</h3>
+                  <p className="text-xs text-slate-500 leading-5">{b.desc}</p>
                 </div>
-                <h3 className="text-sm font-bold text-slate-900 mb-1.5" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{b.title}</h3>
-                <p className="text-xs text-slate-500 leading-5">{b.desc}</p>
               </div>
             ))}
           </div>
@@ -632,20 +1003,27 @@ export function Payroll() {
               Payroll costs by department
             </h2>
           </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          <div className="flex items-center justify-center gap-3 mb-6">
+            <button type="button" onClick={() => slideByCard(kpiSliderRef, -1, 260)} className="h-9 w-9 rounded-full border border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:text-emerald-600 flex items-center justify-center transition-colors" aria-label="Previous">
+              <ChevronLeft className="h-5 w-5" />
+            </button>
+            <button type="button" onClick={() => slideByCard(kpiSliderRef, 1, 260)} className="h-9 w-9 rounded-full border border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:text-emerald-600 flex items-center justify-center transition-colors" aria-label="Next">
+              <ChevronRight className="h-5 w-5" />
+            </button>
+          </div>
+          <div ref={kpiSliderRef} onMouseEnter={() => setKpiPaused(true)} onMouseLeave={() => setKpiPaused(false)} className="flex gap-4 overflow-x-auto no-scrollbar snap-x snap-mandatory pb-4 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 mb-8">
             {[
               { label: 'Total Gross', value: 'R 0', icon: TrendingUp, color: 'text-emerald-600' },
               { label: 'Total Net', value: 'R 0', icon: Wallet, color: 'text-blue-600' },
               { label: 'Employer Cost', value: 'R 0', icon: Building2, color: 'text-amber-600' },
               { label: 'Avg Salary', value: 'R 0', icon: BarChart3, color: 'text-purple-600' },
             ].map((kpi) => (
-              <div key={kpi.label} className="card-lift bg-white rounded-2xl border border-slate-200 p-5">
-                <div className="flex items-center justify-between mb-3">
-                  <kpi.icon className={`h-5 w-5 ${kpi.color}`} />
-                  <span className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">ZAR</span>
+              <div key={kpi.label} className="snap-start shrink-0 w-[260px] card-lift bg-white rounded-2xl border border-slate-200 overflow-hidden">
+                <CardAvatar icon={kpi.icon} index={['Total Gross','Total Net','Employer Cost','Avg Salary'].indexOf(kpi.label)} label="ZAR" />
+                <div className="p-5">
+                  <p className="text-2xl font-bold text-slate-900 mb-1" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{kpi.value}</p>
+                  <p className="text-xs text-slate-500">{kpi.label}</p>
                 </div>
-                <p className="text-2xl font-bold text-slate-900 mb-1" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{kpi.value}</p>
-                <p className="text-xs text-slate-500">{kpi.label}</p>
               </div>
             ))}
           </div>
@@ -703,18 +1081,24 @@ export function Payroll() {
               Self-service portal for every employee
             </h2>
           </div>
-          <div className="grid sm:grid-cols-2 gap-4">
+          <div className="flex items-center justify-center gap-3 mb-6">
+            <button type="button" onClick={() => slideByCard(portalSliderRef, -1, 300)} className="h-9 w-9 rounded-full border border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:text-emerald-600 flex items-center justify-center transition-colors" aria-label="Previous">
+              <ChevronLeft className="h-5 w-5" />
+            </button>
+            <button type="button" onClick={() => slideByCard(portalSliderRef, 1, 300)} className="h-9 w-9 rounded-full border border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:text-emerald-600 flex items-center justify-center transition-colors" aria-label="Next">
+              <ChevronRight className="h-5 w-5" />
+            </button>
+          </div>
+          <div ref={portalSliderRef} onMouseEnter={() => setPortalPaused(true)} onMouseLeave={() => setPortalPaused(false)} className="flex gap-4 overflow-x-auto no-scrollbar snap-x snap-mandatory pb-4 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
             {[
               { icon: Users, title: 'One-Click Portal Creation', desc: 'Admin creates portal account from employee dropdown — sets email and temporary password, system creates auth user automatically.' },
               { icon: LockKeyhole, title: 'Portal Access Control', desc: 'Admin can block/unblock employees, remove portal access, and view portal link status at any time.' },
               { icon: FileText, title: 'Payslip Notifications', desc: 'When a pay run is paid, portal notifications are automatically created for each employee in the run.' },
               { icon: Calendar, title: 'Leave Workflow', desc: 'Employees apply for leave → admin approves/rejects → employee sees status update in portal instantly.' },
             ].map((item) => (
-              <div key={item.title} className="card-lift bg-white rounded-2xl border border-slate-200 p-6 flex items-start gap-4">
-                <div className="h-10 w-10 rounded-full icon-gradient text-emerald-600 flex items-center justify-center shrink-0">
-                  <item.icon className="h-5 w-5" />
-                </div>
-                <div>
+              <div key={item.title} className="snap-start shrink-0 w-[280px] sm:w-[340px] card-lift bg-white rounded-2xl border border-slate-200 overflow-hidden">
+                <CardAvatar icon={item.icon} index={['One-Click Portal Creation','Portal Access Control','Payslip Notifications','Leave Workflow'].indexOf(item.title)} />
+                <div className="p-5">
                   <h3 className="text-sm font-bold text-slate-900 mb-1.5" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{item.title}</h3>
                   <p className="text-xs text-slate-500 leading-5">{item.desc}</p>
                 </div>
@@ -733,7 +1117,15 @@ export function Payroll() {
               Admin-configurable, database-driven
             </h2>
           </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="flex items-center justify-center gap-3 mb-6">
+            <button type="button" onClick={() => slideByCard(taxSliderRef, -1, 300)} className="h-9 w-9 rounded-full border border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:text-emerald-600 flex items-center justify-center transition-colors" aria-label="Previous">
+              <ChevronLeft className="h-5 w-5" />
+            </button>
+            <button type="button" onClick={() => slideByCard(taxSliderRef, 1, 300)} className="h-9 w-9 rounded-full border border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:text-emerald-600 flex items-center justify-center transition-colors" aria-label="Next">
+              <ChevronRight className="h-5 w-5" />
+            </button>
+          </div>
+          <div ref={taxSliderRef} onMouseEnter={() => setTaxPaused(true)} onMouseLeave={() => setTaxPaused(false)} className="flex gap-4 overflow-x-auto no-scrollbar snap-x snap-mandatory pb-4 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
             {[
               { icon: Calculator, title: 'PAYE Brackets', desc: 'View and configure tax brackets per tax year — lower limit, upper limit, rate, base amount.' },
               { icon: ShieldCheck, title: 'Rebates', desc: 'Primary, secondary (65+) and tertiary (75+) rebate amounts per tax year.' },
@@ -742,11 +1134,9 @@ export function Payroll() {
               { icon: AlertTriangle, title: 'SDL Exemption', desc: 'Company-level toggle to exempt from SDL if annual payroll is R500,000 or less.' },
               { icon: RefreshCw, title: 'Update Without Code', desc: 'All values are database-driven — update SARS rates when new tax year tables are published.' },
             ].map((item) => (
-              <div key={item.title} className="card-lift bg-white rounded-xl border border-slate-200 p-5 flex items-start gap-3">
-                <div className="h-9 w-9 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
-                  <item.icon className="h-4 w-4" />
-                </div>
-                <div>
+              <div key={item.title} className="snap-start shrink-0 w-[260px] sm:w-[300px] card-lift bg-white rounded-xl border border-slate-200 overflow-hidden">
+                <CardAvatar icon={item.icon} index={['PAYE Brackets','Rebates','Medical Tax Credits','Statutory Rates','SDL Exemption','Update Without Code'].indexOf(item.title)} />
+                <div className="p-4">
                   <h3 className="text-xs font-bold text-slate-900 mb-0.5" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{item.title}</h3>
                   <p className="text-[11px] text-slate-500 leading-4">{item.desc}</p>
                 </div>
@@ -765,13 +1155,19 @@ export function Payroll() {
               SARS-compliant reports from pay run data
             </h2>
           </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          <div className="flex items-center justify-center gap-3 mb-6">
+            <button type="button" onClick={() => slideByCard(reportsSliderRef, -1, 300)} className="h-9 w-9 rounded-full border border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:text-emerald-600 flex items-center justify-center transition-colors" aria-label="Previous">
+              <ChevronLeft className="h-5 w-5" />
+            </button>
+            <button type="button" onClick={() => slideByCard(reportsSliderRef, 1, 300)} className="h-9 w-9 rounded-full border border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:text-emerald-600 flex items-center justify-center transition-colors" aria-label="Next">
+              <ChevronRight className="h-5 w-5" />
+            </button>
+          </div>
+          <div ref={reportsSliderRef} onMouseEnter={() => setReportsPaused(true)} onMouseLeave={() => setReportsPaused(false)} className="flex gap-3 overflow-x-auto no-scrollbar snap-x snap-mandatory pb-4 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
             {reports.map((r) => (
-              <div key={r.title} className="card-lift bg-white rounded-xl border border-slate-200 p-4 flex items-start gap-3">
-                <div className="h-9 w-9 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
-                  <r.icon className="h-4 w-4" />
-                </div>
-                <div>
+              <div key={r.title} className="snap-start shrink-0 w-[260px] sm:w-[300px] card-lift bg-white rounded-xl border border-slate-200 overflow-hidden">
+                <CardAvatar icon={r.icon} index={reports.indexOf(r)} />
+                <div className="p-4">
                   <h3 className="text-xs font-bold text-slate-900 mb-0.5" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{r.title}</h3>
                   <p className="text-[11px] text-slate-500 leading-4">{r.desc}</p>
                 </div>
@@ -832,15 +1228,107 @@ export function Payroll() {
               Walks users through the full payroll workflow — from setup to reports.
             </p>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+          <div className="flex items-center justify-center gap-3 mb-6">
+            <button type="button" onClick={() => slideByCard(tutorialSliderRef, -1, 200)} className="h-9 w-9 rounded-full border border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:text-emerald-600 flex items-center justify-center transition-colors" aria-label="Previous">
+              <ChevronLeft className="h-5 w-5" />
+            </button>
+            <button type="button" onClick={() => slideByCard(tutorialSliderRef, 1, 200)} className="h-9 w-9 rounded-full border border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:text-emerald-600 flex items-center justify-center transition-colors" aria-label="Next">
+              <ChevronRight className="h-5 w-5" />
+            </button>
+          </div>
+          <div ref={tutorialSliderRef} onMouseEnter={() => setTutorialPaused(true)} onMouseLeave={() => setTutorialPaused(false)} className="flex gap-3 overflow-x-auto no-scrollbar snap-x snap-mandatory pb-4 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
             {tutorialSteps.map((step) => (
-              <div key={step.num} className="bg-white rounded-xl border border-slate-200 p-4 relative overflow-hidden group hover:border-emerald-300 transition-colors">
-                <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-[#0F9D6C] to-[#1BA37B] opacity-0 group-hover:opacity-100 transition-opacity" />
-                <span className="text-xs font-mono text-emerald-600 font-bold">{step.num}</span>
-                <h3 className="text-sm font-bold text-slate-900 mt-1 mb-0.5" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{step.title}</h3>
-                <p className="text-[11px] text-slate-500 leading-4">{step.desc}</p>
+              <div key={step.num} className="snap-start shrink-0 w-[160px] sm:w-[200px] bg-white rounded-xl border border-slate-200 overflow-hidden group hover:border-emerald-300 transition-colors">
+                <CardAvatar icon={GraduationCap} index={tutorialSteps.indexOf(step)} label={step.num} />
+                <div className="p-4 relative">
+                  <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-[#0F9D6C] to-[#1BA37B] opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <h3 className="text-sm font-bold text-slate-900 mt-1 mb-0.5" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{step.title}</h3>
+                  <p className="text-[11px] text-slate-500 leading-4">{step.desc}</p>
+                </div>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Hiring Module */}
+      <section className="py-16 lg:py-20 bg-white border-t border-slate-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-10">
+            <p className="text-sm font-semibold text-emerald-600 mb-2 tracking-wide">Recruitment</p>
+            <h2 className="text-2xl lg:text-3xl font-bold text-slate-900 tracking-tight" style={{ fontFamily: "'Inter Tight', sans-serif" }}>
+              Hiring module — from job advert to offer
+            </h2>
+            <p className="text-slate-600 text-base mt-3 max-w-2xl mx-auto leading-7">
+              Manage the full recruitment process inside Rigel, alongside payroll and employee records. No separate HR system needed.
+            </p>
+            <div className="flex items-center justify-center gap-3 mt-5">
+              <button
+                type="button"
+                onClick={() => {
+                  const el = hiringSliderRef.current;
+                  if (!el) return;
+                  const card = el.firstElementChild as HTMLElement | null;
+                  const step = (card?.offsetWidth ?? 340) + 16;
+                  el.scrollBy({ left: -step, behavior: 'smooth' });
+                }}
+                className="h-10 w-10 rounded-full border border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:text-emerald-600 flex items-center justify-center transition-colors"
+                aria-label="Previous hiring feature"
+              >
+                <ChevronLeft className="h-5 w-5" />
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  const el = hiringSliderRef.current;
+                  if (!el) return;
+                  const card = el.firstElementChild as HTMLElement | null;
+                  const step = (card?.offsetWidth ?? 340) + 16;
+                  el.scrollBy({ left: step, behavior: 'smooth' });
+                }}
+                className="h-10 w-10 rounded-full border border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:text-emerald-600 flex items-center justify-center transition-colors"
+                aria-label="Next hiring feature"
+              >
+                <ChevronRight className="h-5 w-5" />
+              </button>
+            </div>
+          </div>
+          <div
+            ref={hiringSliderRef}
+            onMouseEnter={() => setHiringPaused(true)}
+            onMouseLeave={() => setHiringPaused(false)}
+            className="flex gap-4 overflow-x-auto no-scrollbar snap-x snap-mandatory pb-4 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8"
+          >
+            {hiringModules.map((m) => (
+              <div key={m.title} className="snap-start shrink-0 w-[280px] sm:w-[340px] card-lift bg-white rounded-xl border border-slate-200 overflow-hidden">
+                <CardAvatar icon={m.icon} index={hiringModules.indexOf(m)} />
+                <div className="p-5">
+                  <h3 className="text-sm font-bold text-slate-900 mb-2" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{m.title}</h3>
+                  <p className="text-xs text-slate-600 leading-5 mb-3">{m.desc}</p>
+                {m.bullets && (
+                  <ul className="space-y-1.5">
+                    {m.bullets.map(b => (
+                      <li key={b} className="flex items-start gap-2 text-[11px] text-slate-500 leading-4">
+                        <CheckCircle2 className="h-3 w-3 text-emerald-500 shrink-0 mt-0.5" />
+                        {b}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="mt-10 max-w-4xl mx-auto bg-slate-50 rounded-2xl border border-slate-200 p-6 flex flex-col sm:flex-row items-start gap-4">
+            <div className="h-10 w-10 rounded-full icon-gradient text-emerald-600 flex items-center justify-center shrink-0">
+              <TrendingUp className="h-5 w-5" />
+            </div>
+            <div>
+              <h3 className="text-sm font-bold text-slate-900 mb-2" style={{ fontFamily: "'Inter Tight', sans-serif" }}>What makes it useful</h3>
+              <p className="text-xs text-slate-600 leading-5">
+                All recruiting data stays in one place alongside payroll, employee records, and company data. Public application links let candidates apply without logging in, while scorecards make hiring decisions more objective and accepted candidates convert directly to employees.
+              </p>
+            </div>
           </div>
         </div>
       </section>

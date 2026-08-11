@@ -4,7 +4,7 @@ import {
   Menu, X, LogIn, Search,
   BarChart3, Landmark, PieChart, Wallet,
   ShoppingCart, Package, Users, ChevronDown,
-  ArrowRight, LayoutGrid
+  ArrowRight, LayoutGrid, BookOpen, Building2, Lightbulb, Newspaper,
 } from 'lucide-react';
 
 const APP_URL = 'https://biz-flow-sa-delta.vercel.app';
@@ -14,8 +14,11 @@ export function Navbar() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(false);
+  const [blogOpen, setBlogOpen] = useState(false);
   const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
+  const [mobileBlogOpen, setMobileBlogOpen] = useState(false);
   const servicesTimeout = useRef<number | null>(null);
+  const blogTimeout = useRef<number | null>(null);
   const { pathname } = useLocation();
 
   useEffect(() => {
@@ -29,6 +32,8 @@ export function Navbar() {
     { to: '/reporting', label: 'Accounting & Reporting', icon: BarChart3, desc: 'Trial balance, general ledger and full AFS.' },
     { to: '/tax', label: 'VAT Management', icon: Landmark, desc: 'VAT periods, returns and SARS-ready reports.' },
     { to: '/investments', label: 'Investments', icon: PieChart, desc: 'Fixed deposits, shares and month-end processing.' },
+    { to: '/loans', label: 'Loans', icon: Landmark, desc: 'Loan lifecycle, amortisation and IFRS split.' },
+    { to: '/assets', label: 'Fixed Assets', icon: Building2, desc: 'Depreciation, disposals, impairment and NRV.' },
     { to: '/banking', label: 'Banking', icon: Landmark, desc: 'Bank accounts, reconciliation and cash flow.' },
     { to: '/sales', label: 'Sales & Invoicing', icon: Wallet, desc: 'Quotes, orders, invoices and magic links.' },
     { to: '/purchase', label: 'Purchase & Payables', icon: ShoppingCart, desc: 'POs, supplier invoices and receipts.' },
@@ -36,11 +41,16 @@ export function Navbar() {
     { to: '/payroll', label: 'Payroll & HR', icon: Users, desc: 'Compliant payroll, payslips and SARS.' },
   ];
 
+  const blogCategories = [
+    { to: '/blog/small-business', label: 'Small Business', icon: Building2, desc: 'Tips and strategies for growing SA businesses.' },
+    { to: '/blog/guide', label: 'Guide', icon: Lightbulb, desc: 'Step-by-step guides on accounting, VAT and payroll.' },
+    { to: '/blog/company', label: 'Company', icon: Newspaper, desc: 'The story of Rigel — from Excel to a full platform.' },
+  ];
+
   const baseLinks = [
     { to: '/', label: 'Home' },
     { to: '/pricing', label: 'Pricing' },
     { to: '/download', label: 'Download' },
-    { to: '/business-resources', label: 'Resources' },
     { to: '/contact', label: 'Contact' },
   ];
 
@@ -53,7 +63,17 @@ export function Navbar() {
     servicesTimeout.current = window.setTimeout(() => setServicesOpen(false), 120);
   };
 
+  const showBlog = () => {
+    if (blogTimeout.current) window.clearTimeout(blogTimeout.current);
+    setBlogOpen(true);
+  };
+
+  const hideBlog = () => {
+    blogTimeout.current = window.setTimeout(() => setBlogOpen(false), 120);
+  };
+
   const toggleMobileServices = () => setMobileServicesOpen((s: boolean) => !s);
+  const toggleMobileBlog = () => setMobileBlogOpen((s: boolean) => !s);
 
   return (
     <header
@@ -68,7 +88,7 @@ export function Navbar() {
           <div className={`flex items-center justify-between transition-all duration-300 ${scrolled ? 'h-14' : 'h-16'}`}>
             {/* Logo */}
             <Link to="/" className="shrink-0 flex items-center gap-2">
-              <img src={APP_ICON} alt="Rigel Business" className={`object-cover transition-all duration-300 ${scrolled ? 'h-8 w-8' : 'h-9 w-9'}`} />
+              <img src={APP_ICON} alt="Rigel Business" className={`object-cover rounded-full transition-all duration-300 ${scrolled ? 'h-8 w-8' : 'h-9 w-9'}`} />
               <span className="font-bold text-slate-900 text-sm tracking-tight" style={{ fontFamily: "'Inter Tight', sans-serif" }}>
                 Rigel Business
               </span>
@@ -94,7 +114,7 @@ export function Navbar() {
                   onClick={() => setServicesOpen((s: boolean) => !s)}
                   className={`nav-link inline-flex items-center gap-1 text-sm font-medium transition-colors ${pathname.startsWith('/services') || serviceModules.some(m => pathname.startsWith(m.to)) ? 'text-slate-900 active' : 'text-slate-600 hover:text-slate-900'}`}
                 >
-                  Services <ChevronDown className={`h-3.5 w-3.5 transition-transform ${servicesOpen ? 'rotate-180' : ''}`} />
+                  Features <ChevronDown className={`h-3.5 w-3.5 transition-transform ${servicesOpen ? 'rotate-180' : ''}`} />
                 </button>
 
                 {servicesOpen && (
@@ -103,24 +123,24 @@ export function Navbar() {
                     onMouseEnter={showServices}
                     onMouseLeave={hideServices}
                   >
-                    <div className="bg-white rounded-2xl shadow-xl border border-slate-100 p-6 overflow-hidden">
-                      <div className="flex items-center justify-between mb-4">
+                    <div className="bg-white rounded-2xl shadow-2xl border border-slate-100 p-6 overflow-hidden">
+                      <div className="flex items-center justify-between mb-5">
                         <div className="flex items-center gap-2">
-                          <div className="h-8 w-8 rounded-lg bg-emerald-50 flex items-center justify-center">
-                            <LayoutGrid className="h-4 w-4 text-emerald-600" />
+                          <div className="h-8 w-8 rounded-lg bg-slate-100 flex items-center justify-center">
+                            <LayoutGrid className="h-4 w-4 text-slate-700" />
                           </div>
                           <span className="font-semibold text-slate-900 text-sm" style={{ fontFamily: "'Inter Tight', sans-serif" }}>Our Services</span>
                         </div>
                         <Link
                           to="/services"
                           onClick={() => setServicesOpen(false)}
-                          className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-600 hover:text-emerald-700"
+                          className="inline-flex items-center gap-1 text-sm font-semibold text-emerald-600 hover:text-emerald-700"
                         >
-                          View all <ArrowRight className="h-3 w-3" />
+                          View all <ArrowRight className="h-4 w-4" />
                         </Link>
                       </div>
 
-                      <div className="grid grid-cols-2 gap-3">
+                      <div className="grid grid-cols-2 gap-3 mb-5">
                         {serviceModules.map((m) => (
                           <Link
                             key={m.to}
@@ -128,8 +148,8 @@ export function Navbar() {
                             onClick={() => setServicesOpen(false)}
                             className={`flex items-start gap-3 p-3 rounded-xl transition-colors ${pathname === m.to ? 'bg-emerald-50 border border-emerald-100' : 'hover:bg-slate-50 border border-transparent'}`}
                           >
-                            <div className="h-9 w-9 rounded-full bg-slate-50 flex items-center justify-center shrink-0 mt-0.5">
-                              <m.icon className="h-[18px] w-[18px] text-emerald-600" />
+                            <div className="h-10 w-10 rounded-lg bg-slate-100 flex items-center justify-center shrink-0 mt-0.5">
+                              <m.icon className="h-5 w-5 text-slate-600" />
                             </div>
                             <div>
                               <p className="text-sm font-semibold text-slate-900" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{m.label}</p>
@@ -139,19 +159,106 @@ export function Navbar() {
                         ))}
                       </div>
 
-                      <div className="mt-4 -mx-6 -mb-6 px-6 py-4 bg-gradient-to-r from-emerald-600 to-[#0F9D6C] flex items-center justify-between">
-                        <div>
-                          <p className="text-sm font-semibold text-white" style={{ fontFamily: "'Inter Tight', sans-serif" }}>All-in-one business platform</p>
-                          <p className="text-xs text-emerald-100 leading-5">Accounting, VAT, payroll, inventory and more in one place.</p>
+                      <Link
+                        to="/services"
+                        onClick={() => setServicesOpen(false)}
+                        className="relative block rounded-xl overflow-hidden aspect-[2.8/1]"
+                      >
+                        <img
+                          src="/Gemini_Generated_Image_st6xx8st6xx8st6x.png"
+                          alt="Rigel Services"
+                          className="h-full w-full object-cover"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-r from-slate-950/80 via-slate-950/50 to-transparent" />
+                        <div className="absolute inset-0 flex items-center px-5">
+                          <div className="max-w-[55%]">
+                            <p className="text-white font-bold text-base" style={{ fontFamily: "'Inter Tight', sans-serif" }}>All-in-one business platform</p>
+                            <p className="text-slate-200 text-xs mt-1 leading-5">Accounting, VAT, payroll, inventory and more in one place.</p>
+                          </div>
+                        </div>
+                      </Link>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Blog dropdown */}
+              <div
+                className="relative"
+                onMouseEnter={showBlog}
+                onMouseLeave={hideBlog}
+              >
+                <button
+                  type="button"
+                  onClick={() => setBlogOpen((s: boolean) => !s)}
+                  className={`nav-link inline-flex items-center gap-1 text-sm font-medium transition-colors ${pathname.startsWith('/blog') ? 'text-slate-900 active' : 'text-slate-600 hover:text-slate-900'}`}
+                >
+                  Blog <ChevronDown className={`h-3.5 w-3.5 transition-transform ${blogOpen ? 'rotate-180' : ''}`} />
+                </button>
+
+                {blogOpen && (
+                  <div
+                    className="absolute top-full left-1/2 -translate-x-1/2 pt-4 w-[640px]"
+                    onMouseEnter={showBlog}
+                    onMouseLeave={hideBlog}
+                  >
+                    <div className="bg-white rounded-2xl shadow-2xl border border-slate-100 p-6 overflow-hidden">
+                      <div className="flex items-center justify-between mb-5">
+                        <div className="flex items-center gap-2">
+                          <div className="h-8 w-8 rounded-lg bg-slate-100 flex items-center justify-center">
+                            <BookOpen className="h-4 w-4 text-slate-700" />
+                          </div>
+                          <span className="font-semibold text-slate-900 text-sm" style={{ fontFamily: "'Inter Tight', sans-serif" }}>Rigel Blog</span>
                         </div>
                         <Link
-                          to="/services"
-                          onClick={() => setServicesOpen(false)}
-                          className="inline-flex items-center gap-1 text-xs font-semibold text-white hover:text-emerald-50"
+                          to="/blog"
+                          onClick={() => setBlogOpen(false)}
+                          className="inline-flex items-center gap-1 text-sm font-semibold text-emerald-600 hover:text-emerald-700"
                         >
-                          Read more <ArrowRight className="h-3 w-3" />
+                          View all <ArrowRight className="h-4 w-4" />
                         </Link>
                       </div>
+
+                      <div className="grid grid-cols-2 gap-3 mb-5">
+                        {[
+                          ...blogCategories,
+                          { to: '/blog', label: 'All articles', icon: BookOpen, desc: 'Browse every article from all categories.' },
+                        ].map((b) => (
+                          <Link
+                            key={b.to}
+                            to={b.to}
+                            onClick={() => setBlogOpen(false)}
+                            className={`flex items-start gap-3 p-3 rounded-xl transition-colors ${pathname === b.to ? 'bg-emerald-50 border border-emerald-100' : 'hover:bg-slate-50 border border-transparent'}`}
+                          >
+                            <div className="h-10 w-10 rounded-lg bg-slate-100 flex items-center justify-center shrink-0 mt-0.5">
+                              <b.icon className="h-5 w-5 text-slate-600" />
+                            </div>
+                            <div>
+                              <p className="text-sm font-semibold text-slate-900" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{b.label}</p>
+                              <p className="text-xs text-slate-500 leading-5 mt-0.5">{b.desc}</p>
+                            </div>
+                          </Link>
+                        ))}
+                      </div>
+
+                      <Link
+                        to="/blog"
+                        onClick={() => setBlogOpen(false)}
+                        className="relative block rounded-xl overflow-hidden aspect-[2.8/1]"
+                      >
+                        <img
+                          src="/Gemini_Generated_Image_xefbhfxefbhfxefb.png"
+                          alt="Rigel Blog"
+                          className="h-full w-full object-cover"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-r from-slate-950/80 via-slate-950/50 to-transparent" />
+                        <div className="absolute inset-0 flex items-center px-5">
+                          <div className="max-w-[55%]">
+                            <p className="text-white font-bold text-base" style={{ fontFamily: "'Inter Tight', sans-serif" }}>Insights for South African businesses</p>
+                            <p className="text-slate-200 text-xs mt-1 leading-5">Practical guides, small business tips and the Rigel story.</p>
+                          </div>
+                        </div>
+                      </Link>
                     </div>
                   </div>
                 )}
@@ -208,7 +315,7 @@ export function Navbar() {
                 onClick={toggleMobileServices}
                 className={`w-full flex items-center justify-between px-4 py-2.5 text-sm font-medium transition-colors ${serviceModules.some(m => pathname === m.to) || pathname.startsWith('/services') ? 'text-[#0F9D6C]' : 'text-slate-700 hover:text-slate-900'}`}
               >
-                <span>Services</span>
+                <span>Features</span>
                 <ChevronDown className={`h-4 w-4 transition-transform ${mobileServicesOpen ? 'rotate-180' : ''}`} />
               </button>
               {mobileServicesOpen && (
@@ -232,6 +339,40 @@ export function Navbar() {
                     <LayoutGrid className="h-4 w-4 shrink-0" />
                     View all services <ArrowRight className="h-3 w-3" />
                   </Link>
+                </div>
+              )}
+            </div>
+
+            <div>
+              <button
+                type="button"
+                onClick={toggleMobileBlog}
+                className={`w-full flex items-center justify-between px-4 py-2.5 text-sm font-medium transition-colors ${pathname.startsWith('/blog') ? 'text-[#0F9D6C]' : 'text-slate-700 hover:text-slate-900'}`}
+              >
+                <span>Blog</span>
+                <ChevronDown className={`h-4 w-4 transition-transform ${mobileBlogOpen ? 'rotate-180' : ''}`} />
+              </button>
+              {mobileBlogOpen && (
+                <div className="pl-4 pr-2 pb-2 space-y-1">
+                  <Link
+                    to="/blog"
+                    onClick={() => setOpen(false)}
+                    className={`flex items-center gap-3 px-4 py-2.5 text-sm font-medium rounded-lg transition-colors ${pathname === '/blog' ? 'bg-emerald-50 text-[#0F9D6C]' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'}`}
+                  >
+                    <BookOpen className="h-4 w-4 text-emerald-600 shrink-0" />
+                    All articles
+                  </Link>
+                  {blogCategories.map((b) => (
+                    <Link
+                      key={b.to}
+                      to={b.to}
+                      onClick={() => setOpen(false)}
+                      className={`flex items-center gap-3 px-4 py-2.5 text-sm font-medium rounded-lg transition-colors ${pathname === b.to ? 'bg-emerald-50 text-[#0F9D6C]' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'}`}
+                    >
+                      <b.icon className="h-4 w-4 text-emerald-600 shrink-0" />
+                      {b.label}
+                    </Link>
+                  ))}
                 </div>
               )}
             </div>

@@ -14,9 +14,19 @@ import {
 const APP_URL = 'https://biz-flow-sa-delta.vercel.app';
 
 const testimonials = [
-  { name: 'Sipho M.', role: 'Owner, Mthaba Trading', text: 'Rigel replaced my spreadsheets completely. My VAT returns now take 10 minutes instead of 2 hours.', metric: '90% faster VAT filing' },
-  { name: 'Naledi K.', role: 'Accountant, KZN Bookkeeping', text: 'The multi-company feature is a game changer. I manage 14 clients from one dashboard without switching logins.', metric: '14 clients in one dashboard' },
-  { name: 'Thabo R.', role: 'Retailer, Rigel Hardware', text: 'The desktop app works perfectly even with slow internet. Stock control and invoicing never stops.', metric: 'Zero downtime since 2024' },
+  { text: 'Rigel replaced our spreadsheets completely. VAT returns now take minutes instead of hours.', metric: '90% faster VAT filing' },
+  { text: 'Multi-company support lets us manage all client books from one dashboard without switching logins.', metric: '14 clients in one dashboard' },
+  { text: 'The desktop app runs smoothly even on slow internet. Stock control and invoicing never stop.', metric: 'Zero downtime since 2024' },
+  { text: 'Bank reconciliation used to take a full day. Now it is done before lunch.', metric: '50% faster reconciliations' },
+  { text: 'We no longer lose supplier invoices. Everything is captured and linked to the purchase order.', metric: '100% invoice traceability' },
+  { text: 'Payroll processing that used to be stressful is now completed in under an hour.', metric: 'Payslips in 60 minutes' },
+  { text: 'Stock levels update automatically when we process a sale. We finally trust our inventory counts.', metric: 'Real-time stock control' },
+  { text: 'Our accountant can log in and see exactly what she needs without us sending spreadsheets.', metric: 'Seamless accountant access' },
+  { text: 'The VAT201 report is ready the moment we close the period. SARS submissions are painless.', metric: 'One-click VAT201' },
+  { text: 'Quotes are converted to invoices with one click. We get paid faster and look more professional.', metric: 'Faster quote-to-cash' },
+  { text: 'We track debtors and low-stock items from the same screen, every morning.', metric: 'One dashboard' },
+  { text: 'The audit trail gives us confidence that nothing can be changed without a record.', metric: 'Full audit trail' },
+  { text: 'Moving from Excel to Rigel took less than a day. The onboarding was simple and well guided.', metric: '1-day onboarding' },
 ];
 
 const purchaseScreenshots = [
@@ -124,81 +134,83 @@ export function Home() {
     return () => window.clearInterval(interval);
   }, [solutionsPaused]);
 
+  const testimonialsRef = useRef<HTMLDivElement>(null);
+  const [testimonialsPaused, setTestimonialsPaused] = useState(false);
+
+  useEffect(() => {
+    if (testimonialsPaused) return;
+    const interval = window.setInterval(() => {
+      const el = testimonialsRef.current;
+      if (!el) return;
+      const cardWidth = (el.firstElementChild?.clientWidth ?? 340) + 24;
+      if (el.scrollLeft + el.clientWidth >= el.scrollWidth - 10) {
+        el.scrollTo({ left: 0, behavior: 'smooth' });
+      } else {
+        el.scrollBy({ left: cardWidth, behavior: 'smooth' });
+      }
+    }, 3500);
+
+    return () => window.clearInterval(interval);
+  }, [testimonialsPaused]);
+
   return (
     <div className="bg-white">
       {/* Hero — editorial fintech with gradient mesh */}
-      <section className="relative overflow-hidden mesh-bg text-white">
+      <section className="relative overflow-hidden bg-white text-slate-900">
         {/* Background image overlay */}
         <div className="absolute inset-0 pointer-events-none">
           <img src="/Gemini_Generated_Image_xefbhfxefbhfxefb.png" alt="" className="w-full h-full object-cover" />
-          {/* Left-side dark scrim for text legibility — keeps image original colors on the right */}
-          <div className="absolute inset-0 bg-gradient-to-r from-[#0B1220]/85 via-[#0B1220]/45 to-transparent" />
+          {/* White gradient scrim from left for text legibility */}
+          <div className="absolute inset-0 bg-gradient-to-r from-white via-white/85 to-transparent" />
           {/* Bottom fade for smooth transition */}
-          <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#0B1220]/60 to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-white to-transparent" />
         </div>
-        {/* Animated gradient blobs */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          <div className="mesh-drift absolute top-[10%] left-[5%] h-[400px] w-[400px] bg-[#0F9D6C]/15 blur-[100px] rounded-full" />
-          <div className="mesh-drift absolute bottom-[5%] right-[10%] h-[350px] w-[350px] bg-[#1BA37B]/10 blur-[90px] rounded-full" style={{ animationDelay: '5s' }} />
-          <div className="mesh-drift absolute top-[40%] left-[50%] h-[300px] w-[300px] bg-[#0F9D6C]/8 blur-[80px] rounded-full" style={{ animationDelay: '10s' }} />
-          {/* Rotating rings */}
-          <div className="ring-rotate absolute top-[15%] left-[8%] h-40 w-40 border border-emerald-500/15 rounded-full" />
-          <div className="ring-rotate-reverse absolute top-[60%] left-[5%] h-24 w-24 border border-emerald-500/10 rounded-full" />
-          <div className="ring-rotate absolute top-[20%] right-[12%] h-56 w-56 border border-slate-500/10 rounded-full" />
-          <div className="ring-rotate-reverse absolute bottom-[15%] right-[8%] h-32 w-32 border border-emerald-500/15 rounded-full" />
-          {/* Bouncing dots */}
-          <div className="dot-bounce absolute top-[50%] left-[12%] h-1.5 w-1.5 bg-emerald-400/50 rounded-full" />
-          <div className="dot-bounce absolute top-[30%] right-[18%] h-1.5 w-1.5 bg-slate-300/30 rounded-full" style={{ animationDelay: '1.5s' }} />
-          <div className="dot-bounce absolute bottom-[35%] right-[40%] h-1.5 w-1.5 bg-emerald-400/40 rounded-full" style={{ animationDelay: '2.5s' }} />
-          {/* Pulsing lines */}
-          <div className="line-pulse absolute top-[10%] left-[35%] h-32 w-px bg-emerald-500/20" />
-          <div className="line-pulse absolute top-[50%] left-[55%] h-24 w-px bg-slate-400/15" style={{ animationDelay: '1s' }} />
-          <div className="line-pulse absolute top-[15%] right-[30%] h-40 w-px bg-emerald-500/15" style={{ animationDelay: '2s' }} />
-        </div>
-
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-28 relative">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-36 relative">
           <div className="grid lg:grid-cols-[1.15fr_0.85fr] gap-12 lg:gap-16 items-center">
             {/* Left column — text */}
-            <div className="reveal reveal-visible">
-              <p className="text-xs font-semibold uppercase tracking-[0.25em] text-emerald-400 mb-6">
-                Accounting &amp; ERP Software · South Africa
-              </p>
+            <div className="reveal reveal-visible max-w-xl">
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-50 border border-emerald-100 mb-6">
+                <span className="h-1.5 w-1.5 rounded-full bg-[#0F9D6C] animate-pulse" />
+                <span className="text-xs font-semibold text-emerald-700 tracking-wide uppercase">
+                  Accounting &amp; ERP Software · South Africa
+                </span>
+              </div>
               <h1
-                className="text-[2.5rem] sm:text-5xl lg:text-[4rem] font-bold leading-[1.02] tracking-[-0.02em] mb-6"
+                className="text-[2.5rem] sm:text-5xl lg:text-[4rem] font-bold leading-[1.02] tracking-[-0.02em] mb-6 text-slate-900"
                 style={{ fontFamily: "'Inter Tight', sans-serif" }}
               >
                 Run your entire business on one connected platform
               </h1>
-              <p className="text-lg text-slate-300 max-w-xl mb-10 leading-8">
+              <p className="text-lg text-slate-600 max-w-lg mb-10 leading-8">
                 From first invoice to annual financial statements — Rigel Business brings accounting, VAT, payroll, inventory and reporting together so your team works faster and makes better decisions.
               </p>
-              <div className="flex flex-wrap items-center gap-4 mb-12">
+              <div className="flex flex-wrap items-center gap-3 mb-12">
                 <a
                   href={`${APP_URL}/signup`}
-                  className="btn-pill h-12 px-8 bg-[#0F9D6C] hover:bg-[#0B7A52] text-white font-semibold text-sm flex items-center gap-2"
+                  className="btn-pill h-12 px-7 bg-[#0F9D6C] hover:bg-[#0B7A52] text-white font-semibold text-sm flex items-center gap-2"
                 >
                   Start free trial <ArrowRight className="h-4 w-4" />
                 </a>
                 <Link
                   to="/book-demo"
-                  className="btn-pill h-12 px-8 border border-white/25 hover:border-white/60 hover:bg-white/5 text-white font-semibold text-sm flex items-center gap-2"
+                  className="btn-pill h-12 px-7 border border-slate-200 bg-white/80 backdrop-blur-sm hover:bg-white hover:border-slate-300 text-slate-700 font-semibold text-sm flex items-center gap-2"
                 >
                   Book a demo
                 </Link>
               </div>
               {/* Trust bar */}
-              <div className="flex flex-wrap items-center gap-x-8 gap-y-4 pt-8 border-t border-white/10">
+              <div className="flex flex-wrap items-center gap-x-8 gap-y-4 pt-8 border-t border-slate-200">
                 <div className="flex items-center gap-2">
                   <div className="flex gap-0.5">
-                    {[...Array(5)].map((_, i) => <Star key={i} className="h-4 w-4 fill-emerald-400 text-emerald-400" />)}
+                    {[...Array(5)].map((_, i) => <Star key={i} className="h-4 w-4 fill-emerald-500 text-emerald-500" />)}
                   </div>
-                  <span className="text-sm text-slate-400">Rated by SA businesses</span>
+                  <span className="text-sm text-slate-600">Rated by SA businesses</span>
                 </div>
-                <div className="flex items-center gap-2 text-sm text-slate-400">
-                  <ShieldCheck className="h-4 w-4 text-emerald-400" /> SARS-compliant VAT201
+                <div className="flex items-center gap-2 text-sm text-slate-600">
+                  <ShieldCheck className="h-4 w-4 text-[#0F9D6C]" /> SARS-compliant VAT201
                 </div>
-                <div className="flex items-center gap-2 text-sm text-slate-400">
-                  <Clock className="h-4 w-4 text-emerald-400" /> Cancel anytime
+                <div className="flex items-center gap-2 text-sm text-slate-600">
+                  <Clock className="h-4 w-4 text-[#0F9D6C]" /> Cancel anytime
                 </div>
               </div>
             </div>
@@ -235,6 +247,7 @@ export function Home() {
                 { icon: BarChart3, title: 'Accounting & Reporting', desc: 'Trial balance, general ledger and full AFS.', accent: '#0F9D6C', tag: 'AFS-ready', image: '/MOQWE.jpg', link: '/reporting' },
                 { icon: Landmark, title: 'VAT Management', desc: 'VAT periods, returns and SARS-ready reports.', accent: '#2563EB', tag: 'SARS', image: '/Gemini_Generated_Image_f1imttf1imttf1im.png', link: '/tax' },
                 { icon: PieChart, title: 'Investments', desc: 'Fixed deposits, shares and month-end processing.', accent: '#1BA37B', tag: 'FD & Shares', image: '/Gemini_Generated_Image_h5kk1uh5kk1uh5kk.png', link: '/investments' },
+                { icon: Landmark, title: 'Loans', desc: 'Loan lifecycle, amortisation and IFRS split.', accent: '#2563EB', tag: 'Borrowing', image: '/MOQWE.jpg', link: '/loans' },
                 { icon: Landmark, title: 'Banking', desc: 'Bank accounts, reconciliation and cash flow.', accent: '#2563EB', tag: 'Auto-match', image: '/tRPrb.jpg', link: '/banking' },
                 { icon: Wallet, title: 'Sales & Invoicing', desc: 'Quotes, orders, invoices and magic links.', accent: '#0F9D6C', tag: 'Magic links', image: '/3QRJb.jpg', link: '/sales' },
                 { icon: ShoppingCart, title: 'Purchase & Payables', desc: 'POs, supplier invoices and receipts.', accent: '#2563EB', tag: 'PO tracking', image: '/Gemini_Generated_Image_cq6dxlcq6dxlcq6d.png', link: '/purchase' },
@@ -585,47 +598,43 @@ export function Home() {
         </div>
       </section>
 
-      {/* Testimonials — avatars, pill tags, featured card */}
+      {/* Testimonials — auto-sliding anonymous reviews */}
       <section className="py-20 lg:py-28 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-[0.7fr_1.3fr] gap-12 items-start">
-            <div>
-              <p className="text-sm font-semibold text-emerald-600 mb-3 tracking-wide">Customer stories</p>
-              <h2 className="text-3xl lg:text-[2.5rem] font-bold text-slate-900 mb-4 leading-tight tracking-tight" style={{ fontFamily: "'Inter Tight', sans-serif" }}>
-                See what high-performance finance looks like
-              </h2>
-              <p className="text-slate-600 text-lg leading-8 mb-6">
-                Real businesses across South Africa use Rigel to run accounting, VAT, payroll and inventory from one dashboard.
-              </p>
-              <div className="flex items-center gap-3 pt-4 border-t border-slate-200">
-                <div className="flex gap-0.5">
-                  {[...Array(5)].map((_, i) => <Star key={i} className="h-5 w-5 fill-emerald-500 text-emerald-500" />)}
+          <div className="max-w-2xl mb-14">
+            <p className="text-sm font-semibold text-emerald-600 mb-3 tracking-wide">Customer reviews</p>
+            <h2 className="text-3xl lg:text-[2.5rem] font-bold text-slate-900 mb-4 leading-tight tracking-tight" style={{ fontFamily: "'Inter Tight', sans-serif" }}>
+              What teams say about Rigel
+            </h2>
+            <p className="text-slate-600 text-lg leading-8">
+              Real businesses across South Africa use Rigel to run accounting, VAT, payroll and inventory from one dashboard.
+            </p>
+          </div>
+
+          <div
+            ref={testimonialsRef}
+            onMouseEnter={() => setTestimonialsPaused(true)}
+            onMouseLeave={() => setTestimonialsPaused(false)}
+            className="flex gap-6 overflow-x-auto no-scrollbar snap-x snap-mandatory pb-4 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8"
+          >
+            {testimonials.map((t, i) => (
+              <div key={i} className="snap-start shrink-0 w-[280px] sm:w-[340px] card-lift group bg-slate-50 rounded-2xl border border-slate-200 p-7 hover:shadow-lg transition-all duration-300">
+                <div className="flex gap-0.5 mb-5">
+                  {[...Array(5)].map((_, i) => <Star key={i} className="h-4 w-4 fill-emerald-500 text-emerald-500" />)}
                 </div>
-                <span className="text-sm text-slate-600 font-medium">Rated by SA businesses</span>
+                <p className="text-slate-700 text-base leading-8 mb-6">“{t.text}”</p>
+                <span className="inline-flex items-center text-[10px] font-bold text-emerald-700 bg-emerald-100 rounded-full px-3 py-1.5 uppercase tracking-wide">
+                  {t.metric}
+                </span>
               </div>
+            ))}
+          </div>
+
+          <div className="flex items-center justify-center gap-3 mt-12 pt-8 border-t border-slate-200">
+            <div className="flex gap-0.5">
+              {[...Array(5)].map((_, i) => <Star key={i} className="h-5 w-5 fill-emerald-500 text-emerald-500" />)}
             </div>
-            <div className="grid sm:grid-cols-2 gap-6">
-              {testimonials.map((t, i) => (
-                <div key={t.name} className={`card-lift bg-slate-50 rounded-2xl border border-slate-200 p-7 ${i === 0 ? 'lg:-rotate-1 lg:shadow-lg' : ''}`}>
-                  <div className="flex gap-1 mb-4">
-                    {[...Array(5)].map((_, i) => <Star key={i} className="h-4 w-4 fill-emerald-500 text-emerald-500" />)}
-                  </div>
-                  <p className="text-slate-700 text-sm leading-7 mb-5">“{t.text}”</p>
-                  <div className="pt-4 border-t border-slate-200">
-                    <span className="inline-block text-[10px] font-bold text-emerald-700 bg-emerald-100 rounded-full px-3 py-1 mb-3 uppercase tracking-wide">{t.metric}</span>
-                    <div className="flex items-center gap-3">
-                      <div className="h-10 w-10 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 text-white flex items-center justify-center text-sm font-bold shrink-0">
-                        {t.name.charAt(0)}
-                      </div>
-                      <div>
-                        <div className="font-semibold text-slate-900 text-sm">{t.name}</div>
-                        <div className="text-slate-500 text-xs mt-0.5">{t.role}</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
+            <span className="text-sm text-slate-600 font-medium">Rated by SA businesses</span>
           </div>
         </div>
       </section>

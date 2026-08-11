@@ -18,7 +18,7 @@ export function Footer() {
           {/* Brand */}
           <div className="md:col-span-1">
             <div className="flex items-center gap-2 mb-4">
-              <img src={APP_ICON} alt="Rigel Business" className="h-9 w-9 rounded-xl object-cover ring-1 ring-white/10" />
+              <img src={APP_ICON} alt="Rigel Business" className="h-9 w-9 rounded-full object-cover ring-1 ring-white/10" />
               <span className="font-black text-white text-lg">Rigel Business</span>
             </div>
             <p className="text-sm leading-relaxed">
@@ -54,6 +54,7 @@ export function Footer() {
             <h4 className="text-white font-bold text-sm mb-4 uppercase tracking-wider">Company</h4>
             <ul className="space-y-3 text-sm">
               <li><Link to="/contact" className="hover:text-white transition-colors">Contact Us</Link></li>
+              <li><Link to="/blog" className="hover:text-white transition-colors">Blog</Link></li>
               <li><a href={`${APP_URL}/login`} className="hover:text-white transition-colors">Sign In</a></li>
             </ul>
           </div>
@@ -79,7 +80,7 @@ export function Footer() {
               <p>Created by the team behind Rigel</p>
             </div>
             <div className="flex items-center gap-2">
-              <img src={APP_ICON} alt="Rigel Business app icon" className="h-7 w-7 rounded-lg object-cover ring-1 ring-white/10" />
+              <img src={APP_ICON} alt="Rigel Business app icon" className="h-7 w-7 rounded-full object-cover ring-1 ring-white/10" />
               <p>Made in South Africa 🇿🇦</p>
             </div>
           </div>

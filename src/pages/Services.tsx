@@ -226,58 +226,51 @@ export function Services() {
 
   return (
     <div className="bg-white">
-      {/* Hero — full-width image banner */}
+      {/* Hero — split layout with image showcase */}
       <section className="relative overflow-hidden">
-        {/* Background image */}
         <div className="absolute inset-0">
           <img
             src="/Gemini_Generated_Image_st6xx8st6xx8st6x.png"
             alt="Financial management for modern businesses"
             className="w-full h-full object-cover"
           />
-          {/* Dark gradient overlay for text legibility */}
-          <div className="absolute inset-0 bg-gradient-to-r from-[#0B1220]/90 via-[#0B1220]/70 to-[#0B1220]/40" />
-          {/* Subtle emerald tint at bottom */}
-          <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#0F9D6C]/20 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-white via-white/85 to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-white to-transparent" />
         </div>
 
-        {/* Content */}
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-36">
-          <div className="max-w-2xl">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/15 mb-6">
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="text-xs font-semibold text-emerald-300 tracking-wide uppercase">
+          <div className="max-w-xl">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-50 border border-emerald-100 mb-6">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#0F9D6C] animate-pulse" />
+              <span className="text-xs font-semibold text-emerald-700 tracking-wide uppercase">
                 Platform modules
               </span>
             </div>
             <h1
-              className="text-4xl lg:text-6xl font-bold text-white mb-6 leading-tight tracking-tight"
+              className="text-4xl lg:text-5xl font-bold text-slate-900 mb-5 leading-tight tracking-tight"
               style={{ fontFamily: "'Inter Tight', sans-serif" }}
             >
               Services
             </h1>
-            <p className="text-lg lg:text-xl text-slate-200 leading-8 max-w-xl">
+            <p className="text-lg text-slate-600 leading-8 mb-8 max-w-lg">
               Every module in Rigel Business is built to connect your transactions, compliance and reporting in one place. Explore what each module does and how it works for your South African SME.
             </p>
-            <div className="mt-8 flex flex-wrap items-center gap-4">
+            <div className="flex flex-col sm:flex-row gap-3">
               <a
                 href={`${APP_URL}/signup`}
-                className="btn-pill inline-flex h-12 items-center bg-[#0F9D6C] hover:bg-[#0B7A52] px-8 font-semibold text-white"
+                className="btn-pill inline-flex h-12 items-center bg-[#0F9D6C] hover:bg-[#0B7A52] px-7 font-semibold text-white"
               >
                 Start free trial <ArrowRight className="h-4 w-4 ml-2" />
               </a>
               <Link
                 to="/book-demo"
-                className="btn-pill inline-flex h-12 items-center border border-white/25 hover:border-white/60 hover:bg-white/5 px-8 font-semibold text-white"
+                className="btn-pill inline-flex h-12 items-center border border-slate-200 bg-white/80 backdrop-blur-sm hover:bg-white hover:border-slate-300 px-7 font-semibold text-slate-700"
               >
                 Book a demo
               </Link>
             </div>
           </div>
         </div>
-
-        {/* Bottom fade into white */}
-        <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-white to-transparent" />
       </section>
 
       {/* Accordion */}

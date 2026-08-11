@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, type ComponentType, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  ChevronDown, ArrowRight, CheckCircle2, X, Maximize2,
+  ChevronDown, ArrowRight, ChevronLeft, ChevronRight, CheckCircle2, X, Maximize2, Play,
   FileText, Receipt, Users, CreditCard, Calculator, BarChart3,
   Zap, ShieldCheck, Clock, Link2, Mail, TrendingUp,
   ShoppingCart, AlertTriangle, Landmark, RefreshCw, Upload, ClipboardList,
@@ -25,6 +25,112 @@ const screenshots = [
   { src: '/customer statement .png', title: 'Customer statement', desc: 'Generate professional statements of account per customer.' },
   { src: '/account reciable dash board .png', title: 'AR dashboard', desc: 'Accounts receivable dashboard with KPIs and collection insights.' },
 ];
+
+const avatarGradients = [
+  'from-emerald-400 to-teal-600',
+  'from-blue-400 to-indigo-600',
+  'from-amber-400 to-orange-600',
+  'from-purple-400 to-pink-600',
+  'from-cyan-400 to-blue-600',
+  'from-rose-400 to-red-600',
+  'from-lime-400 to-green-600',
+  'from-violet-400 to-purple-600',
+  'from-sky-400 to-cyan-600',
+  'from-fuchsia-400 to-pink-600',
+];
+
+function CardSlider({ children, className = '' }: { children: ReactNode; className?: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const scroll = (dir: number) => {
+    const el = ref.current;
+    if (!el) return;
+    const card = el.firstElementChild as HTMLElement | null;
+    const w = (card?.offsetWidth ?? 320) + 16;
+    el.scrollBy({ left: dir * w, behavior: 'smooth' });
+  };
+  return (
+    <div className="relative">
+      <div className="absolute -top-14 right-0 flex gap-2">
+        <button
+          onClick={() => scroll(-1)}
+          className="h-10 w-10 rounded-full border border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:text-emerald-600 flex items-center justify-center transition-colors"
+        >
+          <ChevronLeft className="h-5 w-5" />
+        </button>
+        <button
+          onClick={() => scroll(1)}
+          className="h-10 w-10 rounded-full border border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:text-emerald-600 flex items-center justify-center transition-colors"
+        >
+          <ChevronRight className="h-5 w-5" />
+        </button>
+      </div>
+      <div
+        ref={ref}
+        className={`flex gap-4 overflow-x-auto no-scrollbar snap-x snap-mandatory pb-4 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 ${className}`}
+      >
+        {children}
+      </div>
+    </div>
+  );
+}
+
+function CardAvatar({ icon: Icon, index, label }: { icon: ComponentType<{ className?: string }>; index: number; label?: string }) {
+  const gradient = avatarGradients[index % avatarGradients.length];
+  return (
+    <div className={`relative h-20 bg-gradient-to-br ${gradient} overflow-hidden rounded-t-xl`}>
+      <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(circle, white 1.5px, transparent 1.5px)', backgroundSize: '14px 14px' }} />
+      <div className="absolute -right-5 -top-5 h-16 w-16 rounded-full bg-white/10" />
+      <div className="absolute -left-3 -bottom-6 h-14 w-14 rounded-full bg-white/10" />
+      <div className="absolute inset-0 flex items-center justify-center">
+        <Icon className="h-9 w-9 text-white drop-shadow-sm" />
+      </div>
+      <span className="absolute top-2 right-2.5 text-[10px] font-mono font-bold text-white/60">
+        {label ?? String(index + 1).padStart(2, '0')}
+      </span>
+    </div>
+  );
+}
+
+function getYouTubeId(url: string) {
+  try {
+    return url.split('youtu.be/')[1]?.split('?')[0] ?? '';
+  } catch {
+    return '';
+  }
+}
+
+function getYouTubeEmbedUrl(url: string) {
+  const id = getYouTubeId(url);
+  return `https://www.youtube.com/embed/${id}?rel=0&autoplay=1`;
+}
+
+function getYouTubeThumb(url: string) {
+  const id = getYouTubeId(url);
+  return `https://img.youtube.com/vi/${id}/0.jpg`;
+}
+
+const SALES_DEMO_VIDEOS = [
+  { url: 'https://youtu.be/95Qn83PR3G4', title: 'Sales demo 1', desc: 'by Rigel Team' },
+  { url: 'https://youtu.be/qra2AII4r1Q', title: 'Sales demo 2', desc: 'by Rigel Team' },
+  { url: 'https://youtu.be/YJsZN2XwN8c', title: 'Sales demo 3', desc: 'by Rigel Team' },
+  { url: 'https://youtu.be/xgYsgYLwyHA', title: 'Sales demo 4', desc: 'by Rigel Team' },
+  { url: 'https://youtu.be/9ykroNunh8M', title: 'Sales demo 5', desc: 'by Rigel Team' },
+  { url: 'https://youtu.be/XSTp3kfM5qg', title: 'Sales demo 6', desc: 'by Rigel Team' },
+];
+
+function SalesVideoPlayer({ src }: { src: string }) {
+  return (
+    <div className="relative overflow-hidden rounded-2xl bg-black shadow-2xl aspect-video">
+      <iframe
+        src={getYouTubeEmbedUrl(src)}
+        title="Sales demo video"
+        className="absolute inset-0 h-full w-full"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowFullScreen
+      />
+    </div>
+  );
+}
 
 type Section = {
   icon: typeof FileText;
@@ -263,9 +369,12 @@ function AccordionItem({
 
 export function Sales() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
-  const [lightbox, setLightbox] = useState<number | null>(0);
+  const [lightbox, setLightbox] = useState(0);
   const [activeTab, setActiveTab] = useState('all');
   const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [playingVideo, setPlayingVideo] = useState<typeof SALES_DEMO_VIDEOS[number] | null>(null);
+  const [activeVideoIndex, setActiveVideoIndex] = useState(0);
+  const videoSliderRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!lightboxOpen) return;
@@ -278,9 +387,18 @@ export function Sales() {
     return () => window.removeEventListener('keydown', onKey);
   }, [lightboxOpen, lightbox]);
 
+  useEffect(() => {
+    if (!playingVideo) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setPlayingVideo(null);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [playingVideo]);
+
   return (
     <div className="bg-white">
-      {/* Hero — polished dark gradient with glowing blobs */}
+      {/* Hero — split layout with image showcase */}
       <section className="relative overflow-hidden">
         <div className="absolute inset-0">
           <img
@@ -288,41 +406,35 @@ export function Sales() {
             alt=""
             className="h-full w-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-br from-[#0B1220]/90 via-[#0B1F1A]/85 to-[#0B1220]/90" />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#0B1220]/90 via-[#0B1220]/60 to-[#0B1220]/30" />
-          <div className="absolute inset-0">
-            <div className="absolute top-[10%] left-[5%] h-[400px] w-[400px] bg-[#0F9D6C]/15 blur-[100px] rounded-full" />
-            <div className="absolute bottom-[5%] right-[10%] h-[350px] w-[350px] bg-[#0F9D6C]/10 blur-[90px] rounded-full" />
-          </div>
+          <div className="absolute inset-0 bg-gradient-to-r from-white via-white/85 to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-white to-transparent" />
         </div>
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-36">
-          <div className="max-w-2xl">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/15 mb-6">
-              <Receipt className="h-3.5 w-3.5 text-emerald-400" />
-              <span className="text-xs font-semibold text-emerald-300 tracking-wide uppercase">Sales Management</span>
+          <div className="max-w-xl">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-50 border border-emerald-100 mb-6">
+              <Receipt className="h-3.5 w-3.5 text-[#0F9D6C]" />
+              <span className="text-xs font-semibold text-emerald-700 tracking-wide uppercase">Sales Management</span>
             </div>
             <h1
-              className="text-4xl lg:text-6xl font-bold text-white mb-6 leading-tight tracking-tight"
+              className="text-4xl lg:text-5xl font-bold text-slate-900 mb-5 leading-tight tracking-tight"
               style={{ fontFamily: "'Inter Tight', sans-serif" }}
             >
               Your sales and invoicing command centre
             </h1>
-            <p className="text-lg lg:text-xl text-slate-200 leading-8 max-w-xl mb-10">
+            <p className="text-lg text-slate-600 leading-8 mb-8 max-w-lg">
               Quote, invoice and get paid faster — manage customers, quotes, sales orders, tax invoices, magic link payments and full accounts receivable in one integrated module.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <a href={`${APP_URL}/signup`} className="btn-pill inline-flex h-12 items-center bg-[#0F9D6C] hover:bg-[#0B7A52] px-8 font-semibold text-white">
+            <div className="flex flex-col sm:flex-row gap-3">
+              <a href={`${APP_URL}/signup`} className="btn-pill inline-flex h-12 items-center bg-[#0F9D6C] hover:bg-[#0B7A52] px-7 font-semibold text-white">
                 Start free trial <ArrowRight className="h-4 w-4 ml-2" />
               </a>
-              <Link to="/book-demo" className="btn-pill inline-flex h-12 items-center border border-white/25 hover:border-white/60 hover:bg-white/5 px-8 font-semibold text-white">
+              <Link to="/book-demo" className="btn-pill inline-flex h-12 items-center border border-slate-200 bg-white/80 backdrop-blur-sm hover:bg-white hover:border-slate-300 px-7 font-semibold text-slate-700">
                 See sales in action
               </Link>
             </div>
           </div>
         </div>
-
-        <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-white to-transparent" />
       </section>
 
       {/* Module overview — 4 pillars */}
@@ -337,24 +449,22 @@ export function Sales() {
               Everything from customer onboarding to payment collection — integrated with your general ledger.
             </p>
           </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <CardSlider>
             {[
               { icon: Users, title: 'Customers', desc: 'Profiles, VAT details, payment terms and sales history.' },
               { icon: FileText, title: 'Quotes & Orders', desc: 'Branded quotes, sales orders, magic link acceptance.' },
               { icon: Receipt, title: 'Tax Invoices', desc: 'SARS-compliant invoices, credit notes, recurring billing.' },
               { icon: CreditCard, title: 'Payments', desc: 'Magic link payments, auto-allocation, real-time balances.' },
             ].map((p, i) => (
-              <div key={p.title} className="card-lift bg-white rounded-2xl border border-slate-200 p-6 relative overflow-hidden">
-                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#0F9D6C] to-[#1BA37B]" />
-                <div className="h-12 w-12 rounded-full icon-gradient text-emerald-600 flex items-center justify-center mb-4">
-                  <p.icon className="h-5 w-5" />
+              <div key={p.title} className="card-lift shrink-0 snap-start w-[85%] sm:w-[55%] lg:w-[40%] bg-white rounded-2xl border border-slate-200 overflow-hidden">
+                <CardAvatar icon={p.icon} index={i} />
+                <div className="p-5">
+                  <h3 className="text-sm font-bold text-slate-900 mb-2" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{p.title}</h3>
+                  <p className="text-xs text-slate-500 leading-5">{p.desc}</p>
                 </div>
-                <span className="text-[10px] font-mono text-slate-300 absolute top-4 right-4">{String(i + 1).padStart(2, '0')}</span>
-                <h3 className="text-sm font-bold text-slate-900 mb-2" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{p.title}</h3>
-                <p className="text-xs text-slate-500 leading-5">{p.desc}</p>
               </div>
             ))}
-          </div>
+          </CardSlider>
         </div>
       </section>
 
@@ -380,7 +490,7 @@ export function Sales() {
         </div>
       </section>
 
-      {/* Screenshots showcase — advanced carousel */}
+      {false && (
       <section className="py-16 lg:py-20 bg-slate-50">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10">
@@ -518,10 +628,9 @@ export function Sales() {
             </div>
           </div>
         </div>
-      </section>
+      </section>)}
 
-      {/* Lightbox — full screen */}
-      {lightboxOpen && lightbox !== null && (
+      {false && (
         <div
           className="fixed inset-0 z-[100] bg-[#0B1220]/95 backdrop-blur-md flex items-center justify-center p-4"
           onClick={() => setLightboxOpen(false)}
@@ -607,6 +716,133 @@ export function Sales() {
         </div>
       )}
 
+      {/* Sales demo videos */}
+      <section className="py-16 lg:py-20 bg-slate-50">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-10">
+            <p className="text-sm font-semibold text-emerald-600 mb-2 tracking-wide">See it in action</p>
+            <h2 className="text-2xl lg:text-3xl font-bold text-slate-900 tracking-tight" style={{ fontFamily: "'Inter Tight', sans-serif" }}>
+              Watch the Sales module in action
+            </h2>
+            <p className="text-sm text-slate-500 mt-3 max-w-xl mx-auto leading-6">
+              Click a thumbnail to watch a short demo of quoting, invoicing and getting paid.
+            </p>
+          </div>
+          <div className="relative">
+            <div className="absolute -top-14 right-0 flex items-center gap-3">
+              <span className="text-sm font-mono text-slate-500">
+                {String(activeVideoIndex + 1).padStart(2, '0')} / {String(SALES_DEMO_VIDEOS.length).padStart(2, '0')}
+              </span>
+              <button
+                onClick={() => {
+                  const el = videoSliderRef.current;
+                  if (!el) return;
+                  const card = el.firstElementChild as HTMLElement | null;
+                  if (!card) return;
+                  const i = Math.max(0, activeVideoIndex - 1);
+                  const target = i * (card.offsetWidth + 16) + card.offsetWidth / 2 - el.clientWidth / 2;
+                  el.scrollTo({ left: Math.max(0, target), behavior: 'smooth' });
+                }}
+                className="h-10 w-10 rounded-full border border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:text-emerald-600 flex items-center justify-center transition-colors"
+              >
+                <ChevronLeft className="h-5 w-5" />
+              </button>
+              <button
+                onClick={() => {
+                  const el = videoSliderRef.current;
+                  if (!el) return;
+                  const card = el.firstElementChild as HTMLElement | null;
+                  if (!card) return;
+                  const i = Math.min(SALES_DEMO_VIDEOS.length - 1, activeVideoIndex + 1);
+                  const target = i * (card.offsetWidth + 16) + card.offsetWidth / 2 - el.clientWidth / 2;
+                  el.scrollTo({ left: Math.max(0, target), behavior: 'smooth' });
+                }}
+                className="h-10 w-10 rounded-full border border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:text-emerald-600 flex items-center justify-center transition-colors"
+              >
+                <ChevronRight className="h-5 w-5" />
+              </button>
+            </div>
+            <div
+              ref={videoSliderRef}
+              onScroll={() => {
+                const el = videoSliderRef.current;
+                if (!el) return;
+                const card = el.firstElementChild as HTMLElement | null;
+                if (!card) return;
+                const center = el.scrollLeft + el.clientWidth / 2;
+                const index = Math.round((center - card.offsetWidth / 2) / (card.offsetWidth + 16));
+                setActiveVideoIndex(Math.max(0, Math.min(index, SALES_DEMO_VIDEOS.length - 1)));
+              }}
+              className="flex gap-4 overflow-x-auto no-scrollbar snap-x snap-mandatory py-4 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8"
+            >
+              {SALES_DEMO_VIDEOS.map((video, i) => (
+                <button
+                  key={video.url}
+                  onClick={() => setPlayingVideo(video)}
+                  className={`group text-left shrink-0 snap-center w-[85%] sm:w-[60%] lg:w-[45%] bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-500 ease-out focus:outline-none focus:ring-2 focus:ring-emerald-500 ${i === activeVideoIndex ? 'ring-2 ring-emerald-500 scale-[1.07] shadow-2xl z-10' : 'opacity-70 scale-95 hover:opacity-100 hover:scale-100 hover:shadow-xl'}`}
+                  style={{ fontFamily: "'Inter Tight', sans-serif" }}
+                >
+                  <div className="relative aspect-video">
+                    <img
+                      src={getYouTubeThumb(video.url)}
+                      alt={video.title}
+                      className="h-full w-full object-cover"
+                      loading="lazy"
+                    />
+                    <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors flex items-center justify-center">
+                      <div className="h-16 w-16 rounded-full bg-white/95 shadow-2xl flex items-center justify-center group-hover:scale-105 transition-transform">
+                        <Play className="h-7 w-7 text-[#0F9D6C] ml-1" fill="#0F9D6C" />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="p-4">
+                    <h3 className="text-sm font-bold text-slate-900">{video.title}</h3>
+                    <p className="text-xs text-slate-500 mt-0.5">{video.desc}</p>
+                  </div>
+                </button>
+              ))}
+            </div>
+            <div className="flex items-center justify-center gap-2 mt-4">
+              {SALES_DEMO_VIDEOS.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => {
+                    const el = videoSliderRef.current;
+                    if (!el) return;
+                    const card = el.firstElementChild as HTMLElement | null;
+                    if (!card) return;
+                    const target = i * (card.offsetWidth + 16) + card.offsetWidth / 2 - el.clientWidth / 2;
+                    el.scrollTo({ left: Math.max(0, target), behavior: 'smooth' });
+                  }}
+                  className={`h-2 rounded-full transition-all ${i === activeVideoIndex ? 'w-6 bg-emerald-500' : 'w-2 bg-slate-300 hover:bg-slate-400'}`}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {playingVideo && (
+        <div
+          className="fixed inset-0 z-[100] bg-[#0B1220]/90 backdrop-blur-md flex items-center justify-center p-4"
+          onClick={() => setPlayingVideo(null)}
+        >
+          <div className="relative w-full max-w-4xl" onClick={(e) => e.stopPropagation()}>
+            <button
+              onClick={() => setPlayingVideo(null)}
+              className="absolute -top-10 right-0 h-8 w-8 rounded-full bg-white/10 text-white flex items-center justify-center hover:bg-white/20 transition-colors"
+            >
+              <X className="h-5 w-5" />
+            </button>
+            <SalesVideoPlayer src={playingVideo.url} />
+            <div className="mt-4 text-center">
+              <h3 className="text-lg font-bold text-white" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{playingVideo.title}</h3>
+              <p className="text-sm text-slate-300 mt-1">{playingVideo.desc}</p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Accordion */}
       <section className="py-16 lg:py-20 bg-slate-50">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -639,17 +875,17 @@ export function Sales() {
               Close sales faster and get paid on time
             </h2>
           </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {benefits.map((b) => (
-              <div key={b.title} className="card-lift bg-white rounded-xl border border-slate-200 p-5">
-                <div className="h-10 w-10 rounded-full icon-gradient text-emerald-600 flex items-center justify-center mb-3">
-                  <b.icon className="h-5 w-5" />
+          <CardSlider>
+            {benefits.map((b, i) => (
+              <div key={b.title} className="card-lift shrink-0 snap-start w-[85%] sm:w-[55%] lg:w-[40%] bg-white rounded-2xl border border-slate-200 overflow-hidden">
+                <CardAvatar icon={b.icon} index={i} />
+                <div className="p-5">
+                  <h3 className="text-sm font-bold text-slate-900 mb-1.5" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{b.title}</h3>
+                  <p className="text-xs text-slate-500 leading-5">{b.desc}</p>
                 </div>
-                <h3 className="text-sm font-bold text-slate-900 mb-1.5" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{b.title}</h3>
-                <p className="text-xs text-slate-500 leading-5">{b.desc}</p>
               </div>
             ))}
-          </div>
+          </CardSlider>
         </div>
       </section>
 
@@ -662,23 +898,22 @@ export function Sales() {
               Real-time accounts receivable at a glance
             </h2>
           </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          <CardSlider className="mb-8">
             {[
               { label: 'Unpaid Invoices', value: 'R 0', icon: FileText, color: 'text-amber-600' },
               { label: 'Overdue Invoices', value: 'R 0', icon: AlertTriangle, color: 'text-red-600' },
               { label: 'Paid Invoices', value: 'R 0', icon: CheckCircle2, color: 'text-emerald-600' },
               { label: 'Total Outstanding', value: 'R 0', icon: TrendingUp, color: 'text-blue-600' },
-            ].map((kpi) => (
-              <div key={kpi.label} className="card-lift bg-white rounded-2xl border border-slate-200 p-5">
-                <div className="flex items-center justify-between mb-3">
-                  <kpi.icon className={`h-5 w-5 ${kpi.color}`} />
-                  <span className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">ZAR</span>
+            ].map((kpi, i) => (
+              <div key={kpi.label} className="card-lift shrink-0 snap-start w-[85%] sm:w-[55%] lg:w-[40%] bg-white rounded-2xl border border-slate-200 overflow-hidden">
+                <CardAvatar icon={kpi.icon} index={i} label="ZAR" />
+                <div className="p-5">
+                  <p className="text-2xl font-bold text-slate-900 mb-1" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{kpi.value}</p>
+                  <p className="text-xs text-slate-500">{kpi.label}</p>
                 </div>
-                <p className="text-2xl font-bold text-slate-900 mb-1" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{kpi.value}</p>
-                <p className="text-xs text-slate-500">{kpi.label}</p>
               </div>
             ))}
-          </div>
+          </CardSlider>
           <div className="grid lg:grid-cols-2 gap-4">
             <div className="bg-white rounded-2xl border border-slate-200 p-6">
               <h3 className="text-sm font-bold text-slate-900 mb-4" style={{ fontFamily: "'Inter Tight', sans-serif" }}>AR Ageing Breakdown</h3>
@@ -734,7 +969,7 @@ export function Sales() {
               Intelligent alerts that prioritise collection
             </h2>
           </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <CardSlider>
             {[
               { icon: FileText, title: 'Unpaid Invoices', desc: 'Invoices awaiting payment from customers.', color: 'amber' },
               { icon: AlertTriangle, title: 'Overdue Invoices', desc: 'Invoices past their due date — follow up now.', color: 'red' },
@@ -742,24 +977,16 @@ export function Sales() {
               { icon: FileText, title: 'Pending Quotes', desc: 'Quotes sent but not yet accepted or declined.', color: 'blue' },
               { icon: Bell, title: 'Payment Reminders', desc: 'Automated reminder emails scheduled for overdue invoices.', color: 'purple' },
               { icon: Landmark, title: 'GL Imbalance', desc: 'Debits do not equal credits — investigate.', color: 'red' },
-            ].map((alert) => (
-              <div key={alert.title} className="card-lift bg-white rounded-xl border border-slate-200 p-5 flex items-start gap-3">
-                <div className={`h-10 w-10 rounded-full flex items-center justify-center shrink-0 ${
-                  alert.color === 'red' ? 'bg-red-50 text-red-600' :
-                  alert.color === 'amber' ? 'bg-amber-50 text-amber-600' :
-                  alert.color === 'orange' ? 'bg-orange-50 text-orange-600' :
-                  alert.color === 'blue' ? 'bg-blue-50 text-blue-600' :
-                  'bg-purple-50 text-purple-600'
-                }`}>
-                  <alert.icon className="h-5 w-5" />
-                </div>
-                <div>
+            ].map((alert, i) => (
+              <div key={alert.title} className="card-lift shrink-0 snap-start w-[85%] sm:w-[55%] lg:w-[40%] bg-white rounded-2xl border border-slate-200 overflow-hidden">
+                <CardAvatar icon={alert.icon} index={i} />
+                <div className="p-5">
                   <h3 className="text-sm font-bold text-slate-900 mb-1" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{alert.title}</h3>
                   <p className="text-xs text-slate-500 leading-5">{alert.desc}</p>
                 </div>
               </div>
             ))}
-          </div>
+          </CardSlider>
           <div className="mt-6 rounded-2xl bg-gradient-to-r from-emerald-50 to-slate-50 border border-emerald-100 p-6 flex items-center gap-4">
             <div className="h-12 w-12 rounded-full bg-[#0F9D6C] text-white flex items-center justify-center shrink-0">
               <Zap className="h-6 w-6" />
@@ -781,24 +1008,22 @@ export function Sales() {
               Integrated customer payments
             </h2>
           </div>
-          <div className="grid sm:grid-cols-2 gap-4">
+          <CardSlider>
             {[
               { icon: CreditCard, title: 'Magic Link Payments', desc: 'Generate secure one-time or reusable links. Customers pay online without logging in.' },
               { icon: Landmark, title: 'Banking Integration', desc: 'Allocate bank and cash transactions to customer invoices from the Banking module.' },
               { icon: Link2, title: 'Email & WhatsApp', desc: 'Send payment links directly by email or WhatsApp — customers click and pay instantly.' },
               { icon: RefreshCw, title: 'Auto-Allocation', desc: 'Payments are automatically allocated to the correct invoice with real-time balance updates.' },
-            ].map((item) => (
-              <div key={item.title} className="card-lift bg-white rounded-2xl border border-slate-200 p-6 flex items-start gap-4">
-                <div className="h-10 w-10 rounded-full icon-gradient text-emerald-600 flex items-center justify-center shrink-0">
-                  <item.icon className="h-5 w-5" />
-                </div>
-                <div>
+            ].map((item, i) => (
+              <div key={item.title} className="card-lift shrink-0 snap-start w-[85%] sm:w-[55%] lg:w-[40%] bg-white rounded-2xl border border-slate-200 overflow-hidden">
+                <CardAvatar icon={item.icon} index={i} />
+                <div className="p-5">
                   <h3 className="text-sm font-bold text-slate-900 mb-1.5" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{item.title}</h3>
                   <p className="text-xs text-slate-500 leading-5">{item.desc}</p>
                 </div>
               </div>
             ))}
-          </div>
+          </CardSlider>
         </div>
       </section>
 
@@ -811,86 +1036,84 @@ export function Sales() {
               12 reports for complete AR visibility
             </h2>
           </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
-            {reports.map((r) => (
-              <div key={r.title} className="card-lift bg-white rounded-xl border border-slate-200 p-4 flex items-start gap-3">
-                <div className="h-9 w-9 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
-                  <r.icon className="h-4 w-4" />
-                </div>
-                <div>
+          <CardSlider>
+            {reports.map((r, i) => (
+              <div key={r.title} className="card-lift shrink-0 snap-start w-[85%] sm:w-[55%] lg:w-[40%] bg-white rounded-2xl border border-slate-200 overflow-hidden">
+                <CardAvatar icon={r.icon} index={i} />
+                <div className="p-4">
                   <h3 className="text-xs font-bold text-slate-900 mb-0.5" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{r.title}</h3>
                   <p className="text-[11px] text-slate-500 leading-4">{r.desc}</p>
                 </div>
               </div>
             ))}
-          </div>
+          </CardSlider>
         </div>
       </section>
 
       {/* Customer Reconciliation + Recurring Invoices + CSV Import + Invoice Management */}
       <section className="py-16 lg:py-20 bg-white">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-6">
-            <div className="bg-white rounded-2xl border border-slate-200 p-6">
-              <div className="h-10 w-10 rounded-full icon-gradient text-emerald-600 flex items-center justify-center mb-4">
-                <ClipboardList className="h-5 w-5" />
+          <CardSlider>
+            <div className="shrink-0 snap-start w-[85%] sm:w-[55%] lg:w-[40%] bg-white rounded-2xl border border-slate-200 overflow-hidden">
+              <CardAvatar icon={ClipboardList} index={0} />
+              <div className="p-6">
+                <h3 className="text-base font-bold text-slate-900 mb-2" style={{ fontFamily: "'Inter Tight', sans-serif" }}>Customer Reconciliation</h3>
+                <ul className="space-y-2">
+                  {['Match customer payments against system records', 'Identify discrepancies between deposits and invoices', 'Reconciliation working paper for audit trails'].map(f => (
+                    <li key={f} className="flex items-start gap-2 text-sm text-slate-600">
+                      <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
+                      <span className="leading-6">{f}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
-              <h3 className="text-base font-bold text-slate-900 mb-2" style={{ fontFamily: "'Inter Tight', sans-serif" }}>Customer Reconciliation</h3>
-              <ul className="space-y-2">
-                {['Match customer payments against system records', 'Identify discrepancies between deposits and invoices', 'Reconciliation working paper for audit trails'].map(f => (
-                  <li key={f} className="flex items-start gap-2 text-sm text-slate-600">
-                    <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
-                    <span className="leading-6">{f}</span>
-                  </li>
-                ))}
-              </ul>
             </div>
 
-            <div className="bg-white rounded-2xl border border-slate-200 p-6">
-              <div className="h-10 w-10 rounded-full icon-gradient text-emerald-600 flex items-center justify-center mb-4">
-                <RefreshCw className="h-5 w-5" />
+            <div className="shrink-0 snap-start w-[85%] sm:w-[55%] lg:w-[40%] bg-white rounded-2xl border border-slate-200 overflow-hidden">
+              <CardAvatar icon={RefreshCw} index={1} />
+              <div className="p-6">
+                <h3 className="text-base font-bold text-slate-900 mb-2" style={{ fontFamily: "'Inter Tight', sans-serif" }}>Recurring Invoices</h3>
+                <ul className="space-y-2">
+                  {['Set up recurring customer invoices — monthly, quarterly, annually', 'Auto-generation of invoices on schedule', 'Edit or pause recurring templates anytime'].map(f => (
+                    <li key={f} className="flex items-start gap-2 text-sm text-slate-600">
+                      <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
+                      <span className="leading-6">{f}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
-              <h3 className="text-base font-bold text-slate-900 mb-2" style={{ fontFamily: "'Inter Tight', sans-serif" }}>Recurring Invoices</h3>
-              <ul className="space-y-2">
-                {['Set up recurring customer invoices — monthly, quarterly, annually', 'Auto-generation of invoices on schedule', 'Edit or pause recurring templates anytime'].map(f => (
-                  <li key={f} className="flex items-start gap-2 text-sm text-slate-600">
-                    <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
-                    <span className="leading-6">{f}</span>
-                  </li>
-                ))}
-              </ul>
             </div>
 
-            <div className="bg-white rounded-2xl border border-slate-200 p-6">
-              <div className="h-10 w-10 rounded-full icon-gradient text-emerald-600 flex items-center justify-center mb-4">
-                <Upload className="h-5 w-5" />
+            <div className="shrink-0 snap-start w-[85%] sm:w-[55%] lg:w-[40%] bg-white rounded-2xl border border-slate-200 overflow-hidden">
+              <CardAvatar icon={Upload} index={2} />
+              <div className="p-6">
+                <h3 className="text-base font-bold text-slate-900 mb-2" style={{ fontFamily: "'Inter Tight', sans-serif" }}>CSV Import</h3>
+                <ul className="space-y-2">
+                  {['Bulk import customers from CSV', 'Bulk import quotes and sales orders from CSV', 'Template download and validation'].map(f => (
+                    <li key={f} className="flex items-start gap-2 text-sm text-slate-600">
+                      <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
+                      <span className="leading-6">{f}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
-              <h3 className="text-base font-bold text-slate-900 mb-2" style={{ fontFamily: "'Inter Tight', sans-serif" }}>CSV Import</h3>
-              <ul className="space-y-2">
-                {['Bulk import customers from CSV', 'Bulk import quotes and sales orders from CSV', 'Template download and validation'].map(f => (
-                  <li key={f} className="flex items-start gap-2 text-sm text-slate-600">
-                    <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
-                    <span className="leading-6">{f}</span>
-                  </li>
-                ))}
-              </ul>
             </div>
 
-            <div className="bg-white rounded-2xl border border-slate-200 p-6">
-              <div className="h-10 w-10 rounded-full icon-gradient text-emerald-600 flex items-center justify-center mb-4">
-                <FileText className="h-5 w-5" />
+            <div className="shrink-0 snap-start w-[85%] sm:w-[55%] lg:w-[40%] bg-white rounded-2xl border border-slate-200 overflow-hidden">
+              <CardAvatar icon={FileText} index={3} />
+              <div className="p-6">
+                <h3 className="text-base font-bold text-slate-900 mb-2" style={{ fontFamily: "'Inter Tight', sans-serif" }}>Invoice Management</h3>
+                <ul className="space-y-2">
+                  {['Full lifecycle: Draft → Sent → Paid → Cancelled/Credited', 'Approval workflow and bulk actions (send, cancel)', 'Invoice ageing and due date tracking'].map(f => (
+                    <li key={f} className="flex items-start gap-2 text-sm text-slate-600">
+                      <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
+                      <span className="leading-6">{f}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
-              <h3 className="text-base font-bold text-slate-900 mb-2" style={{ fontFamily: "'Inter Tight', sans-serif" }}>Invoice Management</h3>
-              <ul className="space-y-2">
-                {['Full lifecycle: Draft → Sent → Paid → Cancelled/Credited', 'Approval workflow and bulk actions (send, cancel)', 'Invoice ageing and due date tracking'].map(f => (
-                  <li key={f} className="flex items-start gap-2 text-sm text-slate-600">
-                    <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
-                    <span className="leading-6">{f}</span>
-                  </li>
-                ))}
-              </ul>
             </div>
-          </div>
+          </CardSlider>
         </div>
       </section>
 
@@ -945,16 +1168,17 @@ export function Sales() {
               Walks users through the entire Sales module — from overview to completion.
             </p>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-            {tutorialSteps.map((step) => (
-              <div key={step.num} className="bg-white rounded-xl border border-slate-200 p-4 relative overflow-hidden group hover:border-emerald-300 transition-colors">
-                <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-[#0F9D6C] to-[#1BA37B] opacity-0 group-hover:opacity-100 transition-opacity" />
-                <span className="text-xs font-mono text-emerald-600 font-bold">{step.num}</span>
-                <h3 className="text-sm font-bold text-slate-900 mt-1 mb-0.5" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{step.title}</h3>
-                <p className="text-[11px] text-slate-500 leading-4">{step.desc}</p>
+          <CardSlider>
+            {tutorialSteps.map((step, i) => (
+              <div key={step.num} className="card-lift shrink-0 snap-start w-[85%] sm:w-[55%] lg:w-[40%] bg-white rounded-2xl border border-slate-200 overflow-hidden">
+                <CardAvatar icon={GraduationCap} index={i} label={step.num} />
+                <div className="p-4">
+                  <h3 className="text-sm font-bold text-slate-900 mb-0.5" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{step.title}</h3>
+                  <p className="text-[11px] text-slate-500 leading-4">{step.desc}</p>
+                </div>
               </div>
             ))}
-          </div>
+          </CardSlider>
         </div>
       </section>
 

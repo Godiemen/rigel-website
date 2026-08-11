@@ -56,7 +56,7 @@ export function RigelHub() {
     <div className="bg-white">
       <section className="relative overflow-hidden bg-[#06110e] text-white py-20 lg:py-24">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_15%,rgba(27,163,123,0.34),transparent_30%),radial-gradient(circle_at_82%_18%,rgba(59,130,246,0.16),transparent_30%)] pointer-events-none" />
-        <img src={APP_ICON} alt="" className="absolute right-12 top-12 h-56 w-56 rounded-[2.5rem] object-cover opacity-[0.06] rotate-12" />
+        <img src={APP_ICON} alt="" className="absolute right-12 top-12 h-56 w-56 rounded-full object-cover opacity-[0.06] rotate-12" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-14 items-center">
             <div>
