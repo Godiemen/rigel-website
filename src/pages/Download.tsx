@@ -16,24 +16,26 @@ export function Download() {
             className="w-full h-full object-cover"
           />
           {/* White gradient scrim from left for text legibility */}
-          <div className="absolute inset-0 bg-gradient-to-r from-white via-white/85 to-transparent" />
+          <div className="absolute inset-0 bg-[#0B1220]/70" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#0B1220]/80 via-transparent to-transparent" />
           {/* Bottom fade into white */}
-          <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-white to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-[#0B1220] to-transparent" />
         </div>
+        <div className="absolute inset-x-0 -bottom-1 h-24 sm:h-32 bg-white z-10 pointer-events-none" style={{ clipPath: 'polygon(0 40%, 100% 70%, 100% 100%, 0 100%)' }} />
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32">
           <div className="max-w-xl">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-50 border border-emerald-100 mb-6">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/20 border border-emerald-400/30 mb-6">
               <span className="h-1.5 w-1.5 rounded-full bg-[#0F9D6C] animate-pulse" />
-              <span className="text-xs font-semibold text-emerald-700 tracking-wide uppercase">Choose your Rigel app</span>
+              <span className="text-xs font-semibold text-emerald-100 tracking-wide uppercase">Choose your Rigel app</span>
             </div>
             <h1
-              className="text-4xl lg:text-5xl font-bold text-slate-900 mb-5 leading-tight tracking-tight"
+              className="text-4xl lg:text-5xl font-bold text-white mb-5 leading-tight tracking-tight"
               style={{ fontFamily: "'Inter Tight', sans-serif" }}
             >
               Select how you want to use Rigel Business
             </h1>
-            <p className="text-lg text-slate-600 leading-8 mb-8 max-w-lg">
+            <p className="text-lg text-slate-200 leading-8 mb-8 max-w-lg">
               Download the Windows desktop app, open Rigel instantly in your browser, or install the web app on your phone.
             </p>
             <div className="flex flex-col sm:flex-row gap-3">
@@ -47,7 +49,7 @@ export function Download() {
                 href={APP_URL}
                 target="_blank"
                 rel="noreferrer"
-                className="btn-pill inline-flex h-12 items-center border border-slate-200 bg-white/80 backdrop-blur-sm hover:bg-white hover:border-slate-300 px-7 font-semibold text-slate-700"
+                className="btn-pill inline-flex h-12 items-center border border-white/30 bg-white/10 backdrop-blur-sm hover:bg-white/20 hover:border-white/50 px-7 font-semibold text-white"
               >
                 Open Web App <ArrowRight className="h-4 w-4 ml-1" />
               </a>

@@ -2,10 +2,9 @@ import { useState, useEffect, useRef, type ReactNode, type ComponentType } from 
 import { Link } from 'react-router-dom';
 import {
   ArrowRight, ChevronLeft, ChevronRight, X, Play, ChevronDown, CheckCircle2,
-  Building, Truck, Monitor, Sofa, Factory, Gem,
-  Calculator, TrendingUp, ArrowLeftRight, FileText,
-  Download, ShieldCheck, AlertTriangle, RefreshCw,
-  BarChart3, Percent, BookOpen, Calendar, MapPin, Users, Wallet,
+  TrendingUp, ArrowLeftRight, FileText,
+  ShieldCheck, AlertTriangle,
+  Wallet, Building, Gem,
 } from 'lucide-react';
 
 const APP_URL = 'https://biz-flow-sa-delta.vercel.app';
@@ -48,21 +47,11 @@ function AssetsVideoPlayer({ src }: { src: string }) {
   );
 }
 
-const avatarGradients = [
-  'from-emerald-400 to-teal-600',
-  'from-blue-400 to-indigo-600',
-  'from-amber-400 to-orange-600',
-  'from-purple-400 to-pink-600',
-  'from-cyan-400 to-blue-600',
-  'from-rose-400 to-red-600',
-  'from-lime-400 to-green-600',
-  'from-violet-400 to-purple-600',
-  'from-sky-400 to-cyan-600',
-  'from-fuchsia-400 to-pink-600',
-];
-
 function CardSlider({ children, className = '' }: { children: ReactNode; className?: string }) {
   const ref = useRef<HTMLDivElement>(null);
+  const [centerIndex, setCenterIndex] = useState(0);
+  const childCount = Array.isArray(children) ? children.length : 1;
+
   const scroll = (dir: number) => {
     const el = ref.current;
     if (!el) return;
@@ -70,99 +59,61 @@ function CardSlider({ children, className = '' }: { children: ReactNode; classNa
     const w = (card?.offsetWidth ?? 320) + 16;
     el.scrollBy({ left: dir * w, behavior: 'smooth' });
   };
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const onScroll = () => {
+      const card = el.firstElementChild as HTMLElement | null;
+      if (!card) return;
+      const center = el.scrollLeft + el.clientWidth / 2;
+      const index = Math.round((center - card.offsetWidth / 2) / (card.offsetWidth + 16));
+      setCenterIndex(Math.max(0, Math.min(index, childCount - 1)));
+    };
+    el.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+    return () => el.removeEventListener('scroll', onScroll);
+  }, [childCount]);
+
   return (
-    <div className={`relative ${className}`}>
-      <div className="absolute -top-14 right-0 flex gap-2">
-        <button
-          onClick={() => scroll(-1)}
-          className="h-10 w-10 rounded-full border border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:text-emerald-600 flex items-center justify-center transition-colors"
-        >
+    <div className="relative">
+      <div className="absolute -top-14 right-0 flex items-center gap-3">
+        <span className="text-sm font-mono text-slate-500">
+          {String(centerIndex + 1).padStart(2, '0')} / {String(childCount).padStart(2, '0')}
+        </span>
+        <button onClick={() => scroll(-1)} className="h-10 w-10 rounded-full border border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:text-emerald-600 flex items-center justify-center transition-colors">
           <ChevronLeft className="h-5 w-5" />
         </button>
-        <button
-          onClick={() => scroll(1)}
-          className="h-10 w-10 rounded-full border border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:text-emerald-600 flex items-center justify-center transition-colors"
-        >
+        <button onClick={() => scroll(1)} className="h-10 w-10 rounded-full border border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:text-emerald-600 flex items-center justify-center transition-colors">
           <ChevronRight className="h-5 w-5" />
         </button>
       </div>
-      <div
-        ref={ref}
-        className="flex gap-4 overflow-x-auto no-scrollbar snap-x snap-mandatory pb-4 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8"
-      >
-        {children}
+      <div ref={ref} className={`flex gap-4 overflow-x-auto no-scrollbar snap-x snap-mandatory pb-4 pt-8 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 ${className}`}>
+        {Array.isArray(children) ? children.map((child, i) => (
+          <div key={i} className={`transition-all duration-500 ease-out shrink-0 snap-center ${i === centerIndex ? 'scale-[1.12] z-10' : 'scale-90 opacity-60 hover:opacity-90'}`}>
+            {child}
+          </div>
+        )) : children}
       </div>
-    </div>
-  );
-}
-
-function CardAvatar({ icon: Icon, index, label }: { icon: ComponentType<{ className?: string }>; index: number; label?: string }) {
-  const gradient = avatarGradients[index % avatarGradients.length];
-  return (
-    <div className={`relative h-20 bg-gradient-to-br ${gradient} overflow-hidden rounded-t-xl`}>
-      <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(circle, white 1.5px, transparent 1.5px)', backgroundSize: '14px 14px' }} />
-      <div className="absolute -right-5 -top-5 h-16 w-16 rounded-full bg-white/10" />
-      <div className="absolute -left-3 -bottom-6 h-14 w-14 rounded-full bg-white/10" />
-      <div className="absolute inset-0 flex items-center justify-center">
-        <Icon className="h-9 w-9 text-white drop-shadow-sm" />
-      </div>
-      <span className="absolute top-2 right-2.5 text-[10px] font-mono font-bold text-white/60">
-        {label ?? String(index + 1).padStart(2, '0')}
-      </span>
     </div>
   );
 }
 
 const assetCategories = [
-  { icon: Monitor, title: 'Office equipment', desc: 'Computers, printers, and peripherals.' },
-  { icon: Sofa, title: 'Furniture & fittings', desc: 'Desks, chairs, and fixtures.' },
-  { icon: Truck, title: 'Vehicles', desc: 'Cars, trucks, and delivery vehicles.' },
-  { icon: Factory, title: 'Machinery', desc: 'Plant, tools, and production equipment.' },
-  { icon: Building, title: 'Buildings', desc: 'Property, offices, and warehouses.' },
-  { icon: Gem, title: 'Intangible assets', desc: 'Patents, software, and licences.' },
-];
-
-const purchaseSources = [
-  { icon: FileText, title: 'Bank or EFT', desc: 'Direct payment from a company bank account.' },
-  { icon: TrendingUp, title: 'Loan finance', desc: 'Asset funded through a loan payable.' },
-  { icon: ArrowLeftRight, title: 'Capital contribution', desc: 'Director-funded capital contribution.' },
-  { icon: Gem, title: 'Donation received', desc: 'Asset received as a donation or grant.' },
-  { icon: ShieldCheck, title: 'Director-funded purchase', desc: 'Paid by a director on behalf of the company.' },
-];
-
-const depreciationCards = [
-  { icon: TrendingUp, title: 'Straight-line', desc: 'Cost spread evenly over useful life.' },
-  { icon: Percent, title: 'Diminishing balance', desc: 'Fixed percentage applied to remaining book value.' },
-  { icon: Calculator, title: 'SARS useful life', desc: 'Tax-aligned write-off periods as defaults.' },
-  { icon: RefreshCw, title: 'Month-end posting', desc: 'Post depreciation for all active assets at once.' },
-];
-
-const disposalCards = [
-  { icon: BarChart3, title: 'Sale disposal', desc: 'Record proceeds and gain/loss on sale.' },
-  { icon: AlertTriangle, title: 'Scrap', desc: 'Remove unusable assets with optional proceeds.' },
-  { icon: ShieldCheck, title: 'Lost or stolen', desc: 'Derecognise and record insurance claims.' },
-  { icon: Gem, title: 'Donation', desc: 'Section 18A certificates and donation tax.' },
-];
-
-const impairmentCards = [
-  { icon: FileText, title: 'Receivables ECL', desc: 'Expected credit loss by overdue days.' },
-  { icon: AlertTriangle, title: 'Fixed asset impairment', desc: 'Recoverable amount vs carrying value.' },
-  { icon: BarChart3, title: 'Inventory NRV', desc: 'Net realisable value write-downs.' },
-];
-
-const settingsCards = [
-  { icon: Percent, title: 'Age-bucket rates', desc: 'Expected credit loss rates per overdue bucket.' },
-  { icon: TrendingUp, title: 'PD & LGD', desc: 'Probability of default and loss given default.' },
-  { icon: Calculator, title: 'Discount rates', desc: 'Present value calculations for impairments.' },
-  { icon: ShieldCheck, title: 'SICR thresholds', desc: 'Significant increase in credit risk triggers.' },
+  { title: 'Office equipment', desc: 'Computers, printers, and peripherals.', image: '/assets register .png' },
+  { title: 'Furniture & fittings', desc: 'Desks, chairs, and fixtures.', image: '/assets manangement.png' },
+  { title: 'Vehicles', desc: 'Cars, trucks, and delivery vehicles.', image: '/assets report graphs .png' },
+  { title: 'Machinery', desc: 'Plant, tools, and production equipment.', image: '/add assets form .png' },
+  { title: 'Buildings', desc: 'Property, offices, and warehouses.', image: '/assets register .png' },
+  { title: 'Intangible assets', desc: 'Patents, software, and licences.', image: '/assets manangement.png' },
 ];
 
 const whyItMatters = [
-  { icon: Calculator, title: 'Accurate NBV', desc: 'Keep correct depreciation and net book values.' },
-  { icon: ShieldCheck, title: 'Compliant', desc: 'Stay aligned with accounting and tax rules.' },
-  { icon: ArrowLeftRight, title: 'Disposals', desc: 'Correctly record sales, scrap and donations.' },
-  { icon: AlertTriangle, title: 'Impairment', desc: 'Recognise write-downs at the right time.' },
-  { icon: Download, title: 'Audit-ready', desc: 'Clean, traceable reports for your accountant.' },
+  { title: 'Accurate NBV', desc: 'Keep correct depreciation and net book values.', image: '/deprciation schedule.png' },
+  { title: 'Compliant', desc: 'Stay aligned with accounting and tax rules.', image: '/depreciation policies .png' },
+  { title: 'Disposals', desc: 'Correctly record sales, scrap and donations.', image: '/depreciation schedule 4.png' },
+  { title: 'Impairment', desc: 'Recognise write-downs at the right time.', image: '/impairment calculator.png' },
+  { title: 'Audit-ready', desc: 'Clean, traceable reports for your accountant.', image: '/assets report graphs .png' },
 ];
 
 function AccordionItem({
@@ -263,30 +214,32 @@ export function AssetsManagement() {
             alt=""
             className="h-full w-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-white via-white/85 to-transparent" />
-          <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-white to-transparent" />
+          <div className="absolute inset-0 bg-[#0B1220]/70" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#0B1220]/80 via-transparent to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-[#0B1220] to-transparent" />
         </div>
+        <div className="absolute inset-x-0 -bottom-1 h-24 sm:h-32 bg-white z-10 pointer-events-none" style={{ clipPath: 'polygon(0 40%, 100% 70%, 100% 100%, 0 100%)' }} />
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-36">
           <div className="max-w-xl">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-50 border border-emerald-100 mb-6">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/20 border border-emerald-400/30 mb-6">
               <Building className="h-3.5 w-3.5 text-[#0F9D6C]" />
-              <span className="text-xs font-semibold text-emerald-700 tracking-wide uppercase">Fixed Assets</span>
+              <span className="text-xs font-semibold text-emerald-100 tracking-wide uppercase">Fixed Assets</span>
             </div>
             <h1
-              className="text-4xl lg:text-5xl font-bold text-slate-900 mb-5 leading-tight tracking-tight"
+              className="text-4xl lg:text-5xl font-bold text-white mb-5 leading-tight tracking-tight"
               style={{ fontFamily: "'Inter Tight', sans-serif" }}
             >
               Track, Depreciate, Dispose of, and Impair Assets
             </h1>
-            <p className="text-lg text-slate-600 leading-8 mb-8 max-w-lg">
+            <p className="text-lg text-slate-200 leading-8 mb-8 max-w-lg">
               Full control over fixed assets from purchase to disposal, with depreciation schedules, impairment, expected credit losses and inventory NRV write-downs.
             </p>
             <div className="flex flex-col sm:flex-row gap-3">
               <a href={`${APP_URL}/signup`} className="btn-pill inline-flex h-12 items-center bg-[#0F9D6C] hover:bg-[#0B7A52] px-7 font-semibold text-white">
                 Get Started <ArrowRight className="h-4 w-4 ml-2" />
               </a>
-              <Link to="/book-demo" className="btn-pill inline-flex h-12 items-center border border-slate-200 bg-white/80 backdrop-blur-sm hover:bg-white hover:border-slate-300 px-7 font-semibold text-slate-700">
+              <Link to="/book-demo" className="btn-pill inline-flex h-12 items-center border border-white/30 bg-white/10 backdrop-blur-sm hover:bg-white/20 hover:border-white/50 px-7 font-semibold text-white">
                 Book a demo
               </Link>
             </div>
@@ -304,12 +257,12 @@ export function AssetsManagement() {
             </h2>
           </div>
           <CardSlider>
-            {assetCategories.map((item, i) => (
-              <div key={item.title} className="card-lift shrink-0 snap-start w-[85%] sm:w-[55%] lg:w-[40%] bg-white rounded-2xl border border-slate-200 overflow-hidden">
-                <CardAvatar icon={item.icon} index={i} />
-                <div className="p-5">
-                  <h3 className="text-sm font-bold text-slate-900 mb-1" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{item.title}</h3>
-                  <p className="text-[11px] text-slate-500 leading-4">{item.desc}</p>
+            {assetCategories.map((item) => (
+              <div key={item.title} className="snap-center shrink-0 w-[280px] h-[280px] sm:w-[340px] sm:h-[340px] bg-white rounded-2xl overflow-hidden shadow-md transition-all duration-700 ease-out flex flex-col hover:-translate-y-1.5 group/card">
+                <img src={item.image} alt={item.title} className="h-[55%] w-full object-cover group-hover/card:scale-110 transition-transform duration-700" />
+                <div className="h-[45%] flex flex-col justify-center p-5 bg-[#0052CC]">
+                  <h3 className="text-sm font-bold text-white mb-1" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{item.title}</h3>
+                  <p className="text-[11px] text-white/80 leading-4">{item.desc}</p>
                 </div>
               </div>
             ))}
@@ -562,12 +515,12 @@ export function AssetsManagement() {
             </h2>
           </div>
           <CardSlider>
-            {whyItMatters.map((item, i) => (
-              <div key={item.title} className="card-lift shrink-0 snap-start w-[85%] sm:w-[55%] lg:w-[40%] bg-white rounded-2xl border border-slate-200 overflow-hidden">
-                <CardAvatar icon={item.icon} index={i} />
-                <div className="p-5">
-                  <h3 className="text-sm font-bold text-slate-900 mb-1" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{item.title}</h3>
-                  <p className="text-[11px] text-slate-500 leading-4">{item.desc}</p>
+            {whyItMatters.map((item) => (
+              <div key={item.title} className="snap-center shrink-0 w-[280px] h-[280px] sm:w-[340px] sm:h-[340px] bg-white rounded-2xl overflow-hidden shadow-md transition-all duration-700 ease-out flex flex-col hover:-translate-y-1.5 group/card">
+                <img src={item.image} alt={item.title} className="h-[55%] w-full object-cover group-hover/card:scale-110 transition-transform duration-700" />
+                <div className="h-[45%] flex flex-col justify-center p-5 bg-[#0052CC]">
+                  <h3 className="text-sm font-bold text-white mb-1" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{item.title}</h3>
+                  <p className="text-[11px] text-white/80 leading-4">{item.desc}</p>
                 </div>
               </div>
             ))}

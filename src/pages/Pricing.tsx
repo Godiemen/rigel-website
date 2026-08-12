@@ -59,30 +59,32 @@ export function Pricing() {
             alt="Rigel Business pricing"
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-white via-white/85 to-transparent" />
-          <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-white to-transparent" />
+          <div className="absolute inset-0 bg-[#0B1220]/70" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#0B1220]/80 via-transparent to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-[#0B1220] to-transparent" />
         </div>
+        <div className="absolute inset-x-0 -bottom-1 h-24 sm:h-32 bg-white z-10 pointer-events-none" style={{ clipPath: 'polygon(0 40%, 100% 70%, 100% 100%, 0 100%)' }} />
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-36">
           <div className="max-w-xl">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-50 border border-emerald-100 mb-6">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/20 border border-emerald-400/30 mb-6">
               <span className="h-1.5 w-1.5 rounded-full bg-[#0F9D6C] animate-pulse" />
-              <span className="text-xs font-semibold text-emerald-700 tracking-wide uppercase">Pricing</span>
+              <span className="text-xs font-semibold text-emerald-100 tracking-wide uppercase">Pricing</span>
             </div>
             <h1
-              className="text-4xl lg:text-5xl font-bold text-slate-900 mb-5 leading-tight tracking-tight"
+              className="text-4xl lg:text-5xl font-bold text-white mb-5 leading-tight tracking-tight"
               style={{ fontFamily: "'Inter Tight', sans-serif" }}
             >
               Simple pricing for growing South African businesses
             </h1>
-            <p className="text-lg text-slate-600 leading-8 mb-8 max-w-lg">
+            <p className="text-lg text-slate-200 leading-8 mb-8 max-w-lg">
               One plan that covers everything — accounting, VAT, payroll, inventory and reporting. No hidden fees, no per-user add-ons. Cancel anytime.
             </p>
             <div className="flex flex-col sm:flex-row gap-3">
               <a href={`${APP_URL}/signup`} className="btn-pill inline-flex h-12 items-center bg-[#0F9D6C] hover:bg-[#0B7A52] px-7 font-semibold text-white">
                 Start free trial <ArrowRight className="h-4 w-4 ml-2" />
               </a>
-              <a href="#plans" className="btn-pill inline-flex h-12 items-center border border-slate-200 bg-white/80 backdrop-blur-sm hover:bg-white hover:border-slate-300 px-7 font-semibold text-slate-700">
+              <a href="#plans" className="btn-pill inline-flex h-12 items-center border border-white/30 bg-white/10 backdrop-blur-sm hover:bg-white/20 hover:border-white/50 px-7 font-semibold text-white">
                 See plans
               </a>
             </div>

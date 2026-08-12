@@ -236,21 +236,23 @@ export function BusinessResources() {
               alt="Rigel Business resources"
               className="w-full h-full object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-white via-white/85 to-transparent" />
-            <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-white to-transparent" />
+            <div className="absolute inset-0 bg-[#0B1220]/70" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#0B1220]/80 via-transparent to-transparent" />
+            <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-[#0B1220] to-transparent" />
+          <div className="absolute inset-x-0 -bottom-1 h-24 sm:h-32 bg-white" style={{ clipPath: 'polygon(0 40%, 100% 70%, 100% 100%, 0 100%)' }} />
           </div>
 
           <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
-            <button onClick={() => setSelectedArticle(null)} className="mb-8 inline-flex items-center gap-2 text-sm font-semibold text-[#0F9D6C] hover:text-emerald-700 transition-colors">
+            <button onClick={() => setSelectedArticle(null)} className="mb-8 inline-flex items-center gap-2 text-sm font-semibold text-emerald-400 hover:text-emerald-300 transition-colors">
               <ArrowLeft className="h-4 w-4" /> Back to resources
             </button>
-            <div className="mb-5 flex flex-wrap items-center gap-3 text-xs font-semibold uppercase tracking-wider text-slate-600">
-              <span className="rounded-full bg-emerald-50 px-3 py-1 text-emerald-700 border border-emerald-100">{selectedArticle.category}</span>
+            <div className="mb-5 flex flex-wrap items-center gap-3 text-xs font-semibold uppercase tracking-wider text-slate-300">
+              <span className="rounded-full bg-white/10 px-3 py-1 text-emerald-300 border border-white/20">{selectedArticle.category}</span>
               <span className="flex items-center gap-1"><UserRound className="h-3.5 w-3.5" /> {selectedArticle.author}</span>
               <span className="flex items-center gap-1"><CalendarDays className="h-3.5 w-3.5" /> {selectedArticle.date}</span>
               <span className="flex items-center gap-1"><Clock className="h-3.5 w-3.5" /> {selectedArticle.read}</span>
             </div>
-            <h1 className="text-3xl lg:text-5xl font-bold leading-tight tracking-tight text-slate-900" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{selectedArticle.title}</h1>
+            <h1 className="text-3xl lg:text-5xl font-bold leading-tight tracking-tight text-white" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{selectedArticle.title}</h1>
           </div>
         </section>
 
@@ -324,25 +326,27 @@ export function BusinessResources() {
               alt="Rigel Business resources"
               className="w-full h-full object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-white via-white/85 to-transparent" />
-            <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-white to-transparent" />
+            <div className="absolute inset-0 bg-[#0B1220]/70" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#0B1220]/80 via-transparent to-transparent" />
+            <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-[#0B1220] to-transparent" />
+          <div className="absolute inset-x-0 -bottom-1 h-24 sm:h-32 bg-white" style={{ clipPath: 'polygon(0 40%, 100% 70%, 100% 100%, 0 100%)' }} />
           </div>
 
           <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-36">
             <div className="max-w-xl">
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-50 border border-emerald-100 mb-6">
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/20 border border-emerald-400/30 mb-6">
                 <BookOpen className="h-3.5 w-3.5 text-[#0F9D6C]" />
-                <span className="text-xs font-semibold text-emerald-700 tracking-wide uppercase">Business Resources</span>
+                <span className="text-xs font-semibold text-emerald-100 tracking-wide uppercase">Business Resources</span>
               </div>
-              <h1 className="text-4xl lg:text-5xl font-bold text-slate-900 mb-5 leading-tight tracking-tight" style={{ fontFamily: "'Inter Tight', sans-serif" }}>
+              <h1 className="text-4xl lg:text-5xl font-bold text-white mb-5 leading-tight tracking-tight" style={{ fontFamily: "'Inter Tight', sans-serif" }}>
                 Articles to help you run a smarter business
               </h1>
-              <p className="text-lg text-slate-600 leading-8 max-w-lg mb-8">
+              <p className="text-lg text-slate-200 leading-8 max-w-lg mb-8">
                 Practical guides for VAT, accounting reports, sales, purchases, payroll, inventory and everyday business decisions in South Africa.
               </p>
               <div className="flex flex-wrap gap-2">
                 {categories.map(category => (
-                  <span key={category} className="rounded-full bg-white/80 border border-slate-200 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-slate-600">{category}</span>
+                  <span key={category} className="rounded-full bg-white/10 border border-white/20 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-slate-200">{category}</span>
                 ))}
               </div>
             </div>

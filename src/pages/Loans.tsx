@@ -1,66 +1,17 @@
-import { useState, useEffect, useRef, type ReactNode, type ComponentType } from 'react';
+import { useState, useEffect, useRef, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  ChevronDown, ArrowRight, ChevronLeft, ChevronRight, CheckCircle2, X, Play,
-  Landmark, Wallet, TrendingUp, ArrowLeftRight, RefreshCw,
-  ShieldCheck, Download, BarChart3, Percent, FileText,
-  BookOpen, Calendar, PieChart,
+  ChevronDown, ArrowRight, ChevronLeft, ChevronRight, CheckCircle2,
+  Landmark, FileText, ArrowLeftRight,
 } from 'lucide-react';
 
 const APP_URL = 'https://biz-flow-sa-delta.vercel.app';
 
-function getYouTubeId(url: string) {
-  try {
-    return url.split('youtu.be/')[1]?.split('?')[0] ?? '';
-  } catch {
-    return '';
-  }
-}
-
-function getYouTubeEmbedUrl(url: string) {
-  const id = getYouTubeId(url);
-  return `https://www.youtube.com/embed/${id}?rel=0&autoplay=1`;
-}
-
-function getYouTubeThumb(url: string) {
-  const id = getYouTubeId(url);
-  return `https://img.youtube.com/vi/${id}/0.jpg`;
-}
-
-const LOANS_DEMO_VIDEOS = [
-  { url: 'https://youtu.be/ppK_9EF9miI', title: 'Loans demo 1', desc: 'by Rigel Team' },
-  { url: 'https://youtu.be/IEbpGB9GaKE', title: 'Loans demo 2', desc: 'by Rigel Team' },
-];
-
-function LoanVideoPlayer({ src }: { src: string }) {
-  return (
-    <div className="relative overflow-hidden rounded-2xl bg-black shadow-2xl aspect-video">
-      <iframe
-        src={getYouTubeEmbedUrl(src)}
-        title="Loans demo video"
-        className="absolute inset-0 h-full w-full"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        allowFullScreen
-      />
-    </div>
-  );
-}
-
-const avatarGradients = [
-  'from-emerald-400 to-teal-600',
-  'from-blue-400 to-indigo-600',
-  'from-amber-400 to-orange-600',
-  'from-purple-400 to-pink-600',
-  'from-cyan-400 to-blue-600',
-  'from-rose-400 to-red-600',
-  'from-lime-400 to-green-600',
-  'from-violet-400 to-purple-600',
-  'from-sky-400 to-cyan-600',
-  'from-fuchsia-400 to-pink-600',
-];
-
 function CardSlider({ children, className = '' }: { children: ReactNode; className?: string }) {
   const ref = useRef<HTMLDivElement>(null);
+  const [centerIndex, setCenterIndex] = useState(0);
+  const childCount = Array.isArray(children) ? children.length : 1;
+
   const scroll = (dir: number) => {
     const el = ref.current;
     if (!el) return;
@@ -68,45 +19,42 @@ function CardSlider({ children, className = '' }: { children: ReactNode; classNa
     const w = (card?.offsetWidth ?? 320) + 16;
     el.scrollBy({ left: dir * w, behavior: 'smooth' });
   };
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const onScroll = () => {
+      const card = el.firstElementChild as HTMLElement | null;
+      if (!card) return;
+      const center = el.scrollLeft + el.clientWidth / 2;
+      const index = Math.round((center - card.offsetWidth / 2) / (card.offsetWidth + 16));
+      setCenterIndex(Math.max(0, Math.min(index, childCount - 1)));
+    };
+    el.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+    return () => el.removeEventListener('scroll', onScroll);
+  }, [childCount]);
+
   return (
     <div className="relative">
-      <div className="absolute -top-14 right-0 flex gap-2">
-        <button
-          onClick={() => scroll(-1)}
-          className="h-10 w-10 rounded-full border border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:text-emerald-600 flex items-center justify-center transition-colors"
-        >
+      <div className="absolute -top-14 right-0 flex items-center gap-3">
+        <span className="text-sm font-mono text-slate-500">
+          {String(centerIndex + 1).padStart(2, '0')} / {String(childCount).padStart(2, '0')}
+        </span>
+        <button onClick={() => scroll(-1)} className="h-10 w-10 rounded-full border border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:text-emerald-600 flex items-center justify-center transition-colors">
           <ChevronLeft className="h-5 w-5" />
         </button>
-        <button
-          onClick={() => scroll(1)}
-          className="h-10 w-10 rounded-full border border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:text-emerald-600 flex items-center justify-center transition-colors"
-        >
+        <button onClick={() => scroll(1)} className="h-10 w-10 rounded-full border border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:text-emerald-600 flex items-center justify-center transition-colors">
           <ChevronRight className="h-5 w-5" />
         </button>
       </div>
-      <div
-        ref={ref}
-        className={`flex gap-4 overflow-x-auto no-scrollbar snap-x snap-mandatory pb-4 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 ${className}`}
-      >
-        {children}
+      <div ref={ref} className={`flex gap-4 overflow-x-auto no-scrollbar snap-x snap-mandatory pb-4 pt-8 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 ${className}`}>
+        {Array.isArray(children) ? children.map((child, i) => (
+          <div key={i} className={`transition-all duration-500 ease-out shrink-0 snap-center ${i === centerIndex ? 'scale-[1.12] z-10' : 'scale-90 opacity-60 hover:opacity-90'}`}>
+            {child}
+          </div>
+        )) : children}
       </div>
-    </div>
-  );
-}
-
-function CardAvatar({ icon: Icon, index, label }: { icon: ComponentType<{ className?: string }>; index: number; label?: string }) {
-  const gradient = avatarGradients[index % avatarGradients.length];
-  return (
-    <div className={`relative h-20 bg-gradient-to-br ${gradient} overflow-hidden rounded-t-xl`}>
-      <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(circle, white 1.5px, transparent 1.5px)', backgroundSize: '14px 14px' }} />
-      <div className="absolute -right-5 -top-5 h-16 w-16 rounded-full bg-white/10" />
-      <div className="absolute -left-3 -bottom-6 h-14 w-14 rounded-full bg-white/10" />
-      <div className="absolute inset-0 flex items-center justify-center">
-        <Icon className="h-9 w-9 text-white drop-shadow-sm" />
-      </div>
-      <span className="absolute top-2 right-2.5 text-[10px] font-mono font-bold text-white/60">
-        {label ?? String(index + 1).padStart(2, '0')}
-      </span>
     </div>
   );
 }
@@ -162,31 +110,21 @@ const moduleSections: AccordionSection[] = [
 ];
 
 const loanTypes = [
-  { icon: Landmark, title: 'Term loans', desc: 'Bank or financial institution loans with a fixed repayment schedule.' },
-  { icon: Wallet, title: 'Overdrafts', desc: 'Revolving credit facilities linked to bank accounts.' },
-  { icon: TrendingUp, title: 'Mortgages', desc: 'Property-backed long-term finance and repayments.' },
-  { icon: ArrowLeftRight, title: 'Vehicle finance', desc: 'Asset-backed vehicle loans and balloon settlements.' },
-  { icon: RefreshCw, title: 'Other borrowings', desc: 'Any other liability classified as a loan.' },
-  { icon: Percent, title: 'Loans receivable', desc: 'Money the company has lent out to third parties.' },
-  { icon: BookOpen, title: 'Director loans', desc: 'Both loans to and from company directors.' },
+  { title: 'Term loans', desc: 'Bank or financial institution loans with a fixed repayment schedule.', image: '/creditors control.png' },
+  { title: 'Overdrafts', desc: 'Revolving credit facilities linked to bank accounts.', image: '/creditors control 2.png' },
+  { title: 'Mortgages', desc: 'Property-backed long-term finance and repayments.', image: '/creditors control advisor.png' },
+  { title: 'Vehicle finance', desc: 'Asset-backed vehicle loans and balloon settlements.', image: '/assets register .png' },
+  { title: 'Other borrowings', desc: 'Any other liability classified as a loan.', image: '/general ledger .png' },
+  { title: 'Loans receivable', desc: 'Money the company has lent out to third parties.', image: '/debtors control .png' },
+  { title: 'Director loans', desc: 'Both loans to and from company directors.', image: '/balance sheet 1.png' },
 ];
 
 const accountingAccounts = [
-  { title: 'Loans Payable — Short Term', desc: 'What the company owes within 12 months.' },
-  { title: 'Loans Payable — Long Term', desc: 'What the company owes after 12 months.' },
-  { title: 'Loans Receivable — Current', desc: 'Money owed to the company within 12 months.' },
-  { title: 'Loans Receivable — Non-Current', desc: 'Money owed to the company after 12 months.' },
-  { title: 'Current Portion of Long-Term Loans', desc: 'The part of a long-term loan due within the next year.' },
-];
-
-const features = [
-  { icon: FileText, title: 'New loans & opening balances', desc: 'Record fresh loans or import existing opening balances.' },
-  { icon: BarChart3, title: 'Amortization schedule', desc: 'Full repayment schedule with current / non-current split.' },
-  { icon: ArrowLeftRight, title: 'Repayment & interest split', desc: 'Automatically split between interest and capital.' },
-  { icon: RefreshCw, title: 'Loan reconciliation', desc: 'Match against lender or bank statements.' },
-  { icon: ShieldCheck, title: 'Loan clearing report', desc: 'Track which loan proceeds have cleared the bank.' },
-  { icon: Percent, title: 'Notional interest', desc: 'Flag and post director-loan notional interest.' },
-  { icon: PieChart, title: 'Dashboard & reporting', desc: 'Total loans, interest, payments and progress.' },
+  { title: 'Loans Payable — Short Term', desc: 'What the company owes within 12 months.', image: '/creditors control.png' },
+  { title: 'Loans Payable — Long Term', desc: 'What the company owes after 12 months.', image: '/creditors control 2.png' },
+  { title: 'Loans Receivable — Current', desc: 'Money owed to the company within 12 months.', image: '/debtors control .png' },
+  { title: 'Loans Receivable — Non-Current', desc: 'Money owed to the company after 12 months.', image: '/aging for debtors .png' },
+  { title: 'Current Portion of Long-Term Loans', desc: 'The part of a long-term loan due within the next year.', image: '/balance sheet 2.png' },
 ];
 
 const journalPreviews = [
@@ -266,18 +204,6 @@ function AccordionItem({
 
 export function Loans() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
-  const [playingVideo, setPlayingVideo] = useState<typeof LOANS_DEMO_VIDEOS[number] | null>(null);
-  const [activeVideoIndex, setActiveVideoIndex] = useState(0);
-  const videoSliderRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!playingVideo) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setPlayingVideo(null);
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [playingVideo]);
 
   return (
     <div className="bg-white">
@@ -289,30 +215,32 @@ export function Loans() {
             alt=""
             className="h-full w-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-white via-white/85 to-transparent" />
-          <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-white to-transparent" />
+          <div className="absolute inset-0 bg-[#0B1220]/70" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#0B1220]/80 via-transparent to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-[#0B1220] to-transparent" />
         </div>
+        <div className="absolute inset-x-0 -bottom-1 h-24 sm:h-32 bg-white z-10 pointer-events-none" style={{ clipPath: 'polygon(0 40%, 100% 70%, 100% 100%, 0 100%)' }} />
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-36">
           <div className="max-w-xl">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-50 border border-emerald-100 mb-6">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/20 border border-emerald-400/30 mb-6">
               <Landmark className="h-3.5 w-3.5 text-[#0F9D6C]" />
-              <span className="text-xs font-semibold text-emerald-700 tracking-wide uppercase">Loans</span>
+              <span className="text-xs font-semibold text-emerald-100 tracking-wide uppercase">Loans</span>
             </div>
             <h1
-              className="text-4xl lg:text-5xl font-bold text-slate-900 mb-5 leading-tight tracking-tight"
+              className="text-4xl lg:text-5xl font-bold text-white mb-5 leading-tight tracking-tight"
               style={{ fontFamily: "'Inter Tight', sans-serif" }}
             >
               Track, Manage, and Repay Every Business Loan
             </h1>
-            <p className="text-lg text-slate-600 leading-8 mb-8 max-w-lg">
+            <p className="text-lg text-slate-200 leading-8 mb-8 max-w-lg">
               A complete picture of all borrowing and lending activity — from term loans and overdrafts to director loans and notional interest.
             </p>
             <div className="flex flex-col sm:flex-row gap-3">
               <a href={`${APP_URL}/signup`} className="btn-pill inline-flex h-12 items-center bg-[#0F9D6C] hover:bg-[#0B7A52] px-7 font-semibold text-white">
                 Get Started <ArrowRight className="h-4 w-4 ml-2" />
               </a>
-              <Link to="/book-demo" className="btn-pill inline-flex h-12 items-center border border-slate-200 bg-white/80 backdrop-blur-sm hover:bg-white hover:border-slate-300 px-7 font-semibold text-slate-700">
+              <Link to="/book-demo" className="btn-pill inline-flex h-12 items-center border border-white/30 bg-white/10 backdrop-blur-sm hover:bg-white/20 hover:border-white/50 px-7 font-semibold text-white">
                 Book a demo
               </Link>
             </div>
@@ -330,12 +258,12 @@ export function Loans() {
             </h2>
           </div>
           <CardSlider>
-            {loanTypes.map((item, i) => (
-              <div key={item.title} className="card-lift shrink-0 snap-start w-[85%] sm:w-[55%] lg:w-[40%] bg-white rounded-2xl border border-slate-200 overflow-hidden">
-                <CardAvatar icon={item.icon} index={i} />
-                <div className="p-5">
-                  <h3 className="text-sm font-bold text-slate-900 mb-1" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{item.title}</h3>
-                  <p className="text-[11px] text-slate-500 leading-4">{item.desc}</p>
+            {loanTypes.map((item) => (
+              <div key={item.title} className="snap-center shrink-0 w-[280px] h-[280px] sm:w-[340px] sm:h-[340px] bg-white rounded-2xl overflow-hidden shadow-md transition-all duration-700 ease-out flex flex-col hover:-translate-y-1.5 group/card">
+                <img src={item.image} alt={item.title} className="h-[55%] w-full object-cover group-hover/card:scale-110 transition-transform duration-700" />
+                <div className="h-[45%] flex flex-col justify-center p-5 bg-[#0052CC]">
+                  <h3 className="text-sm font-bold text-white mb-1" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{item.title}</h3>
+                  <p className="text-[11px] text-white/80 leading-4">{item.desc}</p>
                 </div>
               </div>
             ))}
@@ -353,12 +281,12 @@ export function Loans() {
             </h2>
           </div>
           <CardSlider>
-            {accountingAccounts.map((item, i) => (
-              <div key={item.title} className="card-lift shrink-0 snap-start w-[85%] sm:w-[55%] lg:w-[40%] bg-white rounded-2xl border border-slate-200 overflow-hidden">
-                <CardAvatar icon={BarChart3} index={i} />
-                <div className="p-5">
-                  <h3 className="text-sm font-bold text-slate-900 mb-1" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{item.title}</h3>
-                  <p className="text-[11px] text-slate-500 leading-4">{item.desc}</p>
+            {accountingAccounts.map((item) => (
+              <div key={item.title} className="snap-center shrink-0 w-[280px] h-[280px] sm:w-[340px] sm:h-[340px] bg-white rounded-2xl overflow-hidden shadow-md transition-all duration-700 ease-out flex flex-col hover:-translate-y-1.5 group/card">
+                <img src={item.image} alt={item.title} className="h-[55%] w-full object-cover group-hover/card:scale-110 transition-transform duration-700" />
+                <div className="h-[45%] flex flex-col justify-center p-5 bg-[#0052CC]">
+                  <h3 className="text-sm font-bold text-white mb-1" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{item.title}</h3>
+                  <p className="text-[11px] text-white/80 leading-4">{item.desc}</p>
                 </div>
               </div>
             ))}

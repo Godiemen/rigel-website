@@ -1,33 +1,21 @@
-import { useState, useEffect, useRef, type ReactNode, type ComponentType } from 'react';
+import { useState, useEffect, useRef, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import {
   ChevronDown, ArrowRight, ChevronLeft, ChevronRight, CheckCircle2, X, Play,
   FileBarChart, TrendingUp, Layers, FileText, Scale,
   BookOpen, Wallet, Calculator, ScrollText, History,
-  ShieldCheck, AlertTriangle, RefreshCw, Search,
   LayoutGrid, GraduationCap,
-  Download, Eye, Zap,
 } from 'lucide-react';
 
 const APP_URL = 'https://biz-flow-sa-delta.vercel.app';
 
 
 
-const avatarGradients = [
-  'from-emerald-400 to-teal-600',
-  'from-blue-400 to-indigo-600',
-  'from-amber-400 to-orange-600',
-  'from-purple-400 to-pink-600',
-  'from-cyan-400 to-blue-600',
-  'from-rose-400 to-red-600',
-  'from-lime-400 to-green-600',
-  'from-violet-400 to-purple-600',
-  'from-sky-400 to-cyan-600',
-  'from-fuchsia-400 to-pink-600',
-];
-
 function CardSlider({ children, className = '' }: { children: ReactNode; className?: string }) {
   const ref = useRef<HTMLDivElement>(null);
+  const [centerIndex, setCenterIndex] = useState(0);
+  const childCount = Array.isArray(children) ? children.length : 1;
+
   const scroll = (dir: number) => {
     const el = ref.current;
     if (!el) return;
@@ -35,45 +23,42 @@ function CardSlider({ children, className = '' }: { children: ReactNode; classNa
     const w = (card?.offsetWidth ?? 320) + 16;
     el.scrollBy({ left: dir * w, behavior: 'smooth' });
   };
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const onScroll = () => {
+      const card = el.firstElementChild as HTMLElement | null;
+      if (!card) return;
+      const center = el.scrollLeft + el.clientWidth / 2;
+      const index = Math.round((center - card.offsetWidth / 2) / (card.offsetWidth + 16));
+      setCenterIndex(Math.max(0, Math.min(index, childCount - 1)));
+    };
+    el.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+    return () => el.removeEventListener('scroll', onScroll);
+  }, [childCount]);
+
   return (
     <div className="relative">
-      <div className="absolute -top-14 right-0 flex gap-2">
-        <button
-          onClick={() => scroll(-1)}
-          className="h-10 w-10 rounded-full border border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:text-emerald-600 flex items-center justify-center transition-colors"
-        >
+      <div className="absolute -top-14 right-0 flex items-center gap-3">
+        <span className="text-sm font-mono text-slate-500">
+          {String(centerIndex + 1).padStart(2, '0')} / {String(childCount).padStart(2, '0')}
+        </span>
+        <button onClick={() => scroll(-1)} className="h-10 w-10 rounded-full border border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:text-emerald-600 flex items-center justify-center transition-colors">
           <ChevronLeft className="h-5 w-5" />
         </button>
-        <button
-          onClick={() => scroll(1)}
-          className="h-10 w-10 rounded-full border border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:text-emerald-600 flex items-center justify-center transition-colors"
-        >
+        <button onClick={() => scroll(1)} className="h-10 w-10 rounded-full border border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:text-emerald-600 flex items-center justify-center transition-colors">
           <ChevronRight className="h-5 w-5" />
         </button>
       </div>
-      <div
-        ref={ref}
-        className={`flex gap-4 overflow-x-auto no-scrollbar snap-x snap-mandatory pb-4 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 ${className}`}
-      >
-        {children}
+      <div ref={ref} className={`flex gap-4 overflow-x-auto no-scrollbar snap-x snap-mandatory pb-4 pt-8 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 ${className}`}>
+        {Array.isArray(children) ? children.map((child, i) => (
+          <div key={i} className={`transition-all duration-500 ease-out shrink-0 snap-center ${i === centerIndex ? 'scale-[1.12] z-10' : 'scale-90 opacity-60 hover:opacity-90'}`}>
+            {child}
+          </div>
+        )) : children}
       </div>
-    </div>
-  );
-}
-
-function CardAvatar({ icon: Icon, index, label }: { icon: ComponentType<{ className?: string }>; index: number; label?: string }) {
-  const gradient = avatarGradients[index % avatarGradients.length];
-  return (
-    <div className={`relative h-20 bg-gradient-to-br ${gradient} overflow-hidden rounded-t-xl`}>
-      <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(circle, white 1.5px, transparent 1.5px)', backgroundSize: '14px 14px' }} />
-      <div className="absolute -right-5 -top-5 h-16 w-16 rounded-full bg-white/10" />
-      <div className="absolute -left-3 -bottom-6 h-14 w-14 rounded-full bg-white/10" />
-      <div className="absolute inset-0 flex items-center justify-center">
-        <Icon className="h-9 w-9 text-white drop-shadow-sm" />
-      </div>
-      <span className="absolute top-2 right-2.5 text-[10px] font-mono font-bold text-white/60">
-        {label ?? String(index + 1).padStart(2, '0')}
-      </span>
     </div>
   );
 }
@@ -398,30 +383,32 @@ export function Reporting() {
             alt=""
             className="h-full w-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-white via-white/85 to-transparent" />
-          <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-white to-transparent" />
+          <div className="absolute inset-0 bg-[#0B1220]/70" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#0B1220]/80 via-transparent to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-[#0B1220] to-transparent" />
         </div>
+        <div className="absolute inset-x-0 -bottom-1 h-24 sm:h-32 bg-white z-10 pointer-events-none" style={{ clipPath: 'polygon(0 40%, 100% 70%, 100% 100%, 0 100%)' }} />
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-36">
           <div className="max-w-xl">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-50 border border-emerald-100 mb-6">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/20 border border-emerald-400/30 mb-6">
               <LayoutGrid className="h-3.5 w-3.5 text-[#0F9D6C]" />
-              <span className="text-xs font-semibold text-emerald-700 tracking-wide uppercase">Financial Reporting Center</span>
+              <span className="text-xs font-semibold text-emerald-100 tracking-wide uppercase">Financial Reporting Center</span>
             </div>
             <h1
-              className="text-4xl lg:text-5xl font-bold text-slate-900 mb-5 leading-tight tracking-tight"
+              className="text-4xl lg:text-5xl font-bold text-white mb-5 leading-tight tracking-tight"
               style={{ fontFamily: "'Inter Tight', sans-serif" }}
             >
               IFRS-Compliant Statements, Trial Balance, Ledger &amp; Budget
             </h1>
-            <p className="text-lg text-slate-600 leading-8 mb-8 max-w-lg">
+            <p className="text-lg text-slate-200 leading-8 mb-8 max-w-lg">
               Generate, compare, and export full IFRS financial statements directly from your live trial balance. The IIV engine renders Balance Sheet, Income Statement, Notes to the AFS, and Changes in Equity — with monthly snapshots, comparative years, account drilldown, and one-click PDF/Excel export.
             </p>
             <div className="flex flex-col sm:flex-row gap-3">
               <a href={`${APP_URL}/signup`} className="btn-pill inline-flex h-12 items-center bg-[#0F9D6C] hover:bg-[#0B7A52] px-7 font-semibold text-white">
                 Open Reporting Hub <ArrowRight className="h-4 w-4 ml-2" />
               </a>
-              <Link to="/book-demo" className="btn-pill inline-flex h-12 items-center border border-slate-200 bg-white/80 backdrop-blur-sm hover:bg-white hover:border-slate-300 px-7 font-semibold text-slate-700">
+              <Link to="/book-demo" className="btn-pill inline-flex h-12 items-center border border-white/30 bg-white/10 backdrop-blur-sm hover:bg-white/20 hover:border-white/50 px-7 font-semibold text-white">
                 View Tutorial
               </Link>
             </div>
@@ -442,13 +429,13 @@ export function Reporting() {
             </p>
           </div>
           <CardSlider>
-            {hubModules.map((m, i) => (
-              <div key={m.title} className="card-lift shrink-0 snap-start w-[85%] sm:w-[55%] lg:w-[40%] bg-white rounded-2xl border border-slate-200 overflow-hidden">
-                <CardAvatar icon={m.icon} index={i} />
-                <div className="p-5">
-                  <h3 className="text-sm font-bold text-slate-900 mb-1" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{m.title}</h3>
-                  <p className="text-[11px] text-slate-500 leading-4 mb-2">{m.desc}</p>
-                  <p className="text-[10px] font-semibold text-emerald-600 uppercase tracking-wide">{m.cat}</p>
+            {hubModules.map((m) => (
+              <div key={m.title} className="snap-center shrink-0 w-[280px] h-[280px] sm:w-[340px] sm:h-[340px] bg-white rounded-2xl overflow-hidden shadow-md transition-all duration-700 ease-out flex flex-col hover:-translate-y-1.5 group/card">
+                <img src={m.image} alt={m.title} className="h-[55%] w-full object-cover group-hover/card:scale-110 transition-transform duration-700" />
+                <div className="h-[45%] flex flex-col justify-center p-5 bg-[#0052CC]">
+                  <h3 className="text-sm font-bold text-white mb-1" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{m.title}</h3>
+                  <p className="text-[11px] text-white/80 leading-4 mb-2">{m.desc}</p>
+                  <p className="text-[10px] font-semibold text-white/60 uppercase tracking-wide">{m.cat}</p>
                 </div>
               </div>
             ))}
@@ -619,12 +606,12 @@ export function Reporting() {
             </p>
           </div>
           <CardSlider>
-            {ifrsNotes.map((note, i) => (
-              <div key={note.num} className="card-lift shrink-0 snap-start w-[85%] sm:w-[55%] lg:w-[40%] bg-white rounded-2xl border border-slate-200 overflow-hidden">
-                <CardAvatar icon={ScrollText} index={i} label={`Note ${note.num}`} />
-                <div className="p-4">
-                  <h3 className="text-sm font-bold text-slate-900 mb-1" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{note.title}</h3>
-                  <p className="text-[11px] text-slate-500 leading-4">{note.desc}</p>
+            {ifrsNotes.map((note) => (
+              <div key={note.num} className="snap-center shrink-0 w-[280px] h-[280px] sm:w-[340px] sm:h-[340px] bg-white rounded-2xl overflow-hidden shadow-md transition-all duration-700 ease-out flex flex-col hover:-translate-y-1.5 group/card">
+                <img src="/depreciation policies .png" alt={note.title} className="h-[55%] w-full object-cover group-hover/card:scale-110 transition-transform duration-700" />
+                <div className="h-[45%] flex flex-col justify-center p-5 bg-[#0052CC]">
+                  <h3 className="text-sm font-bold text-white mb-1" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{note.title}</h3>
+                  <p className="text-[11px] text-white/80 leading-4">{note.desc}</p>
                 </div>
               </div>
             ))}
@@ -643,18 +630,18 @@ export function Reporting() {
           </div>
           <CardSlider>
             {[
-              { icon: TrendingUp, title: 'Comparative Year Mode', desc: 'Toggle "Compare Years" switch with two year pickers. Renders side-by-side Year A vs Year B columns. Prior Year Adjustments fetched and applied to both affected account and retained earnings by opposite amounts — comparative balance sheet stays balanced.', features: ['Year A vs Year B side-by-side tables', 'All account codes merged — missing show zero', 'PYA adjusts account + retained earnings oppositely', 'renderTable() helper for consistent styled tables'] },
-              { icon: Layers, title: 'Multi-Month Snapshot Mode', desc: 'Select multiple months from a 12-month picker. Each selected month becomes a column in the report table. Per-variant loading state. Retained earnings snapshots include opening, profit, dividends, drawings, closing per month.', features: ['Each selected month becomes a report column', 'Per-variant loading state (MultiLoading)', 'Income statement: period-specific TB per month', 'Retained earnings: opening → profit → dividends → closing'] },
-            ].map((card, i) => (
-              <div key={card.title} className="card-lift shrink-0 snap-start w-[85%] sm:w-[55%] lg:w-[40%] bg-white rounded-2xl border border-slate-200 overflow-hidden">
-                <CardAvatar icon={card.icon} index={i} />
-                <div className="p-6">
-                  <h3 className="text-sm font-bold text-slate-900 mb-2" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{card.title}</h3>
-                  <p className="text-xs text-slate-500 leading-5 mb-3">{card.desc}</p>
+              { title: 'Comparative Year Mode', desc: 'Toggle "Compare Years" switch with two year pickers. Renders side-by-side Year A vs Year B columns. Prior Year Adjustments fetched and applied to both affected account and retained earnings by opposite amounts — comparative balance sheet stays balanced.', features: ['Year A vs Year B side-by-side tables', 'All account codes merged — missing show zero', 'PYA adjusts account + retained earnings oppositely', 'renderTable() helper for consistent styled tables'], image: '/income statement.png' },
+              { title: 'Multi-Month Snapshot Mode', desc: 'Select multiple months from a 12-month picker. Each selected month becomes a column in the report table. Per-variant loading state. Retained earnings snapshots include opening, profit, dividends, drawings, closing per month.', features: ['Each selected month becomes a report column', 'Per-variant loading state (MultiLoading)', 'Income statement: period-specific TB per month', 'Retained earnings: opening → profit → dividends → closing'], image: '/payroll graphs.png' },
+            ].map((card) => (
+              <div key={card.title} className="snap-center shrink-0 w-[280px] h-[280px] sm:w-[340px] sm:h-[340px] bg-white rounded-2xl overflow-hidden shadow-md transition-all duration-700 ease-out flex flex-col hover:-translate-y-1.5 group/card">
+                <img src={card.image} alt={card.title} className="h-[55%] w-full object-cover group-hover/card:scale-110 transition-transform duration-700" />
+                <div className="h-[45%] flex flex-col justify-center p-6 bg-[#0052CC]">
+                  <h3 className="text-sm font-bold text-white mb-2" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{card.title}</h3>
+                  <p className="text-xs text-white/80 leading-5 mb-3">{card.desc}</p>
                   <ul className="space-y-1.5">
-                    {card.features.map((f) => (
-                      <li key={f} className="flex items-start gap-2 text-xs text-slate-600">
-                        <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0 mt-0.5" />
+                    {card.features.slice(0, 3).map((f) => (
+                      <li key={f} className="flex items-start gap-2 text-[11px] text-white/80">
+                        <CheckCircle2 className="h-3 w-3 text-white/60 shrink-0 mt-0.5" />
                         <span>{f}</span>
                       </li>
                     ))}
@@ -677,15 +664,15 @@ export function Reporting() {
           </div>
           <CardSlider>
             {[
-              { icon: Eye, title: 'Account Drilldown', desc: 'Click any account line in Balance Sheet, Income Statement, Notes, Equity or Trial Balance to open a dialog with all ledger entries: date, reference, description, debit, credit, running balance with Dr/Cr suffix.' },
-              { icon: Calculator, title: 'PPE Movement Schedule', desc: 'Monthly table: opening cost, accumulated depreciation, NBV, additions, disposals, depreciation, closing. Fiscal year-aware with cache. Export to PDF (autoTable) and Excel.' },
-              { icon: Search, title: 'Trace Dialog', desc: 'Click any balance in the Balance Sheet to see the resolved trial balance row (code, name, type, debits, credits, balance) and monthly breakdown showing the account\'s movement across each month.' },
-            ].map((card, i) => (
-              <div key={card.title} className="card-lift shrink-0 snap-start w-[85%] sm:w-[55%] lg:w-[40%] bg-white rounded-2xl border border-slate-200 overflow-hidden">
-                <CardAvatar icon={card.icon} index={i} />
-                <div className="p-6">
-                  <h3 className="text-sm font-bold text-slate-900 mb-1.5" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{card.title}</h3>
-                  <p className="text-xs text-slate-500 leading-5">{card.desc}</p>
+              { title: 'Account Drilldown', desc: 'Click any account line in Balance Sheet, Income Statement, Notes, Equity or Trial Balance to open a dialog with all ledger entries: date, reference, description, debit, credit, running balance with Dr/Cr suffix.', image: '/general ledger .png' },
+              { title: 'PPE Movement Schedule', desc: 'Monthly table: opening cost, accumulated depreciation, NBV, additions, disposals, depreciation, closing. Fiscal year-aware with cache. Export to PDF (autoTable) and Excel.', image: '/depreciation schedule 4.png' },
+              { title: 'Trace Dialog', desc: 'Click any balance in the Balance Sheet to see the resolved trial balance row (code, name, type, debits, credits, balance) and monthly breakdown showing the account\'s movement across each month.', image: '/trial balance .png' },
+            ].map((card) => (
+              <div key={card.title} className="snap-center shrink-0 w-[280px] h-[280px] sm:w-[340px] sm:h-[340px] bg-white rounded-2xl overflow-hidden shadow-md transition-all duration-700 ease-out flex flex-col hover:-translate-y-1.5 group/card">
+                <img src={card.image} alt={card.title} className="h-[55%] w-full object-cover group-hover/card:scale-110 transition-transform duration-700" />
+                <div className="h-[45%] flex flex-col justify-center p-6 bg-[#0052CC]">
+                  <h3 className="text-sm font-bold text-white mb-1.5" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{card.title}</h3>
+                  <p className="text-xs text-white/80 leading-5">{card.desc}</p>
                 </div>
               </div>
             ))}
@@ -704,14 +691,14 @@ export function Reporting() {
           </div>
           <CardSlider>
             {[
-              { icon: FileText, title: 'PDF Export', desc: 'jsPDF with autoTable. Header color #0070ad, alternating row colors, bold totals. Mode selector: Month, Compare Years, or Date Range. Per-variant export logic for Balance Sheet, Income Statement, IFRS Notes and Retained Earnings.' },
-              { icon: Download, title: 'Excel Export', desc: 'XLSX.utils.json_to_sheet with formatted headers. Same SARS box structure for VAT, all 16 numbered notes for IFRS, monthly columns for budget. Landscape A4 for budget PDF with section grouping and subtotals.' },
-            ].map((card, i) => (
-              <div key={card.title} className="card-lift shrink-0 snap-start w-[85%] sm:w-[55%] lg:w-[40%] bg-white rounded-2xl border border-slate-200 overflow-hidden">
-                <CardAvatar icon={card.icon} index={i} />
-                <div className="p-6">
-                  <h3 className="text-sm font-bold text-slate-900 mb-2" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{card.title}</h3>
-                  <p className="text-xs text-slate-500 leading-5">{card.desc}</p>
+              { title: 'PDF Export', desc: 'jsPDF with autoTable. Header color #0070ad, alternating row colors, bold totals. Mode selector: Month, Compare Years, or Date Range. Per-variant export logic for Balance Sheet, Income Statement, IFRS Notes and Retained Earnings.', image: '/view transaction report.png' },
+              { title: 'Excel Export', desc: 'XLSX.utils.json_to_sheet with formatted headers. Same SARS box structure for VAT, all 16 numbered notes for IFRS, monthly columns for budget. Landscape A4 for budget PDF with section grouping and subtotals.', image: '/sales by supplier .png' },
+            ].map((card) => (
+              <div key={card.title} className="snap-center shrink-0 w-[280px] h-[280px] sm:w-[340px] sm:h-[340px] bg-white rounded-2xl overflow-hidden shadow-md transition-all duration-700 ease-out flex flex-col hover:-translate-y-1.5 group/card">
+                <img src={card.image} alt={card.title} className="h-[55%] w-full object-cover group-hover/card:scale-110 transition-transform duration-700" />
+                <div className="h-[45%] flex flex-col justify-center p-6 bg-[#0052CC]">
+                  <h3 className="text-sm font-bold text-white mb-2" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{card.title}</h3>
+                  <p className="text-xs text-white/80 leading-5">{card.desc}</p>
                 </div>
               </div>
             ))}
@@ -730,16 +717,16 @@ export function Reporting() {
           </div>
           <CardSlider>
             {[
-              { icon: RefreshCw, title: 'Supabase Realtime', desc: 'Subscribes to transactions, ledger_entries, fixed_assets and invoices. 1.2s debounce → background refresh. RefreshingBadge shows subtle indicator.' },
-              { icon: Zap, title: 'In-Memory Cache', desc: 'Key: companyId:reportType:start:end. 5-min TTL for fresh data, always returns cached first for instant display. Background refresh updates silently.' },
-              { icon: AlertTriangle, title: 'Unallocated Warning', desc: 'Amber alert if unallocated transactions exist. Emerald confirmation if all allocated. Displayed in all IIV statements and Trial Balance.' },
-              { icon: ShieldCheck, title: 'Fiscal Year System', desc: 'useFiscalYear hook manages selected year, start month, date calculation. SA fiscal year: March–February. getFiscalYearDates() and getCalendarYearForFiscalPeriod() helpers.' },
-            ].map((card, i) => (
-              <div key={card.title} className="card-lift shrink-0 snap-start w-[85%] sm:w-[55%] lg:w-[40%] bg-white rounded-2xl border border-slate-200 overflow-hidden">
-                <CardAvatar icon={card.icon} index={i} />
-                <div className="p-5">
-                  <h3 className="text-xs font-bold text-slate-900 mb-1" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{card.title}</h3>
-                  <p className="text-[11px] text-slate-500 leading-4">{card.desc}</p>
+              { title: 'Supabase Realtime', desc: 'Subscribes to transactions, ledger_entries, fixed_assets and invoices. 1.2s debounce → background refresh. RefreshingBadge shows subtle indicator.', image: '/assets report graphs .png' },
+              { title: 'In-Memory Cache', desc: 'Key: companyId:reportType:start:end. 5-min TTL for fresh data, always returns cached first for instant display. Background refresh updates silently.', image: '/general ledger .png' },
+              { title: 'Unallocated Warning', desc: 'Amber alert if unallocated transactions exist. Emerald confirmation if all allocated. Displayed in all IIV statements and Trial Balance.', image: '/aging for debtors .png' },
+              { title: 'Fiscal Year System', desc: 'useFiscalYear hook manages selected year, start month, date calculation. SA fiscal year: March–February. getFiscalYearDates() and getCalendarYearForFiscalPeriod() helpers.', image: '/payroll graphs.png' },
+            ].map((card) => (
+              <div key={card.title} className="snap-center shrink-0 w-[280px] h-[280px] sm:w-[340px] sm:h-[340px] bg-white rounded-2xl overflow-hidden shadow-md transition-all duration-700 ease-out flex flex-col hover:-translate-y-1.5 group/card">
+                <img src={card.image} alt={card.title} className="h-[55%] w-full object-cover group-hover/card:scale-110 transition-transform duration-700" />
+                <div className="h-[45%] flex flex-col justify-center p-5 bg-[#0052CC]">
+                  <h3 className="text-xs font-bold text-white mb-1" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{card.title}</h3>
+                  <p className="text-[11px] text-white/80 leading-4">{card.desc}</p>
                 </div>
               </div>
             ))}
@@ -787,12 +774,12 @@ export function Reporting() {
             </p>
           </div>
           <CardSlider>
-            {tutorialSteps.map((step, i) => (
-              <div key={step.num} className="card-lift shrink-0 snap-start w-[85%] sm:w-[55%] lg:w-[40%] bg-white rounded-2xl border border-slate-200 overflow-hidden">
-                <CardAvatar icon={GraduationCap} index={i} label={step.num} />
-                <div className="p-4">
-                  <h3 className="text-sm font-bold text-slate-900 mb-0.5" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{step.title}</h3>
-                  <p className="text-[11px] text-slate-500 leading-4">{step.desc}</p>
+            {tutorialSteps.map((step) => (
+              <div key={step.num} className="snap-center shrink-0 w-[280px] h-[280px] sm:w-[340px] sm:h-[340px] bg-white rounded-2xl overflow-hidden shadow-md transition-all duration-700 ease-out flex flex-col hover:-translate-y-1.5 group/card">
+                <img src="/desktop app.png" alt={step.title} className="h-[55%] w-full object-cover group-hover/card:scale-110 transition-transform duration-700" />
+                <div className="h-[45%] flex flex-col justify-center p-5 bg-[#0052CC]">
+                  <h3 className="text-sm font-bold text-white mb-0.5" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{step.title}</h3>
+                  <p className="text-[11px] text-white/80 leading-4">{step.desc}</p>
                 </div>
               </div>
             ))}

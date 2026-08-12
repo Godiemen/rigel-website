@@ -1,28 +1,18 @@
-import { useState, useEffect, useRef, type ReactNode, type ComponentType } from 'react';
+import { useState, useEffect, useRef, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import {
   ChevronDown, ArrowRight, ChevronLeft, ChevronRight, CheckCircle2, X, Play, Landmark, Building2,
-  CreditCard, ArrowLeftRight, FileText, Search, RefreshCw,
+  ArrowLeftRight, Search, RefreshCw,
   BarChart3, GraduationCap,
 } from 'lucide-react';
 
 const APP_URL = 'https://biz-flow-sa-delta.vercel.app';
 
-const avatarGradients = [
-  'from-emerald-400 to-teal-600',
-  'from-blue-400 to-indigo-600',
-  'from-amber-400 to-orange-600',
-  'from-purple-400 to-pink-600',
-  'from-cyan-400 to-blue-600',
-  'from-rose-400 to-red-600',
-  'from-lime-400 to-green-600',
-  'from-violet-400 to-purple-600',
-  'from-sky-400 to-cyan-600',
-  'from-fuchsia-400 to-pink-600',
-];
-
 function CardSlider({ children, className = '' }: { children: ReactNode; className?: string }) {
   const ref = useRef<HTMLDivElement>(null);
+  const [centerIndex, setCenterIndex] = useState(0);
+  const childCount = Array.isArray(children) ? children.length : 1;
+
   const scroll = (dir: number) => {
     const el = ref.current;
     if (!el) return;
@@ -30,45 +20,42 @@ function CardSlider({ children, className = '' }: { children: ReactNode; classNa
     const w = (card?.offsetWidth ?? 320) + 16;
     el.scrollBy({ left: dir * w, behavior: 'smooth' });
   };
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const onScroll = () => {
+      const card = el.firstElementChild as HTMLElement | null;
+      if (!card) return;
+      const center = el.scrollLeft + el.clientWidth / 2;
+      const index = Math.round((center - card.offsetWidth / 2) / (card.offsetWidth + 16));
+      setCenterIndex(Math.max(0, Math.min(index, childCount - 1)));
+    };
+    el.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+    return () => el.removeEventListener('scroll', onScroll);
+  }, [childCount]);
+
   return (
     <div className="relative">
-      <div className="absolute -top-14 right-0 flex gap-2">
-        <button
-          onClick={() => scroll(-1)}
-          className="h-10 w-10 rounded-full border border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:text-emerald-600 flex items-center justify-center transition-colors"
-        >
+      <div className="absolute -top-14 right-0 flex items-center gap-3">
+        <span className="text-sm font-mono text-slate-500">
+          {String(centerIndex + 1).padStart(2, '0')} / {String(childCount).padStart(2, '0')}
+        </span>
+        <button onClick={() => scroll(-1)} className="h-10 w-10 rounded-full border border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:text-emerald-600 flex items-center justify-center transition-colors">
           <ChevronLeft className="h-5 w-5" />
         </button>
-        <button
-          onClick={() => scroll(1)}
-          className="h-10 w-10 rounded-full border border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:text-emerald-600 flex items-center justify-center transition-colors"
-        >
+        <button onClick={() => scroll(1)} className="h-10 w-10 rounded-full border border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:text-emerald-600 flex items-center justify-center transition-colors">
           <ChevronRight className="h-5 w-5" />
         </button>
       </div>
-      <div
-        ref={ref}
-        className={`flex gap-4 overflow-x-auto no-scrollbar snap-x snap-mandatory pb-4 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 ${className}`}
-      >
-        {children}
+      <div ref={ref} className={`flex gap-4 overflow-x-auto no-scrollbar snap-x snap-mandatory pb-4 pt-8 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 ${className}`}>
+        {Array.isArray(children) ? children.map((child, i) => (
+          <div key={i} className={`transition-all duration-500 ease-out shrink-0 snap-center ${i === centerIndex ? 'scale-[1.12] z-10' : 'scale-90 opacity-60 hover:opacity-90'}`}>
+            {child}
+          </div>
+        )) : children}
       </div>
-    </div>
-  );
-}
-
-function CardAvatar({ icon: Icon, index, label }: { icon: ComponentType<{ className?: string }>; index: number; label?: string }) {
-  const gradient = avatarGradients[index % avatarGradients.length];
-  return (
-    <div className={`relative h-20 bg-gradient-to-br ${gradient} overflow-hidden rounded-t-xl`}>
-      <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(circle, white 1.5px, transparent 1.5px)', backgroundSize: '14px 14px' }} />
-      <div className="absolute -right-5 -top-5 h-16 w-16 rounded-full bg-white/10" />
-      <div className="absolute -left-3 -bottom-6 h-14 w-14 rounded-full bg-white/10" />
-      <div className="absolute inset-0 flex items-center justify-center">
-        <Icon className="h-9 w-9 text-white drop-shadow-sm" />
-      </div>
-      <span className="absolute top-2 right-2.5 text-[10px] font-mono font-bold text-white/60">
-        {label ?? String(index + 1).padStart(2, '0')}
-      </span>
     </div>
   );
 }
@@ -87,12 +74,12 @@ const saBanks = [
 ];
 
 const bankTabs = [
-  { icon: Building2, title: 'Bank Accounts', desc: 'Add, edit and manage bank accounts with linked GL accounts.', color: 'from-emerald-400 to-emerald-600' },
-  { icon: CreditCard, title: 'Credit Cards', desc: 'Track credit cards as liability accounts with opening balances.', color: 'from-emerald-400 to-emerald-600' },
-  { icon: ArrowLeftRight, title: 'Transfers', desc: 'Transfer funds between bank accounts with automatic GL postings.', color: 'from-slate-700 to-slate-900' },
-  { icon: FileText, title: 'Statements', desc: 'View transaction history, ledger rows and inferred direction.', color: 'from-slate-700 to-slate-900' },
-  { icon: Search, title: 'Reconciliation', desc: 'Match statement lines to system transactions and resolve exceptions.', color: 'from-indigo-400 to-indigo-600' },
-  { icon: BarChart3, title: 'Cash Flow', desc: 'Direct cash flow statement from bank transactions by category.', color: 'from-rose-400 to-rose-600' },
+  { title: 'Bank Accounts', desc: 'Add, edit and manage bank accounts with linked GL accounts.', image: '/account reciable dash board .png' },
+  { title: 'Credit Cards', desc: 'Track credit cards as liability accounts with opening balances.', image: '/creditors control.png' },
+  { title: 'Transfers', desc: 'Transfer funds between bank accounts with automatic GL postings.', image: '/general ledger .png' },
+  { title: 'Statements', desc: 'View transaction history, ledger rows and inferred direction.', image: '/view transaction report.png' },
+  { title: 'Reconciliation', desc: 'Match statement lines to system transactions and resolve exceptions.', image: '/trial balance .png' },
+  { title: 'Cash Flow', desc: 'Direct cash flow statement from bank transactions by category.', image: '/cashflow statement.png' },
 ];
 
 const allocationTypes = [
@@ -385,30 +372,32 @@ export function Banking() {
             alt=""
             className="h-full w-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-white via-white/85 to-transparent" />
-          <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-white to-transparent" />
+          <div className="absolute inset-0 bg-[#0B1220]/70" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#0B1220]/80 via-transparent to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-[#0B1220] to-transparent" />
         </div>
+        <div className="absolute inset-x-0 -bottom-1 h-24 sm:h-32 bg-white z-10 pointer-events-none" style={{ clipPath: 'polygon(0 40%, 100% 70%, 100% 100%, 0 100%)' }} />
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-36">
           <div className="max-w-xl">
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-50 border border-emerald-100 mb-6">
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/20 border border-emerald-400/30 mb-6">
                 <Landmark className="h-3.5 w-3.5 text-[#0F9D6C]" />
-                <span className="text-xs font-semibold text-emerald-700 tracking-wide uppercase">Banking</span>
+                <span className="text-xs font-semibold text-emerald-100 tracking-wide uppercase">Banking</span>
               </div>
               <h1
-                className="text-4xl lg:text-5xl font-bold text-slate-900 mb-5 leading-tight tracking-tight"
+                className="text-4xl lg:text-5xl font-bold text-white mb-5 leading-tight tracking-tight"
                 style={{ fontFamily: "'Inter Tight', sans-serif" }}
               >
                 Banking, Reconciliation &amp; Cash Flow
               </h1>
-              <p className="text-lg text-slate-600 leading-8 mb-8 max-w-lg">
+              <p className="text-lg text-slate-200 leading-8 mb-8 max-w-lg">
                 Manage South African bank accounts, credit cards, transactions, automated allocation, bank reconciliation and a direct cash flow statement — all with automatic double-entry accounting.
               </p>
               <div className="flex flex-col sm:flex-row gap-3">
                 <a href={`${APP_URL}/signup`} className="btn-pill inline-flex h-12 items-center bg-[#0F9D6C] hover:bg-[#0B7A52] px-7 font-semibold text-white">
                   Get Started <ArrowRight className="h-4 w-4 ml-2" />
                 </a>
-                <Link to="/book-demo" className="btn-pill inline-flex h-12 items-center border border-slate-200 bg-white/80 backdrop-blur-sm hover:bg-white hover:border-slate-300 px-7 font-semibold text-slate-700">
+                <Link to="/book-demo" className="btn-pill inline-flex h-12 items-center border border-white/30 bg-white/10 backdrop-blur-sm hover:bg-white/20 hover:border-white/50 px-7 font-semibold text-white">
                   Watch Demo
                 </Link>
               </div>
@@ -553,12 +542,12 @@ export function Banking() {
             </h2>
           </div>
           <CardSlider>
-            {bankTabs.map((m, i) => (
-              <div key={m.title} className="card-lift shrink-0 snap-start w-[85%] sm:w-[55%] lg:w-[40%] bg-white rounded-2xl border border-slate-200 overflow-hidden">
-                <CardAvatar icon={m.icon} index={i} />
-                <div className="p-5">
-                  <h3 className="text-sm font-bold text-slate-900 mb-1" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{m.title}</h3>
-                  <p className="text-[11px] text-slate-500 leading-4">{m.desc}</p>
+            {bankTabs.map((m) => (
+              <div key={m.title} className="snap-center shrink-0 w-[280px] h-[280px] sm:w-[340px] sm:h-[340px] bg-white rounded-2xl overflow-hidden shadow-md transition-all duration-700 ease-out flex flex-col hover:-translate-y-1.5 group/card">
+                <img src={m.image} alt={m.title} className="h-[55%] w-full object-cover group-hover/card:scale-110 transition-transform duration-700" />
+                <div className="h-[45%] flex flex-col justify-center p-5 bg-[#0052CC]">
+                  <h3 className="text-sm font-bold text-white mb-1" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{m.title}</h3>
+                  <p className="text-[11px] text-white/80 leading-4">{m.desc}</p>
                 </div>
               </div>
             ))}
@@ -595,11 +584,11 @@ export function Banking() {
             </h2>
           </div>
           <CardSlider>
-            {allocationTypes.map((t, i) => (
-              <div key={t} className="card-lift shrink-0 snap-start w-[85%] sm:w-[55%] lg:w-[40%] bg-white rounded-2xl border border-slate-200 overflow-hidden">
-                <CardAvatar icon={CheckCircle2} index={i} />
-                <div className="p-4">
-                  <p className="text-[11px] text-slate-600 leading-4">{t}</p>
+            {allocationTypes.map((t) => (
+              <div key={t} className="snap-center shrink-0 w-[280px] h-[280px] sm:w-[340px] sm:h-[340px] bg-white rounded-2xl overflow-hidden shadow-md transition-all duration-700 ease-out flex flex-col hover:-translate-y-1.5 group/card">
+                <img src="/view transaction report.png" alt={t} className="h-[55%] w-full object-cover group-hover/card:scale-110 transition-transform duration-700" />
+                <div className="h-[45%] flex flex-col justify-center p-5 bg-[#0052CC]">
+                  <p className="text-[11px] text-white/90 leading-4">{t}</p>
                 </div>
               </div>
             ))}
@@ -640,12 +629,12 @@ export function Banking() {
             </h2>
           </div>
           <CardSlider>
-            {systemAccounts.map((a, i) => (
-              <div key={a.account} className="card-lift shrink-0 snap-start w-[85%] sm:w-[55%] lg:w-[40%] bg-white rounded-2xl border border-slate-200 overflow-hidden">
-                <CardAvatar icon={Landmark} index={i} />
-                <div className="p-4">
-                  <h3 className="text-xs font-bold text-emerald-600 mb-1" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{a.account}</h3>
-                  <p className="text-[11px] text-slate-500 leading-4">{a.desc}</p>
+            {systemAccounts.map((a) => (
+              <div key={a.account} className="snap-center shrink-0 w-[280px] h-[280px] sm:w-[340px] sm:h-[340px] bg-white rounded-2xl overflow-hidden shadow-md transition-all duration-700 ease-out flex flex-col hover:-translate-y-1.5 group/card">
+                <img src="/general ledger .png" alt={a.account} className="h-[55%] w-full object-cover group-hover/card:scale-110 transition-transform duration-700" />
+                <div className="h-[45%] flex flex-col justify-center p-5 bg-[#0052CC]">
+                  <h3 className="text-xs font-bold text-white mb-1" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{a.account}</h3>
+                  <p className="text-[11px] text-white/80 leading-4">{a.desc}</p>
                 </div>
               </div>
             ))}
@@ -711,12 +700,12 @@ export function Banking() {
             </h2>
           </div>
           <CardSlider>
-            {tutorialSteps.map((step, i) => (
-              <div key={step.num} className="card-lift shrink-0 snap-start w-[85%] sm:w-[55%] lg:w-[40%] bg-white rounded-2xl border border-slate-200 overflow-hidden">
-                <CardAvatar icon={GraduationCap} index={i} label={step.num} />
-                <div className="p-4">
-                  <h3 className="text-sm font-bold text-slate-900 mb-0.5" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{step.title}</h3>
-                  <p className="text-[11px] text-slate-500 leading-4">{step.desc}</p>
+            {tutorialSteps.map((step) => (
+              <div key={step.num} className="snap-center shrink-0 w-[280px] h-[280px] sm:w-[340px] sm:h-[340px] bg-white rounded-2xl overflow-hidden shadow-md transition-all duration-700 ease-out flex flex-col hover:-translate-y-1.5 group/card">
+                <img src="/desktop app.png" alt={step.title} className="h-[55%] w-full object-cover group-hover/card:scale-110 transition-transform duration-700" />
+                <div className="h-[45%] flex flex-col justify-center p-5 bg-[#0052CC]">
+                  <h3 className="text-sm font-bold text-white mb-0.5" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{step.title}</h3>
+                  <p className="text-[11px] text-white/80 leading-4">{step.desc}</p>
                 </div>
               </div>
             ))}

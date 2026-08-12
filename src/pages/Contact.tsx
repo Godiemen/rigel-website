@@ -12,7 +12,8 @@ export function Contact() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Open mailto as a simple contact method
-    const mailto = `mailto:support@rigelbusiness.co.za?subject=${encodeURIComponent(form.subject || 'Enquiry from website')}&body=${encodeURIComponent(`Name: ${form.name}\nEmail: ${form.email}\n\n${form.message}`)}`;
+    const mailto = `mailto:support@rigelbusiness.co.za?subject=${encodeURIComponent(form.subject || 'Enquiry from website')}&body=${encodeURIComponent(
+      `Name: ${form.name}\nEmail: ${form.email}\n\n${form.message}`)}`;
     window.location.href = mailto;
     setSent(true);
   };
@@ -27,25 +28,27 @@ export function Contact() {
             alt="Rigel Business contact"
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-white via-white/85 to-transparent" />
-          <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-white to-transparent" />
+          <div className="absolute inset-0 bg-[#0B1220]/70" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#0B1220]/80 via-transparent to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-[#0B1220] to-transparent" />
         </div>
+        <div className="absolute inset-x-0 -bottom-1 h-24 sm:h-32 bg-white z-10 pointer-events-none" style={{ clipPath: 'polygon(0 40%, 100% 70%, 100% 100%, 0 100%)' }} />
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-36">
           <div className="max-w-xl">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-50 border border-emerald-100 mb-6">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/20 border border-emerald-400/30 mb-6">
               <MessageSquare className="h-3.5 w-3.5 text-[#0F9D6C]" />
-              <span className="text-xs font-semibold text-emerald-700 tracking-wide uppercase">Rigel Support Desk</span>
+              <span className="text-xs font-semibold text-emerald-100 tracking-wide uppercase">Rigel Support Desk</span>
             </div>
-            <h1 className="text-4xl lg:text-5xl font-bold text-slate-900 mb-5 leading-tight tracking-tight" style={{ fontFamily: "'Inter Tight', sans-serif" }}>
+            <h1 className="text-4xl lg:text-5xl font-bold text-white mb-5 leading-tight tracking-tight" style={{ fontFamily: "'Inter Tight', sans-serif" }}>
               Talk to the Rigel Business team
             </h1>
-            <p className="text-lg text-slate-600 leading-8 mb-8 max-w-lg">
+            <p className="text-lg text-slate-200 leading-8 mb-8 max-w-lg">
               Need help choosing a plan, setting up your company, or understanding VAT, payroll, inventory or reporting? Send us a message and we'll guide you.
             </p>
             <div className="flex flex-wrap gap-2">
               {['Sales enquiries', 'Technical support', 'Setup guidance'].map(item => (
-                <span key={item} className="rounded-full bg-white/80 border border-slate-200 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-slate-600">{item}</span>
+                <span key={item} className="rounded-full bg-white/10 border border-white/20 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-slate-200">{item}</span>
               ))}
             </div>
           </div>

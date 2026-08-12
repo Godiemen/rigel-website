@@ -1,32 +1,22 @@
-import { useState, useEffect, useRef, type ReactNode, type ComponentType } from 'react';
+import { useState, useEffect, useRef, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import {
   ChevronDown, ArrowRight, ChevronLeft, ChevronRight, CheckCircle2, X, Play,
-  Landmark, FileText, Users, Calculator, BarChart3,
-  ShieldCheck, AlertTriangle, RefreshCw, ClipboardList,
-  TrendingUp, Zap, GraduationCap, LockKeyhole,
-  Gift, Building2, Percent, Calendar,
+  Landmark, FileText, Users, Calculator,
+  ShieldCheck, AlertTriangle, ClipboardList,
+  Zap, GraduationCap,
+  Gift, Building2,
 } from 'lucide-react';
 
 const APP_URL = 'https://biz-flow-sa-delta.vercel.app';
 
 
 
-const avatarGradients = [
-  'from-emerald-400 to-teal-600',
-  'from-blue-400 to-indigo-600',
-  'from-amber-400 to-orange-600',
-  'from-purple-400 to-pink-600',
-  'from-cyan-400 to-blue-600',
-  'from-rose-400 to-red-600',
-  'from-lime-400 to-green-600',
-  'from-violet-400 to-purple-600',
-  'from-sky-400 to-cyan-600',
-  'from-fuchsia-400 to-pink-600',
-];
-
 function CardSlider({ children, className = '' }: { children: ReactNode; className?: string }) {
   const ref = useRef<HTMLDivElement>(null);
+  const [centerIndex, setCenterIndex] = useState(0);
+  const childCount = Array.isArray(children) ? children.length : 1;
+
   const scroll = (dir: number) => {
     const el = ref.current;
     if (!el) return;
@@ -34,9 +24,28 @@ function CardSlider({ children, className = '' }: { children: ReactNode; classNa
     const w = (card?.offsetWidth ?? 320) + 16;
     el.scrollBy({ left: dir * w, behavior: 'smooth' });
   };
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const onScroll = () => {
+      const card = el.firstElementChild as HTMLElement | null;
+      if (!card) return;
+      const center = el.scrollLeft + el.clientWidth / 2;
+      const index = Math.round((center - card.offsetWidth / 2) / (card.offsetWidth + 16));
+      setCenterIndex(Math.max(0, Math.min(index, childCount - 1)));
+    };
+    el.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+    return () => el.removeEventListener('scroll', onScroll);
+  }, [childCount]);
+
   return (
     <div className="relative">
-      <div className="absolute -top-14 right-0 flex gap-2">
+      <div className="absolute -top-14 right-0 flex items-center gap-3">
+        <span className="text-sm font-mono text-slate-500">
+          {String(centerIndex + 1).padStart(2, '0')} / {String(childCount).padStart(2, '0')}
+        </span>
         <button
           onClick={() => scroll(-1)}
           className="h-10 w-10 rounded-full border border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:text-emerald-600 flex items-center justify-center transition-colors"
@@ -52,27 +61,19 @@ function CardSlider({ children, className = '' }: { children: ReactNode; classNa
       </div>
       <div
         ref={ref}
-        className={`flex gap-4 overflow-x-auto no-scrollbar snap-x snap-mandatory pb-4 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 ${className}`}
+        className={`flex gap-4 overflow-x-auto no-scrollbar snap-x snap-mandatory pb-4 pt-8 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 ${className}`}
       >
-        {children}
+        {Array.isArray(children) ? children.map((child, i) => (
+          <div
+            key={i}
+            className={`transition-all duration-500 ease-out shrink-0 snap-center ${
+              i === centerIndex ? 'scale-[1.12] z-10' : 'scale-90 opacity-60 hover:opacity-90'
+            }`}
+          >
+            {child}
+          </div>
+        )) : children}
       </div>
-    </div>
-  );
-}
-
-function CardAvatar({ icon: Icon, index, label }: { icon: ComponentType<{ className?: string }>; index: number; label?: string }) {
-  const gradient = avatarGradients[index % avatarGradients.length];
-  return (
-    <div className={`relative h-20 bg-gradient-to-br ${gradient} overflow-hidden rounded-t-xl`}>
-      <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(circle, white 1.5px, transparent 1.5px)', backgroundSize: '14px 14px' }} />
-      <div className="absolute -right-5 -top-5 h-16 w-16 rounded-full bg-white/10" />
-      <div className="absolute -left-3 -bottom-6 h-14 w-14 rounded-full bg-white/10" />
-      <div className="absolute inset-0 flex items-center justify-center">
-        <Icon className="h-9 w-9 text-white drop-shadow-sm" />
-      </div>
-      <span className="absolute top-2 right-2.5 text-[10px] font-mono font-bold text-white/60">
-        {label ?? String(index + 1).padStart(2, '0')}
-      </span>
     </div>
   );
 }
@@ -178,37 +179,6 @@ const moduleSections: AccordionSection[] = [
   },
 ];
 
-const moduleTabs = [
-  { icon: Landmark, title: 'VAT 201', desc: 'Period-based VAT returns with output/input tracking and SARS filing.' },
-  { icon: Calculator, title: 'Provisional Tax', desc: 'IRP6 calculations across two periods per tax year.' },
-  { icon: Building2, title: 'Corporate Tax', desc: 'Annual CIT computation with add-backs and capital allowances.' },
-  { icon: Zap, title: 'Corporate Tax IIV', desc: 'Instant real-time tax computation from ledger data.' },
-  { icon: Users, title: 'Employee Tax', desc: 'Aggregated PAYE/UIF/SDL with bulk SARS payment.' },
-  { icon: Gift, title: 'Donation Tax', desc: 'Section 54 (20%) and Section 18A with IT144 forms.' },
-];
-
-const reports = [
-  { icon: Landmark, title: 'VAT201 Report', desc: 'Transaction-level breakdown with SARS box totals and finalize.' },
-  { icon: BarChart3, title: 'VAT Intelligence Dashboard', desc: 'Compliance score, filing countdown, YTD totals and trend charts.' },
-  { icon: FileText, title: 'Sales Tax Report', desc: 'Monthly sales excluding VAT, VAT collected and effective rate.' },
-  { icon: FileText, title: 'Purchase Tax Report', desc: 'Monthly purchases excluding VAT, VAT input and effective rate.' },
-  { icon: TrendingUp, title: 'Annual VAT Report', desc: '12-month VAT summary aligned to fiscal year with PDF export.' },
-  { icon: FileText, title: 'IRP6 Statement', desc: 'Formal provisional tax statement per return or all returns.' },
-  { icon: FileText, title: 'IT144 Donation Form', desc: 'Printable SARS donation tax return with company and donor details.' },
-  { icon: ClipboardList, title: 'Audit Log', desc: 'Version history of all calculation and adjustment changes.' },
-];
-
-const tutorialSteps = [
-  { num: '01', title: 'Overview', desc: 'Introduction to VAT 201 module' },
-  { num: '02', title: 'Frequency', desc: 'Set filing frequency (1/2/4/6/12 months)' },
-  { num: '03', title: 'Periods', desc: 'Create and manage VAT periods' },
-  { num: '04', title: 'Close Period', desc: 'Select transactions and finalize' },
-  { num: '05', title: 'Reports', desc: 'View VAT201 and analytics reports' },
-  { num: '06', title: 'Payments', desc: 'Link bank payments and refunds' },
-  { num: '07', title: 'Adjustments', desc: 'Create manual VAT adjustments' },
-  { num: '08', title: 'Compliance', desc: 'Monitor compliance score and deadlines' },
-];
-
 const accountingEntries = [
   { action: 'VAT — Output on Sales', debit: '—', credit: 'VAT Control (output)' },
   { action: 'VAT — Input on Purchases', debit: 'VAT Control (input)', credit: '—' },
@@ -230,15 +200,6 @@ const wearAndTear = [
   { asset: 'Plant and machinery (general)', life: '5–10 years' },
   { asset: 'Tools and implements', life: '3–5 years' },
   { asset: 'Servers & network gear', life: '3–5 years' },
-];
-
-const statutoryRates = [
-  { label: 'Standard VAT Rate', value: '15%', desc: 'Applied to most goods and services' },
-  { label: 'Zero-Rated VAT', value: '0%', desc: 'Exports and basic food items' },
-  { label: 'Corporate Income Tax', value: '27%', desc: 'Standard CIT rate (configurable)' },
-  { label: 'Donation Tax', value: '20%', desc: 'Section 54 rate on gratuitous donations' },
-  { label: 'UIF (Employee + Employer)', value: '1% + 1%', desc: 'Of cash remuneration, R17,712 ceiling' },
-  { label: 'SDL', value: '1%', desc: 'Of gross payroll (R500,000 exemption)' },
 ];
 
 function AccordionItem({
@@ -389,30 +350,32 @@ export function Tax() {
             alt=""
             className="h-full w-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-white via-white/85 to-transparent" />
-          <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-white to-transparent" />
+          <div className="absolute inset-0 bg-[#0B1220]/70" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#0B1220]/80 via-transparent to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-[#0B1220] to-transparent" />
         </div>
+        <div className="absolute inset-x-0 -bottom-1 h-24 sm:h-32 bg-white z-10 pointer-events-none" style={{ clipPath: 'polygon(0 40%, 100% 70%, 100% 100%, 0 100%)' }} />
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-36">
           <div className="max-w-xl">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-50 border border-emerald-100 mb-6">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/20 border border-emerald-400/30 mb-6">
               <ShieldCheck className="h-3.5 w-3.5 text-[#0F9D6C]" />
-              <span className="text-xs font-semibold text-emerald-700 tracking-wide uppercase">Tax Management</span>
+              <span className="text-xs font-semibold text-emerald-100 tracking-wide uppercase">Tax Management</span>
             </div>
             <h1
-              className="text-4xl lg:text-5xl font-bold text-slate-900 mb-5 leading-tight tracking-tight"
+              className="text-4xl lg:text-5xl font-bold text-white mb-5 leading-tight tracking-tight"
               style={{ fontFamily: "'Inter Tight', sans-serif" }}
             >
               SARS-Compliant Tax, End to End
             </h1>
-            <p className="text-lg text-slate-600 leading-8 mb-8 max-w-lg">
+            <p className="text-lg text-slate-200 leading-8 mb-8 max-w-lg">
               File VAT201 returns, calculate provisional tax (IRP6), compute corporate income tax, manage employee tax (PAYE/UIF/SDL), and track donation tax — all from a single unified tax dashboard.
             </p>
             <div className="flex flex-col sm:flex-row gap-3">
               <a href={`${APP_URL}/signup`} className="btn-pill inline-flex h-12 items-center bg-[#0F9D6C] hover:bg-[#0B7A52] px-7 font-semibold text-white">
                 Get Started <ArrowRight className="h-4 w-4 ml-2" />
               </a>
-              <Link to="/book-demo" className="btn-pill inline-flex h-12 items-center border border-slate-200 bg-white/80 backdrop-blur-sm hover:bg-white hover:border-slate-300 px-7 font-semibold text-slate-700">
+              <Link to="/book-demo" className="btn-pill inline-flex h-12 items-center border border-white/30 bg-white/10 backdrop-blur-sm hover:bg-white/20 hover:border-white/50 px-7 font-semibold text-white">
                 Watch Demo
               </Link>
             </div>
@@ -433,12 +396,19 @@ export function Tax() {
             </p>
           </div>
           <CardSlider>
-            {moduleTabs.map((p, i) => (
-              <div key={p.title} className="card-lift shrink-0 snap-start w-[85%] sm:w-[55%] lg:w-[40%] bg-white rounded-2xl border border-slate-200 overflow-hidden">
-                <CardAvatar icon={p.icon} index={i} />
-                <div className="p-5">
-                  <h3 className="text-sm font-bold text-slate-900 mb-2" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{p.title}</h3>
-                  <p className="text-xs text-slate-500 leading-5">{p.desc}</p>
+            {[
+              { title: 'VAT 201', desc: 'Period-based VAT returns with output/input tracking and SARS filing.', image: '/vat layout.png' },
+              { title: 'Provisional Tax', desc: 'IRP6 calculations across two periods per tax year.', image: '/rip 5 for sars .png' },
+              { title: 'Corporate Tax', desc: 'Annual CIT computation with add-backs and capital allowances.', image: '/income statement.png' },
+              { title: 'Corporate Tax IIV', desc: 'Instant real-time tax computation from ledger data.', image: '/vat graph report .png' },
+              { title: 'Employee Tax', desc: 'Aggregated PAYE/UIF/SDL with bulk SARS payment.', image: '/payroll graphs.png' },
+              { title: 'Donation Tax', desc: 'Section 54 (20%) and Section 18A with IT144 forms.', image: '/general ledger .png' },
+            ].map((p) => (
+              <div key={p.title} className="snap-center shrink-0 w-[280px] h-[280px] sm:w-[340px] sm:h-[340px] bg-white rounded-2xl overflow-hidden shadow-md transition-all duration-700 ease-out flex flex-col hover:-translate-y-1.5 group/card">
+                <img src={p.image} alt={p.title} className="h-[55%] w-full object-cover group-hover/card:scale-110 transition-transform duration-700" />
+                <div className="h-[45%] flex flex-col justify-center p-5 bg-[#0052CC]">
+                  <h3 className="text-base font-bold text-white mb-1.5" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{p.title}</h3>
+                  <p className="text-xs text-white/80 leading-5 line-clamp-2">{p.desc}</p>
                 </div>
               </div>
             ))}
@@ -579,13 +549,20 @@ export function Tax() {
             </h2>
           </div>
           <CardSlider>
-            {statutoryRates.map((r, i) => (
-              <div key={r.label} className="card-lift shrink-0 snap-start w-[85%] sm:w-[55%] lg:w-[40%] bg-white rounded-2xl border border-slate-200 overflow-hidden">
-                <CardAvatar icon={Percent} index={i} />
-                <div className="p-5">
-                  <p className="text-2xl font-bold text-slate-900 mb-1" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{r.value}</p>
-                  <p className="text-sm font-bold text-slate-900 mb-0.5" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{r.label}</p>
-                  <p className="text-xs text-slate-500 leading-5">{r.desc}</p>
+            {[
+              { label: 'Standard VAT Rate', value: '15%', desc: 'Applied to most goods and services', image: '/vat layout.png' },
+              { label: 'Zero-Rated VAT', value: '0%', desc: 'Exports and basic food items', image: '/close vat period .png' },
+              { label: 'Corporate Income Tax', value: '27%', desc: 'Standard CIT rate (configurable)', image: '/income statement.png' },
+              { label: 'Donation Tax', value: '20%', desc: 'Section 54 rate on gratuitous donations', image: '/vat adjustment.png' },
+              { label: 'UIF (Employee + Employer)', value: '1% + 1%', desc: 'Of cash remuneration, R17,712 ceiling', image: '/payroll history .png' },
+              { label: 'SDL', value: '1%', desc: 'Of gross payroll (R500,000 exemption)', image: '/run payroll.png' },
+            ].map((r) => (
+              <div key={r.label} className="snap-center shrink-0 w-[280px] h-[280px] sm:w-[340px] sm:h-[340px] bg-white rounded-2xl overflow-hidden shadow-md transition-all duration-700 ease-out flex flex-col hover:-translate-y-1.5 group/card">
+                <img src={r.image} alt={r.label} className="h-[55%] w-full object-cover group-hover/card:scale-110 transition-transform duration-700" />
+                <div className="h-[45%] flex flex-col justify-center p-5 bg-[#0052CC]">
+                  <p className="text-2xl font-bold text-white mb-1" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{r.value}</p>
+                  <p className="text-sm font-bold text-white mb-0.5" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{r.label}</p>
+                  <p className="text-xs text-white/80 leading-5">{r.desc}</p>
                 </div>
               </div>
             ))}
@@ -616,15 +593,15 @@ export function Tax() {
           </div>
           <CardSlider className="mt-6">
             {[
-              { icon: Calculator, label: 'Section 12C', desc: 'Manufacturing plant — 20% p.a. over 5 years' },
-              { icon: Zap, label: 'Section 12B (Solar PV)', desc: '50/30/20 accelerated schedule' },
-              { icon: Building2, label: 'Small Business Corp', desc: 'Accelerated per SBC rules' },
-            ].map((s, i) => (
-              <div key={s.label} className="card-lift shrink-0 snap-start w-[85%] sm:w-[55%] lg:w-[40%] bg-white rounded-2xl border border-slate-200 overflow-hidden">
-                <CardAvatar icon={s.icon} index={i} />
-                <div className="p-4">
-                  <h3 className="text-xs font-bold text-emerald-600 mb-1" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{s.label}</h3>
-                  <p className="text-[11px] text-slate-500 leading-4">{s.desc}</p>
+              { label: 'Section 12C', desc: 'Manufacturing plant — 20% p.a. over 5 years', image: '/deprciation schedule.png' },
+              { label: 'Section 12B (Solar PV)', desc: '50/30/20 accelerated schedule', image: '/depreciation schedule 4.png' },
+              { label: 'Small Business Corp', desc: 'Accelerated per SBC rules', image: '/depreciation policies .png' },
+            ].map((s) => (
+              <div key={s.label} className="snap-center shrink-0 w-[280px] h-[280px] sm:w-[340px] sm:h-[340px] bg-white rounded-2xl overflow-hidden shadow-md transition-all duration-700 ease-out flex flex-col hover:-translate-y-1.5 group/card">
+                <img src={s.image} alt={s.label} className="h-[55%] w-full object-cover group-hover/card:scale-110 transition-transform duration-700" />
+                <div className="h-[45%] flex flex-col justify-center p-4 bg-[#0052CC]">
+                  <h3 className="text-xs font-bold text-white mb-1" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{s.label}</h3>
+                  <p className="text-[11px] text-white/80 leading-4">{s.desc}</p>
                 </div>
               </div>
             ))}
@@ -643,20 +620,20 @@ export function Tax() {
           </div>
           <CardSlider>
             {[
-              { icon: Landmark, title: 'Tax Authority', desc: 'Configurable name (VAT, GST) and registration number.' },
-              { icon: Percent, title: 'Standard Rate', desc: 'Default tax rate percentage — 15% for South Africa.' },
-              { icon: ShieldCheck, title: 'Tax Active', desc: 'Enable or disable tax calculations globally.' },
-              { icon: FileText, title: 'Invoice Prefix', desc: 'Configurable invoice and quote numbering prefixes.' },
-              { icon: Calendar, title: 'Tax Periods', desc: 'Multi-type periods (VAT, PAYE) with auto-creation.' },
-              { icon: RefreshCw, title: 'Official Rate History', desc: 'Admin-manageable SARS official interest rates with dates.' },
-              { icon: Building2, title: 'Account Mappings', desc: 'Map GL accounts for tax expense, payable and deferred.' },
-              { icon: LockKeyhole, title: 'Year Lock', desc: 'Lock fiscal year to prevent further transaction changes.' },
-            ].map((item, i) => (
-              <div key={item.title} className="card-lift shrink-0 snap-start w-[85%] sm:w-[55%] lg:w-[40%] bg-white rounded-2xl border border-slate-200 overflow-hidden">
-                <CardAvatar icon={item.icon} index={i} />
-                <div className="p-4">
-                  <h3 className="text-xs font-bold text-slate-900 mb-0.5" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{item.title}</h3>
-                  <p className="text-[11px] text-slate-500 leading-4">{item.desc}</p>
+              { title: 'Tax Authority', desc: 'Configurable name (VAT, GST) and registration number.', image: '/vat layout.png' },
+              { title: 'Standard Rate', desc: 'Default tax rate percentage — 15% for South Africa.', image: '/vat adjustment.png' },
+              { title: 'Tax Active', desc: 'Enable or disable tax calculations globally.', image: '/vat graph report .png' },
+              { title: 'Invoice Prefix', desc: 'Configurable invoice and quote numbering prefixes.', image: '/tax invoice .png' },
+              { title: 'Tax Periods', desc: 'Multi-type periods (VAT, PAYE) with auto-creation.', image: '/close vat period .png' },
+              { title: 'Official Rate History', desc: 'Admin-manageable SARS official interest rates with dates.', image: '/vat graph report .png' },
+              { title: 'Account Mappings', desc: 'Map GL accounts for tax expense, payable and deferred.', image: '/general ledger .png' },
+              { title: 'Year Lock', desc: 'Lock fiscal year to prevent further transaction changes.', image: '/close vat period .png' },
+            ].map((item) => (
+              <div key={item.title} className="snap-center shrink-0 w-[280px] h-[280px] sm:w-[340px] sm:h-[340px] bg-white rounded-2xl overflow-hidden shadow-md transition-all duration-700 ease-out flex flex-col hover:-translate-y-1.5 group/card">
+                <img src={item.image} alt={item.title} className="h-[55%] w-full object-cover group-hover/card:scale-110 transition-transform duration-700" />
+                <div className="h-[45%] flex flex-col justify-center p-4 bg-[#0052CC]">
+                  <h3 className="text-xs font-bold text-white mb-0.5" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{item.title}</h3>
+                  <p className="text-[11px] text-white/80 leading-4">{item.desc}</p>
                 </div>
               </div>
             ))}
@@ -674,12 +651,21 @@ export function Tax() {
             </h2>
           </div>
           <CardSlider>
-            {reports.map((r, i) => (
-              <div key={r.title} className="card-lift shrink-0 snap-start w-[85%] sm:w-[55%] lg:w-[40%] bg-white rounded-2xl border border-slate-200 overflow-hidden">
-                <CardAvatar icon={r.icon} index={i} />
-                <div className="p-4">
-                  <h3 className="text-xs font-bold text-slate-900 mb-0.5" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{r.title}</h3>
-                  <p className="text-[11px] text-slate-500 leading-4">{r.desc}</p>
+            {[
+              { title: 'VAT201 Report', desc: 'Transaction-level breakdown with SARS box totals and finalize.', image: '/vat layout.png' },
+              { title: 'VAT Intelligence Dashboard', desc: 'Compliance score, filing countdown, YTD totals and trend charts.', image: '/vat graph report .png' },
+              { title: 'Sales Tax Report', desc: 'Monthly sales excluding VAT, VAT collected and effective rate.', image: '/tax invoice .png' },
+              { title: 'Purchase Tax Report', desc: 'Monthly purchases excluding VAT, VAT input and effective rate.', image: '/supplier invoice .png' },
+              { title: 'Annual VAT Report', desc: '12-month VAT summary aligned to fiscal year with PDF export.', image: '/vat graph report .png' },
+              { title: 'IRP6 Statement', desc: 'Formal provisional tax statement per return or all returns.', image: '/rip 5 for sars .png' },
+              { title: 'IT144 Donation Form', desc: 'Printable SARS donation tax return with company and donor details.', image: '/vat adjustment.png' },
+              { title: 'Audit Log', desc: 'Version history of all calculation and adjustment changes.', image: '/view transaction report.png' },
+            ].map((r) => (
+              <div key={r.title} className="snap-center shrink-0 w-[280px] h-[280px] sm:w-[340px] sm:h-[340px] bg-white rounded-2xl overflow-hidden shadow-md transition-all duration-700 ease-out flex flex-col hover:-translate-y-1.5 group/card">
+                <img src={r.image} alt={r.title} className="h-[55%] w-full object-cover group-hover/card:scale-110 transition-transform duration-700" />
+                <div className="h-[45%] flex flex-col justify-center p-4 bg-[#0052CC]">
+                  <h3 className="text-xs font-bold text-white mb-0.5" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{r.title}</h3>
+                  <p className="text-[11px] text-white/80 leading-4">{r.desc}</p>
                 </div>
               </div>
             ))}
@@ -739,12 +725,21 @@ export function Tax() {
             </p>
           </div>
           <CardSlider>
-            {tutorialSteps.map((step, i) => (
-              <div key={step.num} className="card-lift shrink-0 snap-start w-[85%] sm:w-[55%] lg:w-[40%] bg-white rounded-2xl border border-slate-200 overflow-hidden">
-                <CardAvatar icon={GraduationCap} index={i} label={step.num} />
-                <div className="p-4">
-                  <h3 className="text-sm font-bold text-slate-900 mb-0.5" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{step.title}</h3>
-                  <p className="text-[11px] text-slate-500 leading-4">{step.desc}</p>
+            {[
+              { title: 'Overview', desc: 'Introduction to VAT 201 module', image: '/overview.png' },
+              { title: 'Frequency', desc: 'Set filing frequency (1/2/4/6/12 months)', image: '/vat layout.png' },
+              { title: 'Periods', desc: 'Create and manage VAT periods', image: '/close vat period .png' },
+              { title: 'Close Period', desc: 'Select transactions and finalize', image: '/close vat period .png' },
+              { title: 'Reports', desc: 'View VAT201 and analytics reports', image: '/vat graph report .png' },
+              { title: 'Payments', desc: 'Link bank payments and refunds', image: '/vat adjustment.png' },
+              { title: 'Adjustments', desc: 'Create manual VAT adjustments', image: '/vat adjustment.png' },
+              { title: 'Compliance', desc: 'Monitor compliance score and deadlines', image: '/vat graph report .png' },
+            ].map((step) => (
+              <div key={step.title} className="snap-center shrink-0 w-[280px] h-[280px] sm:w-[340px] sm:h-[340px] bg-white rounded-2xl overflow-hidden shadow-md transition-all duration-700 ease-out flex flex-col hover:-translate-y-1.5 group/card">
+                <img src={step.image} alt={step.title} className="h-[55%] w-full object-cover group-hover/card:scale-110 transition-transform duration-700" />
+                <div className="h-[45%] flex flex-col justify-center p-4 bg-[#0052CC]">
+                  <h3 className="text-sm font-bold text-white mb-0.5" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{step.title}</h3>
+                  <p className="text-[11px] text-white/80 leading-4">{step.desc}</p>
                 </div>
               </div>
             ))}

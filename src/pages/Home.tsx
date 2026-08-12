@@ -3,15 +3,61 @@ import { Link } from 'react-router-dom';
 import {
   ArrowRight, CheckCircle2, FileText,
   Users, Star, Building2,
-  TrendingUp, Receipt, LockKeyhole,
-  FileSpreadsheet, CalendarClock, ShoppingCart,
-  Truck, CreditCard, BarChart3,
+  Receipt, ShoppingCart,
+  BarChart3,
   Wallet, Landmark, Package,
   ShieldCheck, Clock, ChevronDown,
-  PieChart
+  PieChart, ChevronLeft, ChevronRight, Play
 } from 'lucide-react';
 
 const APP_URL = 'https://biz-flow-sa-delta.vercel.app';
+
+function getYouTubeId(url: string) {
+  try {
+    return url.split('youtu.be/')[1]?.split('?')[0] ?? '';
+  } catch {
+    return '';
+  }
+}
+
+function getYouTubeThumb(url: string) {
+  const id = getYouTubeId(url);
+  return `https://img.youtube.com/vi/${id}/0.jpg`;
+}
+
+const ALL_DEMO_VIDEOS = [
+  { url: 'https://youtu.be/95Qn83PR3G4', title: 'Sales demo 1', desc: 'by Rigel Team' },
+  { url: 'https://youtu.be/qra2AII4r1Q', title: 'Sales demo 2', desc: 'by Rigel Team' },
+  { url: 'https://youtu.be/YJsZN2XwN8c', title: 'Sales demo 3', desc: 'by Rigel Team' },
+  { url: 'https://youtu.be/xgYsgYLwyHA', title: 'Sales demo 4', desc: 'by Rigel Team' },
+  { url: 'https://youtu.be/9ykroNunh8M', title: 'Sales demo 5', desc: 'by Rigel Team' },
+  { url: 'https://youtu.be/XSTp3kfM5qg', title: 'Sales demo 6', desc: 'by Rigel Team' },
+  { url: 'https://youtu.be/seiiD01ce8g', title: 'Purchase demo 1', desc: 'by Rigel Team' },
+  { url: 'https://youtu.be/hXLepZIo6v0', title: 'Purchase demo 2', desc: 'by Rigel Team' },
+  { url: 'https://youtu.be/jrP8vDXKDfM', title: 'Purchase demo 3', desc: 'by Rigel Team' },
+  { url: 'https://youtu.be/GyD2Y7n6uAA', title: 'Purchase demo 4', desc: 'by Rigel Team' },
+  { url: 'https://youtu.be/VF_xy9tNYbs', title: 'Payroll demo 1', desc: 'by Rigel Team' },
+  { url: 'https://youtu.be/nUVTI9piFd0', title: 'Payroll demo 2', desc: 'by Rigel Team' },
+  { url: 'https://youtu.be/QNEycsQ8Cu8', title: 'Payroll demo 3', desc: 'by Rigel Team' },
+  { url: 'https://youtu.be/Uo7k2u5Vvlg', title: 'Payroll demo 4', desc: 'by Rigel Team' },
+  { url: 'https://youtu.be/n30WPsWEqXI', title: 'Payroll demo 5', desc: 'by Rigel Team' },
+  { url: 'https://youtu.be/-ZhhQA__D40', title: 'Banking demo 1', desc: 'by Rigel Team' },
+  { url: 'https://youtu.be/Mf9envrYqvk', title: 'Banking demo 2', desc: 'by Rigel Team' },
+  { url: 'https://youtu.be/Z4w-v6xg0Do', title: 'VAT demo 1', desc: 'by Rigel Team' },
+  { url: 'https://youtu.be/byaPMh_0mF4', title: 'Inventory demo 1', desc: 'by Rigel Team' },
+  { url: 'https://youtu.be/vNRrculPKYA', title: 'Inventory demo 2', desc: 'by Rigel Team' },
+  { url: 'https://youtu.be/k_Kmzq3fhpg', title: 'Inventory demo 3', desc: 'by Rigel Team' },
+  { url: 'https://youtu.be/7ElF4AOgpIw', title: 'Reporting demo 1', desc: 'by Rigel Team' },
+  { url: 'https://youtu.be/79n86L-6fNc', title: 'Reporting demo 2', desc: 'by Rigel Team' },
+  { url: 'https://youtu.be/Ueamy35tjBM', title: 'Investments demo 1', desc: 'by Rigel Team' },
+  { url: 'https://youtu.be/GSD8DNM7lqE', title: 'Investments demo 2', desc: 'by Rigel Team' },
+  { url: 'https://youtu.be/HBGaPYna51A', title: 'Investments demo 3', desc: 'by Rigel Team' },
+  { url: 'https://youtu.be/ppK_9EF9miI', title: 'Loans demo 1', desc: 'by Rigel Team' },
+  { url: 'https://youtu.be/IEbpGB9GaKE', title: 'Loans demo 2', desc: 'by Rigel Team' },
+  { url: 'https://youtu.be/McdNhTbbqJQ', title: 'Assets demo 1', desc: 'by Rigel Team' },
+  { url: 'https://youtu.be/-avE67UETxc', title: 'Assets demo 2', desc: 'by Rigel Team' },
+  { url: 'https://youtu.be/lgQTtgg5q7M', title: 'Assets demo 3', desc: 'by Rigel Team' },
+];
 
 const testimonials = [
   { text: 'Rigel replaced our spreadsheets completely. VAT returns now take minutes instead of hours.', metric: '90% faster VAT filing' },
@@ -29,159 +75,112 @@ const testimonials = [
   { text: 'Moving from Excel to Rigel took less than a day. The onboarding was simple and well guided.', metric: '1-day onboarding' },
 ];
 
-const purchaseScreenshots = [
-  { src: '/creditors%20control%20advisor.png', title: 'Creditors control advisor' },
-  { src: '/creditors%20control%202.png', title: 'Creditors control summary' },
-  { src: '/creditors%20control.png', title: 'Creditors control' },
-  { src: '/process%20debit%20note%20.png', title: 'Process debit note' },
-  { src: '/purchase%20form%20.png', title: 'Purchase form' },
-  { src: '/purchase%20layout.png', title: 'Purchase layout' },
-  { src: '/payable%20accounts%20.png', title: 'Payable accounts' },
-];
-
-const salesScreenshots = [
-  { src: '/list%20of%20customers%20.png', title: 'List of customers' },
-  { src: '/magic%20link%20for%20qoutes%20.png', title: 'Quote magic link' },
-  { src: '/accepting%20qoutes.png', title: 'Accepting quotes' },
-  { src: '/sales%20order%20.png', title: 'Sales order' },
-  { src: '/magic%20link%20for%20sales%20order%20.png', title: 'Sales order magic link' },
-  { src: '/accepting%20sales%20order%20.png', title: 'Accepting sales order' },
-  { src: '/tax%20invoice%20.png', title: 'Tax invoice' },
-  { src: '/tax%20invoice%20temeplete.png', title: 'Tax invoice template' },
-  { src: '/processing%20credit%20note%20.png', title: 'Processing credit note' },
-  { src: '/debtors%20control%20.png', title: 'Debtors control' },
-  { src: '/aging%20for%20debtors%20.png', title: 'Aging for debtors' },
-  { src: '/customer%20statement%20.png', title: 'Customer statement' },
-  { src: '/account%20reciable%20dash%20board%20.png', title: 'Accounts receivable dashboard' },
-];
-
-const SLIDESHOW_INTERVAL_MS = 10000;
-
-const purchaseFeatures = [
-  {
-    icon: ShoppingCart,
-    title: 'Control purchase orders',
-    desc: 'Draft supplier orders, track approval status and keep procurement linked to invoices and receipts.',
-  },
-  {
-    icon: Truck,
-    title: 'Match receipts properly',
-    desc: 'Confirm goods received before finalising supplier invoices so stock, costs and payables stay accurate.',
-  },
-  {
-    icon: CreditCard,
-    title: 'Understand supplier debt',
-    desc: 'See outstanding bills, vendor balances and payment exposure before cash leaves the business.',
-  },
-];
-
-const customerFeatures = [
-  {
-    icon: Users,
-    title: 'Manage customer profiles',
-    desc: 'Keep contact details, payment terms, credit limits and customer balances connected to every sales document.',
-  },
-  {
-    icon: FileText,
-    title: 'Create sales documents',
-    desc: 'Move from quote to sales order to tax invoice with clean tracking for status, delivery and outstanding amounts.',
-  },
-  {
-    icon: CreditCard,
-    title: 'Allocate customer receipts',
-    desc: 'Record payments and allocate them against open invoices or opening balances so accounts receivable stays accurate.',
-  },
-];
+const SLIDESHOW_INTERVAL_MS = 4000;
 
 export function Home() {
-  const [activePurchaseScreenshot, setActivePurchaseScreenshot] = useState(0);
-  const [activeSalesScreenshot, setActiveSalesScreenshot] = useState(0);
-  const [procurementTab, setProcurementTab] = useState<'purchase' | 'sales'>('purchase');
+  const [activeVideoIndex, setActiveVideoIndex] = useState(0);
+  const [videosPaused, setVideosPaused] = useState(false);
+  const videoSliderRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (videosPaused) return;
     const interval = window.setInterval(() => {
-      setActivePurchaseScreenshot(current => (current + 1) % purchaseScreenshots.length);
+      setActiveVideoIndex(current => (current + 1) % ALL_DEMO_VIDEOS.length);
     }, SLIDESHOW_INTERVAL_MS);
 
     return () => window.clearInterval(interval);
-  }, []);
+  }, [videosPaused]);
 
   useEffect(() => {
-    const interval = window.setInterval(() => {
-      setActiveSalesScreenshot(current => (current + 1) % salesScreenshots.length);
-    }, SLIDESHOW_INTERVAL_MS);
-
-    return () => window.clearInterval(interval);
-  }, []);
+    const el = videoSliderRef.current;
+    const card = el?.firstElementChild as HTMLElement | null;
+    if (!el || !card) return;
+    const target = activeVideoIndex * (card.offsetWidth + 16) + card.offsetWidth / 2 - el.clientWidth / 2;
+    el.scrollTo({ left: Math.max(0, target), behavior: 'smooth' });
+  }, [activeVideoIndex]);
 
   const sliderRef = useRef<HTMLDivElement>(null);
-  const [solutionsPaused, setSolutionsPaused] = useState(false);
+  const [activeSolutionIndex, setActiveSolutionIndex] = useState(0);
 
   useEffect(() => {
-    if (solutionsPaused) return;
-    const interval = window.setInterval(() => {
-      const el = sliderRef.current;
-      if (!el) return;
-      const cardWidth = el.firstElementChild?.clientWidth ?? 300;
-      const gap = 24;
-      if (el.scrollLeft + el.clientWidth >= el.scrollWidth - 10) {
-        el.scrollTo({ left: 0, behavior: 'smooth' });
-      } else {
-        el.scrollBy({ left: cardWidth + gap, behavior: 'smooth' });
-      }
-    }, 3000);
-
-    return () => window.clearInterval(interval);
-  }, [solutionsPaused]);
+    const el = sliderRef.current;
+    const card = el?.firstElementChild as HTMLElement | null;
+    if (!el || !card) return;
+    const target = activeSolutionIndex * (card.offsetWidth + 24) + card.offsetWidth / 2 - el.clientWidth / 2;
+    el.scrollTo({ left: Math.max(0, target), behavior: 'smooth' });
+  }, [activeSolutionIndex]);
 
   const testimonialsRef = useRef<HTMLDivElement>(null);
   const [testimonialsPaused, setTestimonialsPaused] = useState(false);
+  const [activeTestimonialIndex, setActiveTestimonialIndex] = useState(0);
 
   useEffect(() => {
     if (testimonialsPaused) return;
     const interval = window.setInterval(() => {
-      const el = testimonialsRef.current;
-      if (!el) return;
-      const cardWidth = (el.firstElementChild?.clientWidth ?? 340) + 24;
-      if (el.scrollLeft + el.clientWidth >= el.scrollWidth - 10) {
-        el.scrollTo({ left: 0, behavior: 'smooth' });
-      } else {
-        el.scrollBy({ left: cardWidth, behavior: 'smooth' });
-      }
+      setActiveTestimonialIndex(current => (current + 1) % testimonials.length);
     }, 3500);
 
     return () => window.clearInterval(interval);
   }, [testimonialsPaused]);
 
+  useEffect(() => {
+    const el = testimonialsRef.current;
+    const card = el?.firstElementChild as HTMLElement | null;
+    if (!el || !card) return;
+    const target = activeTestimonialIndex * (card.offsetWidth + 24) + card.offsetWidth / 2 - el.clientWidth / 2;
+    el.scrollTo({ left: Math.max(0, target), behavior: 'smooth' });
+  }, [activeTestimonialIndex]);
+
+  const trustRef = useRef<HTMLDivElement>(null);
+  const [trustPaused, setTrustPaused] = useState(false);
+  const [activeTrustIndex, setActiveTrustIndex] = useState(0);
+
+  useEffect(() => {
+    if (trustPaused) return;
+    const interval = window.setInterval(() => {
+      setActiveTrustIndex(current => (current + 1) % 4);
+    }, 4000);
+
+    return () => window.clearInterval(interval);
+  }, [trustPaused]);
+
+  useEffect(() => {
+    const el = trustRef.current;
+    const card = el?.firstElementChild as HTMLElement | null;
+    if (!el || !card) return;
+    const target = activeTrustIndex * (card.offsetWidth + 24) + card.offsetWidth / 2 - el.clientWidth / 2;
+    el.scrollTo({ left: Math.max(0, target), behavior: 'smooth' });
+  }, [activeTrustIndex]);
+
   return (
     <div className="bg-white">
       {/* Hero — editorial fintech with gradient mesh */}
-      <section className="relative overflow-hidden bg-white text-slate-900">
+      <section className="relative overflow-hidden text-white">
         {/* Background image overlay */}
         <div className="absolute inset-0 pointer-events-none">
-          <img src="/Gemini_Generated_Image_xefbhfxefbhfxefb.png" alt="" className="w-full h-full object-cover" />
-          {/* White gradient scrim from left for text legibility */}
-          <div className="absolute inset-0 bg-gradient-to-r from-white via-white/85 to-transparent" />
-          {/* Bottom fade for smooth transition */}
-          <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-white to-transparent" />
+          <img src="/home-banner.jpg" alt="" className="w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-[#0B1220]/70" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#0B1220]/80 via-transparent to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#0B1220] to-transparent" />
+          <div className="absolute inset-x-0 -bottom-1 h-32 sm:h-40 bg-slate-50" style={{ clipPath: 'polygon(0 40%, 100% 70%, 100% 100%, 0 100%)' }} />
         </div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-36 relative">
           <div className="grid lg:grid-cols-[1.15fr_0.85fr] gap-12 lg:gap-16 items-center">
             {/* Left column — text */}
             <div className="reveal reveal-visible max-w-xl">
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-50 border border-emerald-100 mb-6">
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/20 border border-emerald-400/30 mb-6">
                 <span className="h-1.5 w-1.5 rounded-full bg-[#0F9D6C] animate-pulse" />
-                <span className="text-xs font-semibold text-emerald-700 tracking-wide uppercase">
+                <span className="text-xs font-semibold text-emerald-100 tracking-wide uppercase">
                   Accounting &amp; ERP Software · South Africa
                 </span>
               </div>
               <h1
-                className="text-[2.5rem] sm:text-5xl lg:text-[4rem] font-bold leading-[1.02] tracking-[-0.02em] mb-6 text-slate-900"
+                className="text-[2.5rem] sm:text-5xl lg:text-[4rem] font-bold leading-[1.02] tracking-[-0.02em] mb-6 text-white"
                 style={{ fontFamily: "'Inter Tight', sans-serif" }}
               >
                 Run your entire business on one connected platform
               </h1>
-              <p className="text-lg text-slate-600 max-w-lg mb-10 leading-8">
+              <p className="text-lg text-slate-200 max-w-lg mb-10 leading-8">
                 From first invoice to annual financial statements — Rigel Business brings accounting, VAT, payroll, inventory and reporting together so your team works faster and makes better decisions.
               </p>
               <div className="flex flex-wrap items-center gap-3 mb-12">
@@ -193,23 +192,23 @@ export function Home() {
                 </a>
                 <Link
                   to="/book-demo"
-                  className="btn-pill h-12 px-7 border border-slate-200 bg-white/80 backdrop-blur-sm hover:bg-white hover:border-slate-300 text-slate-700 font-semibold text-sm flex items-center gap-2"
+                  className="btn-pill h-12 px-7 border border-white/30 bg-white/10 backdrop-blur-sm hover:bg-white/20 hover:border-white/50 text-white font-semibold text-sm flex items-center gap-2"
                 >
                   Book a demo
                 </Link>
               </div>
               {/* Trust bar */}
-              <div className="flex flex-wrap items-center gap-x-8 gap-y-4 pt-8 border-t border-slate-200">
+              <div className="flex flex-wrap items-center gap-x-8 gap-y-4 pt-8 border-t border-white/20">
                 <div className="flex items-center gap-2">
                   <div className="flex gap-0.5">
-                    {[...Array(5)].map((_, i) => <Star key={i} className="h-4 w-4 fill-emerald-500 text-emerald-500" />)}
+                    {[...Array(5)].map((_, i) => <Star key={i} className="h-4 w-4 fill-emerald-400 text-emerald-400" />)}
                   </div>
-                  <span className="text-sm text-slate-600">Rated by SA businesses</span>
+                  <span className="text-sm text-slate-200">Rated by SA businesses</span>
                 </div>
-                <div className="flex items-center gap-2 text-sm text-slate-600">
+                <div className="flex items-center gap-2 text-sm text-slate-200">
                   <ShieldCheck className="h-4 w-4 text-[#0F9D6C]" /> SARS-compliant VAT201
                 </div>
-                <div className="flex items-center gap-2 text-sm text-slate-600">
+                <div className="flex items-center gap-2 text-sm text-slate-200">
                   <Clock className="h-4 w-4 text-[#0F9D6C]" /> Cancel anytime
                 </div>
               </div>
@@ -235,8 +234,6 @@ export function Home() {
           {/* Auto-sliding square cards */}
           <div
             className="relative group/slider"
-            onMouseEnter={() => setSolutionsPaused(true)}
-            onMouseLeave={() => setSolutionsPaused(false)}
           >
             <div
               ref={sliderRef}
@@ -253,31 +250,24 @@ export function Home() {
                 { icon: ShoppingCart, title: 'Purchase & Payables', desc: 'POs, supplier invoices and receipts.', accent: '#2563EB', tag: 'PO tracking', image: '/Gemini_Generated_Image_cq6dxlcq6dxlcq6d.png', link: '/purchase' },
                 { icon: Package, title: 'Inventory & Stock', desc: 'Multi-warehouse stock and reorder alerts.', accent: '#0F9D6C', tag: 'Multi-warehouse', image: '/PL2ri.jpg', link: '/inventory' },
                 { icon: Users, title: 'Payroll & HR', desc: 'Compliant payroll, payslips and SARS.', accent: '#2563EB', tag: 'Payslips', image: '/vp9tD.jpg', link: '/payroll' },
-              ].map((item) => (
+              ].map((item, i) => (
                 <Link
                   key={item.title}
                   to={item.link}
-                  className="snap-start shrink-0 w-[280px] h-[280px] sm:w-[320px] sm:h-[320px] rounded-2xl relative overflow-hidden shadow-md hover:shadow-2xl transition-all duration-500 hover:-translate-y-1.5 group/card"
+                  className={`snap-center shrink-0 w-[300px] h-[300px] sm:w-[360px] sm:h-[360px] bg-white rounded-2xl overflow-hidden shadow-md transition-all duration-700 ease-out flex flex-col hover:-translate-y-1.5 group/card ${i === activeSolutionIndex ? 'scale-105 shadow-2xl z-10' : 'scale-90 opacity-60 blur-[1px] hover:opacity-100 hover:blur-0 hover:scale-95'}`}
                 >
                   <img
                     src={item.image}
                     alt={item.title}
-                    className="absolute inset-0 h-full w-full object-cover group-hover/card:scale-110 transition-transform duration-700"
+                    className="h-[55%] w-full object-cover group-hover/card:scale-110 transition-transform duration-700"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900/95 via-slate-900/50 to-transparent" />
-                  <div className="absolute top-3 right-3 text-[10px] font-semibold uppercase tracking-wide text-slate-700 bg-white/95 backdrop-blur-sm border border-white/20 rounded-full px-2.5 py-1">
-                    {item.tag}
-                  </div>
-                  <div className="absolute bottom-0 left-0 right-0 p-5 text-white">
-                    <div className="flex items-center gap-2 mb-2">
-                      <div className="h-8 w-8 rounded-lg bg-white/20 backdrop-blur-sm flex items-center justify-center">
-                        <item.icon className="h-4 w-4" style={{ color: item.accent === '#2563EB' ? '#93C5FD' : '#6EE7B7' }} />
-                      </div>
-                      <h3 className="text-sm font-bold" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{item.title}</h3>
+                  <div className="h-[45%] flex flex-col justify-between p-6 bg-[#0052CC]">
+                    <div>
+                      <h3 className="text-lg font-bold text-white mb-2" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{item.title}</h3>
+                      <p className="text-sm text-white/80 leading-6 line-clamp-3">{item.desc}</p>
                     </div>
-                    <p className="text-xs text-slate-200/80 leading-5 mb-3 line-clamp-2">{item.desc}</p>
-                    <span className="inline-flex items-center gap-1.5 text-xs font-semibold" style={{ color: item.accent === '#2563EB' ? '#93C5FD' : '#6EE7B7' }}>
-                      Read more <ArrowRight className="h-3 w-3 group-hover/card:translate-x-1 transition-transform" />
+                    <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-white mt-2 group-hover/card:translate-x-1 transition-transform">
+                      Read more <ArrowRight className="h-4 w-4" />
                     </span>
                   </div>
                 </Link>
@@ -291,14 +281,14 @@ export function Home() {
             {/* Arrow buttons */}
             <button
               type="button"
-              onClick={() => sliderRef.current?.scrollBy({ left: -336, behavior: 'smooth' })}
+              onClick={() => setActiveSolutionIndex(i => (i - 1 + 9) % 9)}
               className="absolute left-2 top-1/2 -translate-y-1/2 h-10 w-10 rounded-full bg-white shadow-lg border border-slate-200 flex items-center justify-center text-slate-600 hover:bg-slate-50 hover:text-emerald-600 transition-colors hidden sm:flex"
             >
               <ArrowRight className="h-4 w-4 rotate-180" />
             </button>
             <button
               type="button"
-              onClick={() => sliderRef.current?.scrollBy({ left: 336, behavior: 'smooth' })}
+              onClick={() => setActiveSolutionIndex(i => (i + 1) % 9)}
               className="absolute right-2 top-1/2 -translate-y-1/2 h-10 w-10 rounded-full bg-white shadow-lg border border-slate-200 flex items-center justify-center text-slate-600 hover:bg-slate-50 hover:text-emerald-600 transition-colors hidden sm:flex"
             >
               <ArrowRight className="h-4 w-4" />
@@ -306,8 +296,12 @@ export function Home() {
 
             {/* Progress dots */}
             <div className="flex justify-center gap-2 mt-4">
-              {Array.from({ length: 8 }).map((_, i) => (
-                <div key={i} className="h-1.5 w-1.5 rounded-full bg-slate-300" />
+              {Array.from({ length: 9 }).map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setActiveSolutionIndex(i)}
+                  className={`h-2 rounded-full transition-all ${i === activeSolutionIndex ? 'w-6 bg-emerald-600' : 'w-2 bg-slate-300 hover:bg-slate-400'}`}
+                />
               ))}
             </div>
           </div>
@@ -350,12 +344,13 @@ export function Home() {
       </section>
 
       {/* Rigel vs the alternatives */}
-      <section className="py-20 lg:py-28 relative overflow-hidden">
+      <section className="pt-32 pb-32 lg:pt-40 lg:pb-40 relative overflow-hidden">
         <div className="absolute inset-0 pointer-events-none">
           <img src="/home-bg.jpg" alt="" className="h-full w-full object-cover" />
           <div className="absolute inset-0 bg-[#0B1220]/85" />
           <div className="absolute inset-0 bg-gradient-to-b from-[#0B1220]/40 via-transparent to-[#0B1220]/80" />
         </div>
+        <div className="absolute left-0 right-0 top-0 h-24 sm:h-32 lg:h-40 bg-white pointer-events-none" style={{ clipPath: 'polygon(0 0, 100% 0, 100% 90%, 0 10%)' }} />
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
           <div className="ring-rotate absolute top-[15%] right-[10%] h-32 w-32 border border-emerald-500/15 rounded-full" />
           <div className="ring-rotate-reverse absolute bottom-[20%] left-[8%] h-24 w-24 border border-slate-500/10 rounded-full" />
@@ -453,6 +448,7 @@ export function Home() {
             </div>
           </div>
         </div>
+        <div className="absolute left-0 right-0 -bottom-1 h-24 sm:h-32 lg:h-40 bg-white" style={{ clipPath: 'polygon(0 90%, 100% 10%, 100% 100%, 0 100%)' }} />
       </section>
 
       {/* Buy & Sell — combined advanced section with tabbed viewer */}
@@ -470,126 +466,72 @@ export function Home() {
             </p>
           </div>
 
-          {/* Tab switcher */}
-          <div className="flex justify-center mb-10">
-            <div className="inline-flex gap-1 p-1 bg-slate-100 rounded-full">
+          <div
+            className="relative max-w-5xl mx-auto"
+            onMouseEnter={() => setVideosPaused(true)}
+            onMouseLeave={() => setVideosPaused(false)}
+          >
+            <div className="absolute -top-12 right-0 flex items-center gap-3 z-10">
+              <span className="text-sm font-mono text-slate-500">
+                {String(activeVideoIndex + 1).padStart(2, '0')} / {String(ALL_DEMO_VIDEOS.length).padStart(2, '0')}
+              </span>
               <button
-                type="button"
-                onClick={() => setProcurementTab('purchase')}
-                className={`px-6 py-2.5 rounded-full text-sm font-semibold transition-all ${procurementTab === 'purchase' ? 'bg-white text-emerald-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                onClick={() => setActiveVideoIndex(i => (i - 1 + ALL_DEMO_VIDEOS.length) % ALL_DEMO_VIDEOS.length)}
+                className="h-10 w-10 rounded-full border border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:text-emerald-600 flex items-center justify-center transition-colors"
               >
-                Purchase & Payables
+                <ChevronLeft className="h-5 w-5" />
               </button>
               <button
-                type="button"
-                onClick={() => setProcurementTab('sales')}
-                className={`px-6 py-2.5 rounded-full text-sm font-semibold transition-all ${procurementTab === 'sales' ? 'bg-white text-emerald-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                onClick={() => setActiveVideoIndex(i => (i + 1) % ALL_DEMO_VIDEOS.length)}
+                className="h-10 w-10 rounded-full border border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:text-emerald-600 flex items-center justify-center transition-colors"
               >
-                Sales & Invoicing
+                <ChevronRight className="h-5 w-5" />
               </button>
             </div>
-          </div>
-
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            {/* Screenshot viewer */}
-            <div className="relative">
-              <div className={`absolute -inset-6 blur-2xl rounded-3xl pointer-events-none transition-all duration-500 ${procurementTab === 'purchase' ? 'bg-gradient-to-bl from-blue-100/40 to-transparent' : 'bg-gradient-to-br from-emerald-100/50 to-transparent'}`} />
-              <div className="relative bg-white rounded-xl shadow-xl overflow-hidden">
-                <div className="bg-slate-50 overflow-hidden">
-                  <img
-                    src={procurementTab === 'purchase'
-                      ? purchaseScreenshots[activePurchaseScreenshot].src
-                      : salesScreenshots[activeSalesScreenshot].src}
-                    alt={procurementTab === 'purchase'
-                      ? purchaseScreenshots[activePurchaseScreenshot].title
-                      : salesScreenshots[activeSalesScreenshot].title}
-                    className="w-full object-cover transition-all duration-500"
-                  />
-                </div>
-                <div className="h-1 bg-slate-100">
-                  <div className="h-full bg-emerald-600 transition-all duration-300" style={{ width: `${((procurementTab === 'purchase' ? activePurchaseScreenshot + 1 : activeSalesScreenshot + 1) / (procurementTab === 'purchase' ? purchaseScreenshots.length : salesScreenshots.length)) * 100}%` }} />
-                </div>
-                <div className="px-4 py-3 flex items-center justify-between">
-                  <span className="text-[10px] text-slate-500 font-mono">
-                    {procurementTab === 'purchase'
-                      ? purchaseScreenshots[activePurchaseScreenshot].title
-                      : salesScreenshots[activeSalesScreenshot].title}
-                  </span>
-                  <div className="flex items-center gap-1.5">
-                    {(procurementTab === 'purchase' ? purchaseScreenshots : salesScreenshots).map((screenshot, index) => (
-                      <button
-                        key={screenshot.title}
-                        type="button"
-                        aria-label={`Show ${screenshot.title}`}
-                        onClick={() => procurementTab === 'purchase' ? setActivePurchaseScreenshot(index) : setActiveSalesScreenshot(index)}
-                        className={`h-1.5 rounded-full transition-all ${
-                          (procurementTab === 'purchase' ? activePurchaseScreenshot : activeSalesScreenshot) === index ? 'w-5 bg-emerald-600' : 'w-1.5 bg-slate-300 hover:bg-slate-400'
-                        }`}
-                      />
-                    ))}
+            <div
+              ref={videoSliderRef}
+              className="flex gap-4 overflow-x-auto no-scrollbar snap-x snap-mandatory pb-4 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8"
+            >
+              {ALL_DEMO_VIDEOS.map((video, i) => (
+                <button
+                  key={video.url}
+                  onClick={() => setActiveVideoIndex(i)}
+                  className={`group text-left shrink-0 snap-center w-[85%] sm:w-[60%] lg:w-[40%] bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-500 ease-out focus:outline-none focus:ring-2 focus:ring-emerald-500 ${i === activeVideoIndex ? 'ring-2 ring-emerald-500 scale-[1.07] shadow-2xl z-10' : 'opacity-70 scale-95 hover:opacity-100 hover:scale-100 hover:shadow-xl'}`}
+                  style={{ fontFamily: "'Inter Tight', sans-serif" }}
+                >
+                  <div className="relative aspect-video">
+                    <img
+                      src={getYouTubeThumb(video.url)}
+                      alt={video.title}
+                      className="h-full w-full object-cover"
+                      loading="lazy"
+                    />
+                    <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors flex items-center justify-center">
+                      <div className="h-16 w-16 rounded-full bg-white/95 shadow-2xl flex items-center justify-center group-hover:scale-105 transition-transform">
+                        <Play className="h-7 w-7 text-[#1BA37B] ml-1" fill="#1BA37B" />
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
+                  <div className="p-4">
+                    <h3 className="text-sm font-bold text-slate-900">{video.title}</h3>
+                    <p className="text-xs text-slate-500 mt-0.5">{video.desc}</p>
+                  </div>
+                </button>
+              ))}
             </div>
-
-            {/* Feature content */}
-            <div>
-              {procurementTab === 'purchase' ? (
-                <>
-                  <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 border border-blue-100 mb-4">
-                    <ShoppingCart className="h-3.5 w-3.5 text-blue-600" />
-                    <span className="text-xs font-semibold text-blue-600 tracking-wide uppercase">Purchase management</span>
-                  </div>
-                  <h3 className="text-2xl lg:text-3xl font-bold text-slate-900 mb-4 leading-tight tracking-tight" style={{ fontFamily: "'Inter Tight', sans-serif" }}>
-                    Know what you ordered, received and still owe
-                  </h3>
-                  <p className="text-slate-600 text-base leading-7 mb-6">
-                    Rigel connects suppliers, purchase orders, supplier invoices and accounts payable so your buying process stays organised from request to payment.
-                  </p>
-                  <div className="space-y-4">
-                    {purchaseFeatures.map((item) => (
-                      <div key={item.title} className="feature-item flex gap-4 group">
-                        <div className="h-10 w-10 rounded-full icon-gradient text-emerald-600 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
-                          <item.icon className="h-5 w-5" />
-                        </div>
-                        <div>
-                          <h4 className="text-base font-semibold text-slate-900 mb-1" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{item.title}</h4>
-                          <p className="text-sm leading-6 text-slate-500">{item.desc}</p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-100 mb-4">
-                    <Wallet className="h-3.5 w-3.5 text-emerald-600" />
-                    <span className="text-xs font-semibold text-emerald-600 tracking-wide uppercase">Customer management</span>
-                  </div>
-                  <h3 className="text-2xl lg:text-3xl font-bold text-slate-900 mb-4 leading-tight tracking-tight" style={{ fontFamily: "'Inter Tight', sans-serif" }}>
-                    Turn quotes into paid invoices without losing the trail
-                  </h3>
-                  <p className="text-slate-600 text-base leading-7 mb-6">
-                    Rigel keeps customers, quotes, sales orders, invoices, delivery status and receipts in one connected revenue workspace.
-                  </p>
-                  <div className="space-y-4">
-                    {customerFeatures.map((item) => (
-                      <div key={item.title} className="feature-item flex gap-4 group">
-                        <div className="h-10 w-10 rounded-full icon-gradient text-emerald-600 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
-                          <item.icon className="h-5 w-5" />
-                        </div>
-                        <div>
-                          <h4 className="text-base font-semibold text-slate-900 mb-1" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{item.title}</h4>
-                          <p className="text-sm leading-6 text-slate-500">{item.desc}</p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </>
-              )}
+            <div className="flex items-center justify-center gap-2 mt-4">
+              {ALL_DEMO_VIDEOS.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setActiveVideoIndex(i)}
+                  className={`h-2 rounded-full transition-all ${i === activeVideoIndex ? 'w-6 bg-[#1BA37B]' : 'w-2 bg-slate-300 hover:bg-slate-400'}`}
+                />
+              ))}
+            </div>
+            <div className="text-center mt-8">
               <a
                 href={`${APP_URL}/signup`}
-                className="btn-pill mt-8 inline-flex h-12 items-center bg-[#0F9D6C] hover:bg-[#0B7A52] px-8 font-semibold text-white"
+                className="btn-pill inline-flex h-12 items-center bg-[#0F9D6C] hover:bg-[#0B7A52] px-8 font-semibold text-white"
               >
                 Try it free <ArrowRight className="h-4 w-4 ml-2" />
               </a>
@@ -618,7 +560,7 @@ export function Home() {
             className="flex gap-6 overflow-x-auto no-scrollbar snap-x snap-mandatory pb-4 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8"
           >
             {testimonials.map((t, i) => (
-              <div key={i} className="snap-start shrink-0 w-[280px] sm:w-[340px] card-lift group bg-slate-50 rounded-2xl border border-slate-200 p-7 hover:shadow-lg transition-all duration-300">
+              <div key={i} className={`snap-center shrink-0 w-[280px] sm:w-[340px] card-lift group bg-slate-50 rounded-2xl border border-slate-200 p-7 transition-all duration-700 ease-out ${i === activeTestimonialIndex ? 'scale-110 shadow-2xl z-10 bg-white' : 'scale-95 opacity-70 hover:opacity-100 hover:scale-100'}`}>
                 <div className="flex gap-0.5 mb-5">
                   {[...Array(5)].map((_, i) => <Star key={i} className="h-4 w-4 fill-emerald-500 text-emerald-500" />)}
                 </div>
@@ -639,23 +581,46 @@ export function Home() {
         </div>
       </section>
 
-      {/* Trust badges — tinted bg, gradient circles */}
+      {/* Trust badges — picture cards with focused middle slide */}
       <section className="py-20 lg:py-28 bg-slate-50 border-t border-slate-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div
+            ref={trustRef}
+            onMouseEnter={() => setTrustPaused(true)}
+            onMouseLeave={() => setTrustPaused(false)}
+            className="flex gap-6 overflow-x-auto no-scrollbar snap-x snap-mandatory pb-6 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8"
+          >
             {[
-              { icon: ShieldCheck, title: 'Audit trail', desc: 'Every transaction records who, what and when. Full traceability for auditors and SARS reviews.' },
-              { icon: Users, title: 'Multi-company', desc: 'Switch between entities without logging out. Manage holding companies and subsidiaries in one place.' },
-              { icon: CalendarClock, title: 'Fiscal periods', desc: 'Lock closed periods to prevent changes. Keep current and historical data clean and accurate.' },
-              { icon: FileText, title: 'Document templates', desc: 'Customise invoices, quotes and statements with your logo, colours and banking details.' },
-            ].map(item => (
-              <div key={item.title} className="card-lift bg-white rounded-2xl p-8 group">
-                <div className="h-14 w-14 rounded-full icon-gradient text-emerald-600 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
-                  <item.icon className="h-6 w-6" />
+              { title: 'Audit trail', desc: 'Every transaction records who, what and when. Full traceability for auditors and SARS reviews.', image: '/audit-trail.jpg' },
+              { title: 'Multi-company', desc: 'Switch between entities without logging out. Manage holding companies and subsidiaries in one place.', image: '/multi-company.jpg' },
+              { title: 'Financial year', desc: 'Lock closed periods to prevent changes. Keep current and historical data clean and accurate.', image: '/financial-year.jpg' },
+              { title: 'Document templates', desc: 'Customise invoices, quotes and statements with your logo, colours and banking details.', image: '/document-templates.jpg' },
+            ].map((item, i) => (
+              <div key={item.title} className={`snap-center shrink-0 w-[300px] h-[300px] sm:w-[360px] sm:h-[360px] bg-white rounded-2xl overflow-hidden shadow-md transition-all duration-700 ease-out flex flex-col ${i === activeTrustIndex ? 'scale-105 shadow-2xl z-10' : 'scale-95 opacity-70 hover:opacity-100 hover:scale-100'}`}>
+                <img
+                  src={item.image}
+                  alt={item.title}
+                  className="h-[55%] w-full object-cover"
+                />
+                <div className="h-[45%] flex flex-col justify-between p-6 bg-[#0052CC]">
+                  <div>
+                    <h3 className="text-lg font-bold text-white mb-2" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{item.title}</h3>
+                    <p className="text-sm text-white/80 leading-6 line-clamp-3">{item.desc}</p>
+                  </div>
+                  <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-white mt-2">
+                    Read more <ArrowRight className="h-4 w-4" />
+                  </span>
                 </div>
-                <h3 className="text-base font-bold text-slate-900 mb-3" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{item.title}</h3>
-                <p className="text-sm text-slate-600 leading-7">{item.desc}</p>
               </div>
+            ))}
+          </div>
+          <div className="flex items-center justify-center gap-2 mt-6">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setActiveTrustIndex(i)}
+                className={`h-2 rounded-full transition-all ${i === activeTrustIndex ? 'w-6 bg-emerald-600' : 'w-2 bg-slate-300 hover:bg-slate-400'}`}
+              />
             ))}
           </div>
         </div>
@@ -692,6 +657,7 @@ export function Home() {
 
       {/* CTA — gradient mesh bookend */}
       <section className="mesh-bg py-20 lg:py-28 relative overflow-hidden">
+        <div className="absolute left-0 right-0 -top-1 h-24 sm:h-32 bg-white z-10 pointer-events-none" style={{ clipPath: 'polygon(0 0, 100% 0, 100% 70%, 0 100%)' }} />
         <div className="absolute bottom-0 left-0 h-1 w-full bg-gradient-to-r from-transparent via-[#0F9D6C] to-transparent" />
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
           <div className="mesh-drift absolute top-[20%] left-[8%] h-[300px] w-[300px] bg-[#0F9D6C]/10 blur-[80px] rounded-full" />
@@ -728,10 +694,10 @@ export function Home() {
             <div className="hidden lg:block">
               <div className="glass-chip rounded-2xl p-8">
                 <div className="flex items-center gap-3 mb-6">
-                  <ShieldCheck className="h-6 w-6 text-emerald-400" />
+                  <CheckCircle2 className="h-6 w-6 text-emerald-400" />
                   <span className="text-white font-semibold" style={{ fontFamily: "'Inter Tight', sans-serif" }}>Why businesses choose Rigel</span>
                 </div>
-                <div className="space-y-4">
+                <div className="space-y-4 mb-6">
                   {['No setup fees or hidden costs', 'Works on desktop, web and mobile', 'SARS-compliant VAT201 filing', 'Multi-company from one dashboard'].map(benefit => (
                     <div key={benefit} className="flex items-center gap-3 text-slate-300">
                       <CheckCircle2 className="h-5 w-5 text-emerald-400 shrink-0" />
@@ -739,7 +705,44 @@ export function Home() {
                     </div>
                   ))}
                 </div>
+                <img
+                  src="/overview.png"
+                  alt="Rigel dashboard preview"
+                  className="w-full rounded-xl border border-white/10 shadow-2xl object-cover"
+                />
               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Careers at Rigel */}
+      <section className="py-16 lg:py-24 bg-slate-50 overflow-hidden">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="rounded-2xl bg-[#0B1220] overflow-hidden shadow-xl flex flex-col lg:flex-row items-center">
+            <div className="lg:w-1/2 w-full h-64 lg:h-auto">
+              <img
+                src="/7f312e71b7b87b5da8826c9484050d98.jpg"
+                alt="Careers at Rigel Business"
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div className="lg:w-1/2 w-full p-8 lg:p-12 text-center lg:text-left">
+              <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-500/30 text-xs font-semibold text-emerald-400 tracking-wide uppercase mb-4">
+                We are hiring
+              </span>
+              <h2 className="text-2xl lg:text-3xl font-bold text-white mb-3" style={{ fontFamily: "'Inter Tight', sans-serif" }}>
+                Build your career with Rigel
+              </h2>
+              <p className="text-slate-300 leading-7 mb-6">
+                Looking for your next opportunity? Explore open roles, post jobs and connect with teams shaping the future of business software in South Africa.
+              </p>
+              <a
+                href="https://biz-flow-sauyi.vercel.app/careers"
+                className="btn-pill inline-flex h-12 items-center bg-[#0F9D6C] hover:bg-[#0B7A52] px-8 font-semibold text-white"
+              >
+                View careers <ArrowRight className="h-4 w-4 ml-2" />
+              </a>
             </div>
           </div>
         </div>

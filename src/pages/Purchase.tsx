@@ -1,32 +1,22 @@
-import { useState, useEffect, useRef, type ReactNode, type ComponentType } from 'react';
+import { useState, useEffect, useRef, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import {
   ArrowRight, ChevronLeft, ChevronRight, CheckCircle2, X, Play,
-  ShoppingCart, Users, FileText, CreditCard, BarChart3,
-  Calculator, AlertTriangle, Landmark, RefreshCw, Upload, ClipboardList,
-  TrendingUp, ShieldCheck,
-  Zap, ArrowLeftRight, GraduationCap,
+  ShoppingCart,
+  AlertTriangle,
+  ShieldCheck,
+  Zap, GraduationCap,
 } from 'lucide-react';
 
 const APP_URL = 'https://biz-flow-sa-delta.vercel.app';
 
 
 
-const avatarGradients = [
-  'from-emerald-400 to-teal-600',
-  'from-blue-400 to-indigo-600',
-  'from-amber-400 to-orange-600',
-  'from-purple-400 to-pink-600',
-  'from-cyan-400 to-blue-600',
-  'from-rose-400 to-red-600',
-  'from-lime-400 to-green-600',
-  'from-violet-400 to-purple-600',
-  'from-sky-400 to-cyan-600',
-  'from-fuchsia-400 to-pink-600',
-];
-
 function CardSlider({ children, className = '' }: { children: ReactNode; className?: string }) {
   const ref = useRef<HTMLDivElement>(null);
+  const [centerIndex, setCenterIndex] = useState(0);
+  const childCount = Array.isArray(children) ? children.length : 1;
+
   const scroll = (dir: number) => {
     const el = ref.current;
     if (!el) return;
@@ -34,45 +24,42 @@ function CardSlider({ children, className = '' }: { children: ReactNode; classNa
     const w = (card?.offsetWidth ?? 320) + 16;
     el.scrollBy({ left: dir * w, behavior: 'smooth' });
   };
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const onScroll = () => {
+      const card = el.firstElementChild as HTMLElement | null;
+      if (!card) return;
+      const center = el.scrollLeft + el.clientWidth / 2;
+      const index = Math.round((center - card.offsetWidth / 2) / (card.offsetWidth + 16));
+      setCenterIndex(Math.max(0, Math.min(index, childCount - 1)));
+    };
+    el.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+    return () => el.removeEventListener('scroll', onScroll);
+  }, [childCount]);
+
   return (
     <div className="relative">
-      <div className="absolute -top-14 right-0 flex gap-2">
-        <button
-          onClick={() => scroll(-1)}
-          className="h-10 w-10 rounded-full border border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:text-emerald-600 flex items-center justify-center transition-colors"
-        >
+      <div className="absolute -top-14 right-0 flex items-center gap-3">
+        <span className="text-sm font-mono text-slate-500">
+          {String(centerIndex + 1).padStart(2, '0')} / {String(childCount).padStart(2, '0')}
+        </span>
+        <button onClick={() => scroll(-1)} className="h-10 w-10 rounded-full border border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:text-emerald-600 flex items-center justify-center transition-colors">
           <ChevronLeft className="h-5 w-5" />
         </button>
-        <button
-          onClick={() => scroll(1)}
-          className="h-10 w-10 rounded-full border border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:text-emerald-600 flex items-center justify-center transition-colors"
-        >
+        <button onClick={() => scroll(1)} className="h-10 w-10 rounded-full border border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:text-emerald-600 flex items-center justify-center transition-colors">
           <ChevronRight className="h-5 w-5" />
         </button>
       </div>
-      <div
-        ref={ref}
-        className={`flex gap-4 overflow-x-auto no-scrollbar snap-x snap-mandatory pb-4 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 ${className}`}
-      >
-        {children}
+      <div ref={ref} className={`flex gap-4 overflow-x-auto no-scrollbar snap-x snap-mandatory pb-4 pt-8 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 ${className}`}>
+        {Array.isArray(children) ? children.map((child, i) => (
+          <div key={i} className={`transition-all duration-500 ease-out shrink-0 snap-center ${i === centerIndex ? 'scale-[1.12] z-10' : 'scale-90 opacity-60 hover:opacity-90'}`}>
+            {child}
+          </div>
+        )) : children}
       </div>
-    </div>
-  );
-}
-
-function CardAvatar({ icon: Icon, index, label }: { icon: ComponentType<{ className?: string }>; index: number; label?: string }) {
-  const gradient = avatarGradients[index % avatarGradients.length];
-  return (
-    <div className={`relative h-20 bg-gradient-to-br ${gradient} overflow-hidden rounded-t-xl`}>
-      <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(circle, white 1.5px, transparent 1.5px)', backgroundSize: '14px 14px' }} />
-      <div className="absolute -right-5 -top-5 h-16 w-16 rounded-full bg-white/10" />
-      <div className="absolute -left-3 -bottom-6 h-14 w-14 rounded-full bg-white/10" />
-      <div className="absolute inset-0 flex items-center justify-center">
-        <Icon className="h-9 w-9 text-white drop-shadow-sm" />
-      </div>
-      <span className="absolute top-2 right-2.5 text-[10px] font-mono font-bold text-white/60">
-        {label ?? String(index + 1).padStart(2, '0')}
-      </span>
     </div>
   );
 }
@@ -117,18 +104,18 @@ function PurchaseVideoPlayer({ src }: { src: string }) {
 }
 
 const reports = [
-  { icon: BarChart3, title: 'Creditors Control Report', desc: 'Detailed creditors ageing with supplier breakdown.' },
-  { icon: TrendingUp, title: 'AP Dashboard', desc: 'Full AP analytics with interactive charts and KPIs.' },
-  { icon: FileText, title: 'Accounts Payable Report', desc: 'AP summary and working papers for accountants.' },
-  { icon: ClipboardList, title: 'Creditors Control Working Paper', desc: 'Reconciliation working paper for audit trails.' },
-  { icon: Users, title: 'Creditors Per Supplier Report', desc: 'Per-supplier outstanding balances and history.' },
-  { icon: CreditCard, title: 'Payment Report', desc: 'History of all supplier payments with allocations.' },
-  { icon: TrendingUp, title: 'AP Cash Flow Forecast', desc: 'Projected AP cash outflows by period.' },
-  { icon: Users, title: 'Supplier List Report', desc: 'All suppliers and their current balances.' },
-  { icon: ShoppingCart, title: 'Purchases by Item Report', desc: 'Purchase history analysis by inventory item.' },
-  { icon: Users, title: 'Purchase by Supplier Report', desc: 'Spending analysis per supplier with trends.' },
-  { icon: ArrowLeftRight, title: 'Return Report', desc: 'Summary of returns and debit notes processed.' },
-  { icon: FileText, title: 'Supplier Statement', desc: 'Printable supplier account statement with transaction history.' },
+  { title: 'Creditors Control Report', desc: 'Detailed creditors ageing with supplier breakdown.', image: '/creditors control.png' },
+  { title: 'AP Dashboard', desc: 'Full AP analytics with interactive charts and KPIs.', image: '/creditors control 2.png' },
+  { title: 'Accounts Payable Report', desc: 'AP summary and working papers for accountants.', image: '/creditors control advisor.png' },
+  { title: 'Creditors Control Working Paper', desc: 'Reconciliation working paper for audit trails.', image: '/trial balance .png' },
+  { title: 'Creditors Per Supplier Report', desc: 'Per-supplier outstanding balances and history.', image: '/supplier invoice .png' },
+  { title: 'Payment Report', desc: 'History of all supplier payments with allocations.', image: '/view transaction report.png' },
+  { title: 'AP Cash Flow Forecast', desc: 'Projected AP cash outflows by period.', image: '/payroll graphs.png' },
+  { title: 'Supplier List Report', desc: 'All suppliers and their current balances.', image: '/list of customers .png' },
+  { title: 'Purchases by Item Report', desc: 'Purchase history analysis by inventory item.', image: '/sales by supplier .png' },
+  { title: 'Purchase by Supplier Report', desc: 'Spending analysis per supplier with trends.', image: '/supplier invoice .png' },
+  { title: 'Return Report', desc: 'Summary of returns and debit notes processed.', image: '/processing credit note .png' },
+  { title: 'Supplier Statement', desc: 'Printable supplier account statement with transaction history.', image: '/customer statement .png' },
 ];
 
 const tutorialSteps = [
@@ -175,30 +162,32 @@ export function Purchase() {
             alt=""
             className="h-full w-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-white via-white/85 to-transparent" />
-          <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-white to-transparent" />
+          <div className="absolute inset-0 bg-[#0B1220]/70" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#0B1220]/80 via-transparent to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-[#0B1220] to-transparent" />
         </div>
+        <div className="absolute inset-x-0 -bottom-1 h-24 sm:h-32 bg-white z-10 pointer-events-none" style={{ clipPath: 'polygon(0 40%, 100% 70%, 100% 100%, 0 100%)' }} />
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-36">
           <div className="max-w-xl">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-50 border border-emerald-100 mb-6">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/20 border border-emerald-400/30 mb-6">
               <ShoppingCart className="h-3.5 w-3.5 text-[#0F9D6C]" />
-              <span className="text-xs font-semibold text-emerald-700 tracking-wide uppercase">Purchase Management</span>
+              <span className="text-xs font-semibold text-emerald-100 tracking-wide uppercase">Purchase Management</span>
             </div>
             <h1
-              className="text-4xl lg:text-5xl font-bold text-slate-900 mb-5 leading-tight tracking-tight"
+              className="text-4xl lg:text-5xl font-bold text-white mb-5 leading-tight tracking-tight"
               style={{ fontFamily: "'Inter Tight', sans-serif" }}
             >
               Your procurement command centre
             </h1>
-            <p className="text-lg text-slate-600 leading-8 mb-8 max-w-lg">
+            <p className="text-lg text-slate-200 leading-8 mb-8 max-w-lg">
               Manage suppliers, purchase orders, supplier invoices, payments, returns and full accounts payable — all in one integrated module built for South African businesses.
             </p>
             <div className="flex flex-col sm:flex-row gap-3">
               <a href={`${APP_URL}/signup`} className="btn-pill inline-flex h-12 items-center bg-[#0F9D6C] hover:bg-[#0B7A52] px-7 font-semibold text-white">
                 Get Started <ArrowRight className="h-4 w-4 ml-2" />
               </a>
-              <Link to="/book-demo" className="btn-pill inline-flex h-12 items-center border border-slate-200 bg-white/80 backdrop-blur-sm hover:bg-white hover:border-slate-300 px-7 font-semibold text-slate-700">
+              <Link to="/book-demo" className="btn-pill inline-flex h-12 items-center border border-white/30 bg-white/10 backdrop-blur-sm hover:bg-white/20 hover:border-white/50 px-7 font-semibold text-white">
                 Watch Demo
               </Link>
             </div>
@@ -220,16 +209,16 @@ export function Purchase() {
           </div>
           <CardSlider>
             {[
-              { icon: Users, title: 'Suppliers', desc: 'Profiles, tax numbers, payment terms and opening balances.' },
-              { icon: FileText, title: 'Purchase Orders', desc: 'Raise POs, track status, convert to supplier invoices.' },
-              { icon: ShoppingCart, title: 'Supplier Invoices', desc: 'Capture bills with VAT, auto double-entry to GL.' },
-              { icon: ArrowLeftRight, title: 'Adjustments', desc: 'Debit notes, returns, credit notes and refunds.' },
-            ].map((p, i) => (
-              <div key={p.title} className="card-lift shrink-0 snap-start w-[85%] sm:w-[55%] lg:w-[40%] bg-white rounded-2xl border border-slate-200 overflow-hidden">
-                <CardAvatar icon={p.icon} index={i} />
-                <div className="p-5">
-                  <h3 className="text-sm font-bold text-slate-900 mb-2" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{p.title}</h3>
-                  <p className="text-xs text-slate-500 leading-5">{p.desc}</p>
+              { title: 'Suppliers', desc: 'Profiles, tax numbers, payment terms and opening balances.', image: '/list of customers .png' },
+              { title: 'Purchase Orders', desc: 'Raise POs, track status, convert to supplier invoices.', image: '/sales order .png' },
+              { title: 'Supplier Invoices', desc: 'Capture bills with VAT, auto double-entry to GL.', image: '/supplier invoice .png' },
+              { title: 'Adjustments', desc: 'Debit notes, returns, credit notes and refunds.', image: '/processing credit note .png' },
+            ].map((p) => (
+              <div key={p.title} className="snap-center shrink-0 w-[280px] h-[280px] sm:w-[340px] sm:h-[340px] bg-white rounded-2xl overflow-hidden shadow-md transition-all duration-700 ease-out flex flex-col hover:-translate-y-1.5 group/card">
+                <img src={p.image} alt={p.title} className="h-[55%] w-full object-cover group-hover/card:scale-110 transition-transform duration-700" />
+                <div className="h-[45%] flex flex-col justify-center p-5 bg-[#0052CC]">
+                  <h3 className="text-sm font-bold text-white mb-2" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{p.title}</h3>
+                  <p className="text-xs text-white/80 leading-5">{p.desc}</p>
                 </div>
               </div>
             ))}
@@ -375,16 +364,16 @@ export function Purchase() {
           </div>
           <CardSlider className="mb-8">
             {[
-              { label: 'Unpaid Bills', value: 'R 0', icon: FileText, color: 'text-amber-600' },
-              { label: 'Overdue Bills', value: 'R 0', icon: AlertTriangle, color: 'text-red-600' },
-              { label: 'Paid Bills', value: 'R 0', icon: CheckCircle2, color: 'text-emerald-600' },
-              { label: 'Total Outstanding', value: 'R 0', icon: TrendingUp, color: 'text-blue-600' },
-            ].map((kpi, i) => (
-              <div key={kpi.label} className="card-lift shrink-0 snap-start w-[85%] sm:w-[55%] lg:w-[40%] bg-white rounded-2xl border border-slate-200 overflow-hidden">
-                <CardAvatar icon={kpi.icon} index={i} label="ZAR" />
-                <div className="p-5">
-                  <p className="text-2xl font-bold text-slate-900 mb-1" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{kpi.value}</p>
-                  <p className="text-xs text-slate-500">{kpi.label}</p>
+              { label: 'Unpaid Bills', value: 'R 0', image: '/supplier invoice .png' },
+              { label: 'Overdue Bills', value: 'R 0', image: '/aging for debtors .png' },
+              { label: 'Paid Bills', value: 'R 0', image: '/view transaction report.png' },
+              { label: 'Total Outstanding', value: 'R 0', image: '/creditors control.png' },
+            ].map((kpi) => (
+              <div key={kpi.label} className="snap-center shrink-0 w-[280px] h-[280px] sm:w-[340px] sm:h-[340px] bg-white rounded-2xl overflow-hidden shadow-md transition-all duration-700 ease-out flex flex-col hover:-translate-y-1.5 group/card">
+                <img src={kpi.image} alt={kpi.label} className="h-[55%] w-full object-cover group-hover/card:scale-110 transition-transform duration-700" />
+                <div className="h-[45%] flex flex-col justify-center p-5 bg-[#0052CC]">
+                  <p className="text-2xl font-bold text-white mb-1" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{kpi.value}</p>
+                  <p className="text-xs text-white/80">{kpi.label}</p>
                 </div>
               </div>
             ))}
@@ -446,18 +435,18 @@ export function Purchase() {
           </div>
           <CardSlider>
             {[
-              { icon: FileText, title: 'Pending Bills', desc: 'Bills awaiting approval or payment.', color: 'amber' },
-              { icon: AlertTriangle, title: 'Unpaid Invoices', desc: 'Overdue supplier invoices need attention.', color: 'red' },
-              { icon: Users, title: 'Unpaid Suppliers', desc: 'Suppliers with outstanding balances.', color: 'orange' },
-              { icon: ClipboardList, title: 'Pending POs', desc: 'Purchase orders not yet processed.', color: 'blue' },
-              { icon: Calculator, title: 'Depreciation Reminders', desc: 'Assets due for depreciation posting.', color: 'purple' },
-              { icon: Landmark, title: 'GL Imbalance', desc: 'Debits do not equal credits — investigate.', color: 'red' },
-            ].map((alert, i) => (
-              <div key={alert.title} className="card-lift shrink-0 snap-start w-[85%] sm:w-[55%] lg:w-[40%] bg-white rounded-2xl border border-slate-200 overflow-hidden">
-                <CardAvatar icon={alert.icon} index={i} />
-                <div className="p-5">
-                  <h3 className="text-sm font-bold text-slate-900 mb-1" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{alert.title}</h3>
-                  <p className="text-xs text-slate-500 leading-5">{alert.desc}</p>
+              { title: 'Pending Bills', desc: 'Bills awaiting approval or payment.', image: '/supplier invoice .png' },
+              { title: 'Unpaid Invoices', desc: 'Overdue supplier invoices need attention.', image: '/aging for debtors .png' },
+              { title: 'Unpaid Suppliers', desc: 'Suppliers with outstanding balances.', image: '/creditors control.png' },
+              { title: 'Pending POs', desc: 'Purchase orders not yet processed.', image: '/sales order .png' },
+              { title: 'Depreciation Reminders', desc: 'Assets due for depreciation posting.', image: '/depreciation schedule 4.png' },
+              { title: 'GL Imbalance', desc: 'Debits do not equal credits — investigate.', image: '/trial balance .png' },
+            ].map((alert) => (
+              <div key={alert.title} className="snap-center shrink-0 w-[280px] h-[280px] sm:w-[340px] sm:h-[340px] bg-white rounded-2xl overflow-hidden shadow-md transition-all duration-700 ease-out flex flex-col hover:-translate-y-1.5 group/card">
+                <img src={alert.image} alt={alert.title} className="h-[55%] w-full object-cover group-hover/card:scale-110 transition-transform duration-700" />
+                <div className="h-[45%] flex flex-col justify-center p-5 bg-[#0052CC]">
+                  <h3 className="text-sm font-bold text-white mb-1" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{alert.title}</h3>
+                  <p className="text-xs text-white/80 leading-5">{alert.desc}</p>
                 </div>
               </div>
             ))}
@@ -485,16 +474,16 @@ export function Purchase() {
           </div>
           <CardSlider>
             {[
-              { icon: CreditCard, title: 'Process Payments', desc: 'Pay suppliers directly from the Purchase module with automatic bank/cash allocation.' },
-              { icon: Landmark, title: 'Banking Integration', desc: 'Allocate bank and cash transactions to supplier bills from the Banking module.' },
-              { icon: Users, title: 'Director Paid', desc: 'When a director pays personally, the system creates a settlement: Debit AP / Credit Director Loan Payable.' },
-              { icon: RefreshCw, title: 'Refunds & Advances', desc: 'Track supplier deposits, advance payments and allocate refunds from Banking receipts.' },
-            ].map((item, i) => (
-              <div key={item.title} className="card-lift shrink-0 snap-start w-[85%] sm:w-[55%] lg:w-[40%] bg-white rounded-2xl border border-slate-200 overflow-hidden">
-                <CardAvatar icon={item.icon} index={i} />
-                <div className="p-5">
-                  <h3 className="text-sm font-bold text-slate-900 mb-1.5" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{item.title}</h3>
-                  <p className="text-xs text-slate-500 leading-5">{item.desc}</p>
+              { title: 'Process Payments', desc: 'Pay suppliers directly from the Purchase module with automatic bank/cash allocation.', image: '/view transaction report.png' },
+              { title: 'Banking Integration', desc: 'Allocate bank and cash transactions to supplier bills from the Banking module.', image: '/account reciable dash board .png' },
+              { title: 'Director Paid', desc: 'When a director pays personally, the system creates a settlement: Debit AP / Credit Director Loan Payable.', image: '/general ledger .png' },
+              { title: 'Refunds & Advances', desc: 'Track supplier deposits, advance payments and allocate refunds from Banking receipts.', image: '/creditors control.png' },
+            ].map((item) => (
+              <div key={item.title} className="snap-center shrink-0 w-[280px] h-[280px] sm:w-[340px] sm:h-[340px] bg-white rounded-2xl overflow-hidden shadow-md transition-all duration-700 ease-out flex flex-col hover:-translate-y-1.5 group/card">
+                <img src={item.image} alt={item.title} className="h-[55%] w-full object-cover group-hover/card:scale-110 transition-transform duration-700" />
+                <div className="h-[45%] flex flex-col justify-center p-5 bg-[#0052CC]">
+                  <h3 className="text-sm font-bold text-white mb-1.5" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{item.title}</h3>
+                  <p className="text-xs text-white/80 leading-5">{item.desc}</p>
                 </div>
               </div>
             ))}
@@ -512,12 +501,12 @@ export function Purchase() {
             </h2>
           </div>
           <CardSlider>
-            {reports.map((r, i) => (
-              <div key={r.title} className="card-lift shrink-0 snap-start w-[85%] sm:w-[55%] lg:w-[40%] bg-white rounded-2xl border border-slate-200 overflow-hidden">
-                <CardAvatar icon={r.icon} index={i} />
-                <div className="p-4">
-                  <h3 className="text-xs font-bold text-slate-900 mb-0.5" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{r.title}</h3>
-                  <p className="text-[11px] text-slate-500 leading-4">{r.desc}</p>
+            {reports.map((r) => (
+              <div key={r.title} className="snap-center shrink-0 w-[280px] h-[280px] sm:w-[340px] sm:h-[340px] bg-white rounded-2xl overflow-hidden shadow-md transition-all duration-700 ease-out flex flex-col hover:-translate-y-1.5 group/card">
+                <img src={r.image} alt={r.title} className="h-[55%] w-full object-cover group-hover/card:scale-110 transition-transform duration-700" />
+                <div className="h-[45%] flex flex-col justify-center p-5 bg-[#0052CC]">
+                  <h3 className="text-xs font-bold text-white mb-0.5" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{r.title}</h3>
+                  <p className="text-[11px] text-white/80 leading-4">{r.desc}</p>
                 </div>
               </div>
             ))}
@@ -529,69 +518,27 @@ export function Purchase() {
       <section className="py-16 lg:py-20 bg-white">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <CardSlider>
-            {/* Reconciliation */}
-            <div className="shrink-0 snap-start w-[85%] sm:w-[55%] lg:w-[40%] bg-white rounded-2xl border border-slate-200 overflow-hidden">
-              <CardAvatar icon={ClipboardList} index={0} />
-              <div className="p-6">
-                <h3 className="text-base font-bold text-slate-900 mb-2" style={{ fontFamily: "'Inter Tight', sans-serif" }}>Supplier Reconciliation</h3>
-                <ul className="space-y-2">
-                  {['Match supplier statements against system records', 'Identify discrepancies between balances and remittance', 'Reconciliation working paper for audit trails'].map(f => (
-                    <li key={f} className="flex items-start gap-2 text-sm text-slate-600">
-                      <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
-                      <span className="leading-6">{f}</span>
-                    </li>
-                  ))}
-                </ul>
+            {[
+              { title: 'Supplier Reconciliation', features: ['Match supplier statements against system records', 'Identify discrepancies between balances and remittance', 'Reconciliation working paper for audit trails'], image: '/trial balance .png' },
+              { title: 'Recurring Bills', features: ['Set up recurring supplier bills — monthly, quarterly, annually', 'Auto-generation of bills on schedule', 'Edit or pause recurring templates anytime'], image: '/supplier invoice .png' },
+              { title: 'CSV Import', features: ['Bulk import suppliers from CSV', 'Bulk import purchase orders from CSV', 'Template download and validation'], image: '/sales by supplier .png' },
+              { title: 'Bill Management', features: ['Full lifecycle: Pending → Approved → Paid → Cancelled/Returned', 'Approval workflow and bulk actions (approve, pay, cancel)', 'Bill ageing and due date tracking'], image: '/view transaction report.png' },
+            ].map((card) => (
+              <div key={card.title} className="snap-center shrink-0 w-[280px] h-[280px] sm:w-[340px] sm:h-[340px] bg-white rounded-2xl overflow-hidden shadow-md transition-all duration-700 ease-out flex flex-col hover:-translate-y-1.5 group/card">
+                <img src={card.image} alt={card.title} className="h-[55%] w-full object-cover group-hover/card:scale-110 transition-transform duration-700" />
+                <div className="h-[45%] flex flex-col justify-center p-6 bg-[#0052CC]">
+                  <h3 className="text-base font-bold text-white mb-2" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{card.title}</h3>
+                  <ul className="space-y-1.5">
+                    {card.features.map(f => (
+                      <li key={f} className="flex items-start gap-2 text-[11px] text-white/80">
+                        <CheckCircle2 className="h-3 w-3 text-white/60 shrink-0 mt-0.5" />
+                        <span className="leading-4">{f}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </div>
-            </div>
-
-            {/* Recurring Bills */}
-            <div className="shrink-0 snap-start w-[85%] sm:w-[55%] lg:w-[40%] bg-white rounded-2xl border border-slate-200 overflow-hidden">
-              <CardAvatar icon={RefreshCw} index={1} />
-              <div className="p-6">
-                <h3 className="text-base font-bold text-slate-900 mb-2" style={{ fontFamily: "'Inter Tight', sans-serif" }}>Recurring Bills</h3>
-                <ul className="space-y-2">
-                  {['Set up recurring supplier bills — monthly, quarterly, annually', 'Auto-generation of bills on schedule', 'Edit or pause recurring templates anytime'].map(f => (
-                    <li key={f} className="flex items-start gap-2 text-sm text-slate-600">
-                      <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
-                      <span className="leading-6">{f}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-
-            {/* CSV Import */}
-            <div className="shrink-0 snap-start w-[85%] sm:w-[55%] lg:w-[40%] bg-white rounded-2xl border border-slate-200 overflow-hidden">
-              <CardAvatar icon={Upload} index={2} />
-              <div className="p-6">
-                <h3 className="text-base font-bold text-slate-900 mb-2" style={{ fontFamily: "'Inter Tight', sans-serif" }}>CSV Import</h3>
-                <ul className="space-y-2">
-                  {['Bulk import suppliers from CSV', 'Bulk import purchase orders from CSV', 'Template download and validation'].map(f => (
-                    <li key={f} className="flex items-start gap-2 text-sm text-slate-600">
-                      <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
-                      <span className="leading-6">{f}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-
-            {/* Bill Management */}
-            <div className="shrink-0 snap-start w-[85%] sm:w-[55%] lg:w-[40%] bg-white rounded-2xl border border-slate-200 overflow-hidden">
-              <CardAvatar icon={FileText} index={3} />
-              <div className="p-6">
-                <h3 className="text-base font-bold text-slate-900 mb-2" style={{ fontFamily: "'Inter Tight', sans-serif" }}>Bill Management</h3>
-                <ul className="space-y-2">
-                  {['Full lifecycle: Pending → Approved → Paid → Cancelled/Returned', 'Approval workflow and bulk actions (approve, pay, cancel)', 'Bill ageing and due date tracking'].map(f => (
-                    <li key={f} className="flex items-start gap-2 text-sm text-slate-600">
-                      <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
-                      <span className="leading-6">{f}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
+            ))}
           </CardSlider>
         </div>
       </section>
@@ -648,12 +595,12 @@ export function Purchase() {
             </p>
           </div>
           <CardSlider>
-            {tutorialSteps.map((step, i) => (
-              <div key={step.num} className="card-lift shrink-0 snap-start w-[85%] sm:w-[55%] lg:w-[40%] bg-white rounded-2xl border border-slate-200 overflow-hidden">
-                <CardAvatar icon={GraduationCap} index={i} label={step.num} />
-                <div className="p-4">
-                  <h3 className="text-sm font-bold text-slate-900 mb-0.5" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{step.title}</h3>
-                  <p className="text-[11px] text-slate-500 leading-4">{step.desc}</p>
+            {tutorialSteps.map((step) => (
+              <div key={step.num} className="snap-center shrink-0 w-[280px] h-[280px] sm:w-[340px] sm:h-[340px] bg-white rounded-2xl overflow-hidden shadow-md transition-all duration-700 ease-out flex flex-col hover:-translate-y-1.5 group/card">
+                <img src="/desktop app.png" alt={step.title} className="h-[55%] w-full object-cover group-hover/card:scale-110 transition-transform duration-700" />
+                <div className="h-[45%] flex flex-col justify-center p-5 bg-[#0052CC]">
+                  <h3 className="text-sm font-bold text-white mb-0.5" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{step.title}</h3>
+                  <p className="text-[11px] text-white/80 leading-4">{step.desc}</p>
                 </div>
               </div>
             ))}

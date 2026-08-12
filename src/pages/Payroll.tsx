@@ -1,43 +1,79 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import {
   ChevronDown, ArrowRight, ChevronLeft, ChevronRight, CheckCircle2, X, Play,
-  Calculator, Users, FileText, CreditCard, BarChart3,
-  ShieldCheck, Clock, LockKeyhole, Mail, Download,
+  Calculator, Users, FileText,
+  ShieldCheck, Clock, Mail,
   AlertTriangle, Landmark, RefreshCw,
   TrendingUp, GraduationCap,
-  Wallet, Gift, MapPin, Calendar, Building2,
+  Wallet, Gift, MapPin, Calendar,
   Briefcase, UserPlus, Search, Columns, Star,
 } from 'lucide-react';
 
 const APP_URL = 'https://biz-flow-sa-delta.vercel.app';
 
-const avatarGradients = [
-  'from-emerald-400 to-teal-600',
-  'from-blue-400 to-indigo-600',
-  'from-amber-400 to-orange-600',
-  'from-purple-400 to-pink-600',
-  'from-cyan-400 to-blue-600',
-  'from-rose-400 to-red-600',
-  'from-lime-400 to-green-600',
-  'from-violet-400 to-purple-600',
-  'from-sky-400 to-cyan-600',
-  'from-fuchsia-400 to-pink-600',
-];
+function CardSlider({ children, className = '' }: { children: ReactNode; className?: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [centerIndex, setCenterIndex] = useState(0);
+  const childCount = Array.isArray(children) ? children.length : 1;
 
-function CardAvatar({ icon: Icon, index, label }: { icon: typeof Calculator; index: number; label?: string }) {
-  const gradient = avatarGradients[index % avatarGradients.length];
+  const scroll = (dir: number) => {
+    const el = ref.current;
+    if (!el) return;
+    const card = el.firstElementChild as HTMLElement | null;
+    const w = (card?.offsetWidth ?? 320) + 16;
+    el.scrollBy({ left: dir * w, behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const onScroll = () => {
+      const card = el.firstElementChild as HTMLElement | null;
+      if (!card) return;
+      const center = el.scrollLeft + el.clientWidth / 2;
+      const index = Math.round((center - card.offsetWidth / 2) / (card.offsetWidth + 16));
+      setCenterIndex(Math.max(0, Math.min(index, childCount - 1)));
+    };
+    el.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+    return () => el.removeEventListener('scroll', onScroll);
+  }, [childCount]);
+
   return (
-    <div className={`relative h-20 bg-gradient-to-br ${gradient} overflow-hidden rounded-t-xl`}>
-      <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(circle, white 1.5px, transparent 1.5px)', backgroundSize: '14px 14px' }} />
-      <div className="absolute -right-5 -top-5 h-16 w-16 rounded-full bg-white/10" />
-      <div className="absolute -left-3 -bottom-6 h-14 w-14 rounded-full bg-white/10" />
-      <div className="absolute inset-0 flex items-center justify-center">
-        <Icon className="h-9 w-9 text-white drop-shadow-sm" />
+    <div className="relative">
+      <div className="absolute -top-14 right-0 flex items-center gap-3">
+        <span className="text-sm font-mono text-slate-500">
+          {String(centerIndex + 1).padStart(2, '0')} / {String(childCount).padStart(2, '0')}
+        </span>
+        <button
+          onClick={() => scroll(-1)}
+          className="h-10 w-10 rounded-full border border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:text-emerald-600 flex items-center justify-center transition-colors"
+        >
+          <ChevronLeft className="h-5 w-5" />
+        </button>
+        <button
+          onClick={() => scroll(1)}
+          className="h-10 w-10 rounded-full border border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:text-emerald-600 flex items-center justify-center transition-colors"
+        >
+          <ChevronRight className="h-5 w-5" />
+        </button>
       </div>
-      <span className="absolute top-2 right-2.5 text-[10px] font-mono font-bold text-white/60">
-        {label ?? String(index + 1).padStart(2, '0')}
-      </span>
+      <div
+        ref={ref}
+        className={`flex gap-4 overflow-x-auto no-scrollbar snap-x snap-mandatory pb-4 pt-8 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 ${className}`}
+      >
+        {Array.isArray(children) ? children.map((child, i) => (
+          <div
+            key={i}
+            className={`transition-all duration-500 ease-out shrink-0 snap-center ${
+              i === centerIndex ? 'scale-[1.12] z-10' : 'scale-90 opacity-60 hover:opacity-90'
+            }`}
+          >
+            {child}
+          </div>
+        )) : children}
+      </div>
     </div>
   );
 }
@@ -241,47 +277,10 @@ const sections: Section[] = [
   },
 ];
 
-const benefits = [
-  { icon: ShieldCheck, title: 'SARS-compliant', desc: 'PAYE, UIF and SDL calculations aligned to the latest SARS requirements.' },
-  { icon: Clock, title: 'Save hours per cycle', desc: 'Automated calculations and journal postings cut payroll time from days to minutes.' },
-  { icon: LockKeyhole, title: 'Secure & private', desc: 'Password-protected payslips and encrypted employee data with role-based access.' },
-  { icon: Mail, title: 'Auto-delivery', desc: 'Payslips emailed to employees automatically after each pay run — no manual sending.' },
-  { icon: BarChart3, title: 'Full visibility', desc: 'Cost-to-company breakdowns and payroll reports for better financial planning.' },
-  { icon: Download, title: 'IRP5/EMP201 ready', desc: 'SARS-compliant reports generated directly from pay run data.' },
-];
-
-const reports = [
-  { icon: FileText, title: 'EMP201 — Monthly Declaration', desc: 'PAYE, UIF and SDL aggregation with SARS source codes.' },
-  { icon: FileText, title: 'IRP5 — Annual Tax Certificate', desc: 'Per-employee tax certificate across a full tax year.' },
-  { icon: BarChart3, title: 'EMP501 — Annual Reconciliation', desc: 'Annual aggregation of all pay run data for SARS.' },
-  { icon: Building2, title: 'Department Spend Report', desc: 'Gross, net and employer costs per department with charts.' },
-  { icon: CreditCard, title: 'CV Bank File', desc: 'CSV bank upload file with all employee bank details and net pay.' },
-  { icon: TrendingUp, title: 'Payroll History', desc: 'Filter runs by status, date and type with pay status badges.' },
-];
-
-const tutorialSteps = [
-  { num: '01', title: 'Setup', desc: 'Configure tax years, brackets and statutory rates' },
-  { num: '02', title: 'Employees', desc: 'Add employees with ID, banking and tax flags' },
-  { num: '03', title: 'Allowances', desc: 'Assign recurring allowances and fringe benefits' },
-  { num: '04', title: 'Pay Runs', desc: 'Create periods, process and finalize' },
-  { num: '05', title: 'Payslips', desc: 'Generate branded PDFs and email to staff' },
-  { num: '06', title: 'Reports', desc: 'EMP201, IRP5 and department spend' },
-];
-
 const accountingEntries = [
   { action: 'Pay Run Finalization', debit: 'Salary Expense + Allowances', credit: 'PAYE + UIF + SDL + Medical Aid + Deductions + Net Pay' },
   { action: 'SARS Withholding Payment', debit: 'PAYE Payable + UIF Payable + SDL Payable', credit: 'Bank / Cash' },
   { action: 'Fringe Benefit Posting', debit: 'Fringe Benefit Expense', credit: 'Relevant Payable Accounts' },
-];
-
-const moduleTabs = [
-  { icon: Calculator, title: 'Salary Run', desc: 'Monthly/fortnightly pay cycles for salaried staff.' },
-  { icon: Wallet, title: 'Wage Run', desc: 'Daily/weekly wage cycles for hourly workers.' },
-  { icon: Users, title: 'Employees', desc: 'Full directory with add/edit/terminate and portal access.' },
-  { icon: CreditCard, title: 'Allowances', desc: 'Recurring allowances with taxable flags and date ranges.' },
-  { icon: Gift, title: 'Fringe Benefits', desc: 'SARS 7th Schedule engine — vehicles, housing, loans.' },
-  { icon: Calendar, title: 'Leave', desc: 'BCEA-compliant leave types, balances and approvals.' },
-  { icon: Clock, title: 'Timesheets', desc: 'Clock-in/out with GPS geofencing and shift settings.' },
 ];
 
 function AccordionItem({
@@ -438,162 +437,7 @@ export function Payroll() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
   const [playingVideo, setPlayingVideo] = useState<typeof PAYROLL_DEMO_VIDEOS[number] | null>(null);
   const [activeVideoIndex, setActiveVideoIndex] = useState(0);
-  const hiringSliderRef = useRef<HTMLDivElement>(null);
-  const [hiringPaused, setHiringPaused] = useState(false);
-  const moduleSliderRef = useRef<HTMLDivElement>(null);
-  const [modulePaused, setModulePaused] = useState(false);
-  const benefitsSliderRef = useRef<HTMLDivElement>(null);
-  const [benefitsPaused, setBenefitsPaused] = useState(false);
-  const kpiSliderRef = useRef<HTMLDivElement>(null);
-  const [kpiPaused, setKpiPaused] = useState(false);
-  const portalSliderRef = useRef<HTMLDivElement>(null);
-  const [portalPaused, setPortalPaused] = useState(false);
-  const taxSliderRef = useRef<HTMLDivElement>(null);
-  const [taxPaused, setTaxPaused] = useState(false);
-  const reportsSliderRef = useRef<HTMLDivElement>(null);
-  const [reportsPaused, setReportsPaused] = useState(false);
-  const tutorialSliderRef = useRef<HTMLDivElement>(null);
-  const [tutorialPaused, setTutorialPaused] = useState(false);
   const videoSliderRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (hiringPaused) return;
-    const interval = window.setInterval(() => {
-      const el = hiringSliderRef.current;
-      if (!el) return;
-      const card = el.firstElementChild as HTMLElement | null;
-      const cardWidth = (card?.offsetWidth ?? 340) + 16;
-      if (el.scrollLeft + el.clientWidth >= el.scrollWidth - 10) {
-        el.scrollTo({ left: 0, behavior: 'smooth' });
-      } else {
-        el.scrollBy({ left: cardWidth, behavior: 'smooth' });
-      }
-    }, 4000);
-
-    return () => window.clearInterval(interval);
-  }, [hiringPaused]);
-
-  useEffect(() => {
-    if (modulePaused) return;
-    const interval = window.setInterval(() => {
-      const el = moduleSliderRef.current;
-      if (!el) return;
-      const card = el.firstElementChild as HTMLElement | null;
-      const cardWidth = (card?.offsetWidth ?? 300) + 16;
-      if (el.scrollLeft + el.clientWidth >= el.scrollWidth - 10) {
-        el.scrollTo({ left: 0, behavior: 'smooth' });
-      } else {
-        el.scrollBy({ left: cardWidth, behavior: 'smooth' });
-      }
-    }, 4500);
-
-    return () => window.clearInterval(interval);
-  }, [modulePaused]);
-
-  useEffect(() => {
-    if (benefitsPaused) return;
-    const interval = window.setInterval(() => {
-      const el = benefitsSliderRef.current;
-      if (!el) return;
-      const card = el.firstElementChild as HTMLElement | null;
-      const cardWidth = (card?.offsetWidth ?? 300) + 16;
-      if (el.scrollLeft + el.clientWidth >= el.scrollWidth - 10) {
-        el.scrollTo({ left: 0, behavior: 'smooth' });
-      } else {
-        el.scrollBy({ left: cardWidth, behavior: 'smooth' });
-      }
-    }, 5000);
-
-    return () => window.clearInterval(interval);
-  }, [benefitsPaused]);
-
-  const slideByCard = (ref: React.RefObject<HTMLDivElement | null>, dir: 1 | -1, fallback = 300) => {
-    const el = ref.current;
-    if (!el) return;
-    const card = el.firstElementChild as HTMLElement | null;
-    const step = (card?.offsetWidth ?? fallback) + 16;
-    el.scrollBy({ left: step * dir, behavior: 'smooth' });
-  };
-
-  useEffect(() => {
-    if (kpiPaused) return;
-    const interval = window.setInterval(() => {
-      const el = kpiSliderRef.current;
-      if (!el) return;
-      const card = el.firstElementChild as HTMLElement | null;
-      const cardWidth = (card?.offsetWidth ?? 260) + 16;
-      if (el.scrollLeft + el.clientWidth >= el.scrollWidth - 10) {
-        el.scrollTo({ left: 0, behavior: 'smooth' });
-      } else {
-        el.scrollBy({ left: cardWidth, behavior: 'smooth' });
-      }
-    }, 5000);
-    return () => window.clearInterval(interval);
-  }, [kpiPaused]);
-
-  useEffect(() => {
-    if (portalPaused) return;
-    const interval = window.setInterval(() => {
-      const el = portalSliderRef.current;
-      if (!el) return;
-      const card = el.firstElementChild as HTMLElement | null;
-      const cardWidth = (card?.offsetWidth ?? 300) + 16;
-      if (el.scrollLeft + el.clientWidth >= el.scrollWidth - 10) {
-        el.scrollTo({ left: 0, behavior: 'smooth' });
-      } else {
-        el.scrollBy({ left: cardWidth, behavior: 'smooth' });
-      }
-    }, 5000);
-    return () => window.clearInterval(interval);
-  }, [portalPaused]);
-
-  useEffect(() => {
-    if (taxPaused) return;
-    const interval = window.setInterval(() => {
-      const el = taxSliderRef.current;
-      if (!el) return;
-      const card = el.firstElementChild as HTMLElement | null;
-      const cardWidth = (card?.offsetWidth ?? 300) + 16;
-      if (el.scrollLeft + el.clientWidth >= el.scrollWidth - 10) {
-        el.scrollTo({ left: 0, behavior: 'smooth' });
-      } else {
-        el.scrollBy({ left: cardWidth, behavior: 'smooth' });
-      }
-    }, 5000);
-    return () => window.clearInterval(interval);
-  }, [taxPaused]);
-
-  useEffect(() => {
-    if (reportsPaused) return;
-    const interval = window.setInterval(() => {
-      const el = reportsSliderRef.current;
-      if (!el) return;
-      const card = el.firstElementChild as HTMLElement | null;
-      const cardWidth = (card?.offsetWidth ?? 300) + 16;
-      if (el.scrollLeft + el.clientWidth >= el.scrollWidth - 10) {
-        el.scrollTo({ left: 0, behavior: 'smooth' });
-      } else {
-        el.scrollBy({ left: cardWidth, behavior: 'smooth' });
-      }
-    }, 5000);
-    return () => window.clearInterval(interval);
-  }, [reportsPaused]);
-
-  useEffect(() => {
-    if (tutorialPaused) return;
-    const interval = window.setInterval(() => {
-      const el = tutorialSliderRef.current;
-      if (!el) return;
-      const card = el.firstElementChild as HTMLElement | null;
-      const cardWidth = (card?.offsetWidth ?? 200) + 16;
-      if (el.scrollLeft + el.clientWidth >= el.scrollWidth - 10) {
-        el.scrollTo({ left: 0, behavior: 'smooth' });
-      } else {
-        el.scrollBy({ left: cardWidth, behavior: 'smooth' });
-      }
-    }, 5000);
-    return () => window.clearInterval(interval);
-  }, [tutorialPaused]);
 
   useEffect(() => {
     if (!playingVideo) return;
@@ -616,24 +460,26 @@ export function Payroll() {
             className="w-full h-full object-cover"
           />
           {/* White gradient scrim from left for text legibility */}
-          <div className="absolute inset-0 bg-gradient-to-r from-white via-white/85 to-transparent" />
+          <div className="absolute inset-0 bg-[#0B1220]/70" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#0B1220]/80 via-transparent to-transparent" />
           {/* Bottom fade into white */}
-          <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-white to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-[#0B1220] to-transparent" />
         </div>
+        <div className="absolute inset-x-0 -bottom-1 h-24 sm:h-32 bg-white z-10 pointer-events-none" style={{ clipPath: 'polygon(0 40%, 100% 70%, 100% 100%, 0 100%)' }} />
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32">
           <div className="max-w-xl">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-50 border border-emerald-100 mb-6">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/20 border border-emerald-400/30 mb-6">
               <span className="h-1.5 w-1.5 rounded-full bg-[#0F9D6C] animate-pulse" />
-              <span className="text-xs font-semibold text-emerald-700 tracking-wide uppercase">Payroll Management</span>
+              <span className="text-xs font-semibold text-emerald-100 tracking-wide uppercase">Payroll Management</span>
             </div>
             <h1
-              className="text-4xl lg:text-5xl font-bold text-slate-900 mb-5 leading-tight tracking-tight"
+              className="text-4xl lg:text-5xl font-bold text-white mb-5 leading-tight tracking-tight"
               style={{ fontFamily: "'Inter Tight', sans-serif" }}
             >
               SARS-Compliant Payroll, Automated
             </h1>
-            <p className="text-lg text-slate-600 leading-8 mb-8 max-w-lg">
+            <p className="text-lg text-slate-200 leading-8 mb-8 max-w-lg">
               Run salary and wage cycles, calculate PAYE/UIF/SDL automatically, manage fringe benefits, generate payslips, file EMP201 & IRP5 reports, and post to your general ledger — all in one place.
             </p>
             <div className="flex flex-col sm:flex-row gap-3">
@@ -645,7 +491,7 @@ export function Payroll() {
               </a>
               <Link
                 to="/book-demo"
-                className="btn-pill inline-flex h-12 items-center border border-slate-200 bg-white/80 backdrop-blur-sm hover:bg-white hover:border-slate-300 px-7 font-semibold text-slate-700"
+                className="btn-pill inline-flex h-12 items-center border border-white/30 bg-white/10 backdrop-blur-sm hover:bg-white/20 hover:border-white/50 px-7 font-semibold text-white"
               >
                 Request a demo
               </Link>
@@ -701,7 +547,7 @@ export function Payroll() {
             <div>
               <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-50 border border-emerald-100 mb-5">
                 <Clock className="h-3.5 w-3.5 text-[#0F9D6C]" />
-                <span className="text-xs font-semibold text-emerald-700 tracking-wide uppercase">Clock In & Time Tracking</span>
+                <span className="text-xs font-semibold text-emerald-100 tracking-wide uppercase">Clock In & Time Tracking</span>
               </div>
               <h2 className="text-3xl lg:text-4xl font-bold text-slate-900 mb-4 leading-tight tracking-tight" style={{ fontFamily: "'Inter Tight', sans-serif" }}>
                 From the site to the payroll — clock in made simple
@@ -744,53 +590,26 @@ export function Payroll() {
             <p className="text-sm text-slate-500 mt-3 max-w-xl mx-auto leading-6">
               From salary runs to fringe benefits, leave and timesheets — all in one integrated module.
             </p>
-            <div className="flex items-center justify-center gap-3 mt-5">
-              <button
-                type="button"
-                onClick={() => {
-                  const el = moduleSliderRef.current;
-                  if (!el) return;
-                  const card = el.firstElementChild as HTMLElement | null;
-                  const step = (card?.offsetWidth ?? 300) + 16;
-                  el.scrollBy({ left: -step, behavior: 'smooth' });
-                }}
-                className="h-10 w-10 rounded-full border border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:text-emerald-600 flex items-center justify-center transition-colors"
-                aria-label="Previous module"
-              >
-                <ChevronLeft className="h-5 w-5" />
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  const el = moduleSliderRef.current;
-                  if (!el) return;
-                  const card = el.firstElementChild as HTMLElement | null;
-                  const step = (card?.offsetWidth ?? 300) + 16;
-                  el.scrollBy({ left: step, behavior: 'smooth' });
-                }}
-                className="h-10 w-10 rounded-full border border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:text-emerald-600 flex items-center justify-center transition-colors"
-                aria-label="Next module"
-              >
-                <ChevronRight className="h-5 w-5" />
-              </button>
-            </div>
           </div>
-          <div
-            ref={moduleSliderRef}
-            onMouseEnter={() => setModulePaused(true)}
-            onMouseLeave={() => setModulePaused(false)}
-            className="flex gap-4 overflow-x-auto no-scrollbar snap-x snap-mandatory pb-4 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8"
-          >
-            {moduleTabs.map((p, i) => (
-              <div key={p.title} className="snap-start shrink-0 w-[260px] sm:w-[300px] card-lift bg-white rounded-2xl border border-slate-200 overflow-hidden">
-                <CardAvatar icon={p.icon} index={i} />
-                <div className="p-5">
-                  <h3 className="text-sm font-bold text-slate-900 mb-2" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{p.title}</h3>
-                  <p className="text-xs text-slate-500 leading-5">{p.desc}</p>
+          <CardSlider>
+            {[
+              { title: 'Salary Run', desc: 'Monthly/fortnightly pay cycles for salaried staff.', image: '/run payroll.png' },
+              { title: 'Wage Run', desc: 'Daily/weekly wage cycles for hourly workers.', image: '/payroll history .png' },
+              { title: 'Employees', desc: 'Full directory with add/edit/terminate and portal access.', image: '/list of customers .png' },
+              { title: 'Allowances', desc: 'Recurring allowances with taxable flags and date ranges.', image: '/payroll graphs.png' },
+              { title: 'Fringe Benefits', desc: 'SARS 7th Schedule engine — vehicles, housing, loans.', image: '/payslip templete .png' },
+              { title: 'Leave', desc: 'BCEA-compliant leave types, balances and approvals.', image: '/overview.png' },
+              { title: 'Timesheets', desc: 'Clock-in/out with GPS geofencing and shift settings.', image: '/mobile app.png' },
+            ].map((p) => (
+              <div key={p.title} className="snap-center shrink-0 w-[280px] h-[280px] sm:w-[340px] sm:h-[340px] bg-white rounded-2xl overflow-hidden shadow-md transition-all duration-700 ease-out flex flex-col hover:-translate-y-1.5 group/card">
+                <img src={p.image} alt={p.title} className="h-[55%] w-full object-cover group-hover/card:scale-110 transition-transform duration-700" />
+                <div className="h-[45%] flex flex-col justify-center p-5 bg-[#0052CC]">
+                  <h3 className="text-base font-bold text-white mb-1.5" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{p.title}</h3>
+                  <p className="text-xs text-white/80 leading-5 line-clamp-2">{p.desc}</p>
                 </div>
               </div>
             ))}
-          </div>
+          </CardSlider>
         </div>
       </section>
 
@@ -944,53 +763,25 @@ export function Payroll() {
             <h2 className="text-2xl lg:text-3xl font-bold text-slate-900 tracking-tight" style={{ fontFamily: "'Inter Tight', sans-serif" }}>
               Payroll that saves time and keeps you compliant
             </h2>
-            <div className="flex items-center justify-center gap-3 mt-5">
-              <button
-                type="button"
-                onClick={() => {
-                  const el = benefitsSliderRef.current;
-                  if (!el) return;
-                  const card = el.firstElementChild as HTMLElement | null;
-                  const step = (card?.offsetWidth ?? 300) + 16;
-                  el.scrollBy({ left: -step, behavior: 'smooth' });
-                }}
-                className="h-10 w-10 rounded-full border border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:text-emerald-600 flex items-center justify-center transition-colors"
-                aria-label="Previous benefit"
-              >
-                <ChevronLeft className="h-5 w-5" />
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  const el = benefitsSliderRef.current;
-                  if (!el) return;
-                  const card = el.firstElementChild as HTMLElement | null;
-                  const step = (card?.offsetWidth ?? 300) + 16;
-                  el.scrollBy({ left: step, behavior: 'smooth' });
-                }}
-                className="h-10 w-10 rounded-full border border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:text-emerald-600 flex items-center justify-center transition-colors"
-                aria-label="Next benefit"
-              >
-                <ChevronRight className="h-5 w-5" />
-              </button>
-            </div>
           </div>
-          <div
-            ref={benefitsSliderRef}
-            onMouseEnter={() => setBenefitsPaused(true)}
-            onMouseLeave={() => setBenefitsPaused(false)}
-            className="flex gap-4 overflow-x-auto no-scrollbar snap-x snap-mandatory pb-4 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8"
-          >
-            {benefits.map((b) => (
-              <div key={b.title} className="snap-start shrink-0 w-[260px] sm:w-[300px] card-lift bg-white rounded-xl border border-slate-200 overflow-hidden">
-                <CardAvatar icon={b.icon} index={benefits.indexOf(b)} />
-                <div className="p-5">
-                  <h3 className="text-sm font-bold text-slate-900 mb-1.5" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{b.title}</h3>
-                  <p className="text-xs text-slate-500 leading-5">{b.desc}</p>
+          <CardSlider>
+            {[
+              { title: 'SARS-compliant', desc: 'PAYE, UIF and SDL calculations aligned to the latest SARS requirements.', image: '/payroll graphs.png' },
+              { title: 'Save hours per cycle', desc: 'Automated calculations and journal postings cut payroll time from days to minutes.', image: '/run payroll.png' },
+              { title: 'Secure & private', desc: 'Password-protected payslips and encrypted employee data with role-based access.', image: '/payslip templete .png' },
+              { title: 'Auto-delivery', desc: 'Payslips emailed to employees automatically after each pay run — no manual sending.', image: '/payroll history .png' },
+              { title: 'Full visibility', desc: 'Cost-to-company breakdowns and payroll reports for better financial planning.', image: '/payroll graphs.png' },
+              { title: 'IRP5/EMP201 ready', desc: 'SARS-compliant reports generated directly from pay run data.', image: '/payslip templete .png' },
+            ].map((b) => (
+              <div key={b.title} className="snap-center shrink-0 w-[280px] h-[280px] sm:w-[340px] sm:h-[340px] bg-white rounded-2xl overflow-hidden shadow-md transition-all duration-700 ease-out flex flex-col hover:-translate-y-1.5 group/card">
+                <img src={b.image} alt={b.title} className="h-[55%] w-full object-cover group-hover/card:scale-110 transition-transform duration-700" />
+                <div className="h-[45%] flex flex-col justify-center p-5 bg-[#0052CC]">
+                  <h3 className="text-base font-bold text-white mb-1.5" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{b.title}</h3>
+                  <p className="text-xs text-white/80 leading-5 line-clamp-2">{b.desc}</p>
                 </div>
               </div>
             ))}
-          </div>
+          </CardSlider>
         </div>
       </section>
 
@@ -1003,30 +794,22 @@ export function Payroll() {
               Payroll costs by department
             </h2>
           </div>
-          <div className="flex items-center justify-center gap-3 mb-6">
-            <button type="button" onClick={() => slideByCard(kpiSliderRef, -1, 260)} className="h-9 w-9 rounded-full border border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:text-emerald-600 flex items-center justify-center transition-colors" aria-label="Previous">
-              <ChevronLeft className="h-5 w-5" />
-            </button>
-            <button type="button" onClick={() => slideByCard(kpiSliderRef, 1, 260)} className="h-9 w-9 rounded-full border border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:text-emerald-600 flex items-center justify-center transition-colors" aria-label="Next">
-              <ChevronRight className="h-5 w-5" />
-            </button>
-          </div>
-          <div ref={kpiSliderRef} onMouseEnter={() => setKpiPaused(true)} onMouseLeave={() => setKpiPaused(false)} className="flex gap-4 overflow-x-auto no-scrollbar snap-x snap-mandatory pb-4 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 mb-8">
+          <CardSlider>
             {[
-              { label: 'Total Gross', value: 'R 0', icon: TrendingUp, color: 'text-emerald-600' },
-              { label: 'Total Net', value: 'R 0', icon: Wallet, color: 'text-blue-600' },
-              { label: 'Employer Cost', value: 'R 0', icon: Building2, color: 'text-amber-600' },
-              { label: 'Avg Salary', value: 'R 0', icon: BarChart3, color: 'text-purple-600' },
+              { label: 'Total Gross', value: 'R 0', image: '/payroll graphs.png' },
+              { label: 'Total Net', value: 'R 0', image: '/payroll history .png' },
+              { label: 'Employer Cost', value: 'R 0', image: '/run payroll.png' },
+              { label: 'Avg Salary', value: 'R 0', image: '/payslip templete .png' },
             ].map((kpi) => (
-              <div key={kpi.label} className="snap-start shrink-0 w-[260px] card-lift bg-white rounded-2xl border border-slate-200 overflow-hidden">
-                <CardAvatar icon={kpi.icon} index={['Total Gross','Total Net','Employer Cost','Avg Salary'].indexOf(kpi.label)} label="ZAR" />
-                <div className="p-5">
-                  <p className="text-2xl font-bold text-slate-900 mb-1" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{kpi.value}</p>
-                  <p className="text-xs text-slate-500">{kpi.label}</p>
+              <div key={kpi.label} className="snap-center shrink-0 w-[280px] h-[280px] sm:w-[340px] sm:h-[340px] bg-white rounded-2xl overflow-hidden shadow-md transition-all duration-700 ease-out flex flex-col hover:-translate-y-1.5 group/card">
+                <img src={kpi.image} alt={kpi.label} className="h-[55%] w-full object-cover group-hover/card:scale-110 transition-transform duration-700" />
+                <div className="h-[45%] flex flex-col justify-center p-5 bg-[#0052CC]">
+                  <p className="text-2xl font-bold text-white mb-1" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{kpi.value}</p>
+                  <p className="text-sm font-bold text-white" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{kpi.label}</p>
                 </div>
               </div>
             ))}
-          </div>
+          </CardSlider>
           <div className="grid lg:grid-cols-2 gap-4">
             <div className="bg-white rounded-2xl border border-slate-200 p-6">
               <h3 className="text-sm font-bold text-slate-900 mb-4" style={{ fontFamily: "'Inter Tight', sans-serif" }}>Gross by Department</h3>
@@ -1081,30 +864,22 @@ export function Payroll() {
               Self-service portal for every employee
             </h2>
           </div>
-          <div className="flex items-center justify-center gap-3 mb-6">
-            <button type="button" onClick={() => slideByCard(portalSliderRef, -1, 300)} className="h-9 w-9 rounded-full border border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:text-emerald-600 flex items-center justify-center transition-colors" aria-label="Previous">
-              <ChevronLeft className="h-5 w-5" />
-            </button>
-            <button type="button" onClick={() => slideByCard(portalSliderRef, 1, 300)} className="h-9 w-9 rounded-full border border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:text-emerald-600 flex items-center justify-center transition-colors" aria-label="Next">
-              <ChevronRight className="h-5 w-5" />
-            </button>
-          </div>
-          <div ref={portalSliderRef} onMouseEnter={() => setPortalPaused(true)} onMouseLeave={() => setPortalPaused(false)} className="flex gap-4 overflow-x-auto no-scrollbar snap-x snap-mandatory pb-4 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+          <CardSlider>
             {[
-              { icon: Users, title: 'One-Click Portal Creation', desc: 'Admin creates portal account from employee dropdown — sets email and temporary password, system creates auth user automatically.' },
-              { icon: LockKeyhole, title: 'Portal Access Control', desc: 'Admin can block/unblock employees, remove portal access, and view portal link status at any time.' },
-              { icon: FileText, title: 'Payslip Notifications', desc: 'When a pay run is paid, portal notifications are automatically created for each employee in the run.' },
-              { icon: Calendar, title: 'Leave Workflow', desc: 'Employees apply for leave → admin approves/rejects → employee sees status update in portal instantly.' },
+              { title: 'One-Click Portal Creation', desc: 'Admin creates portal account from employee dropdown — sets email and temporary password, system creates auth user automatically.', image: '/payslip templete .png' },
+              { title: 'Portal Access Control', desc: 'Admin can block/unblock employees, remove portal access, and view portal link status at any time.', image: '/payroll history .png' },
+              { title: 'Payslip Notifications', desc: 'When a pay run is paid, portal notifications are automatically created for each employee in the run.', image: '/run payroll.png' },
+              { title: 'Leave Workflow', desc: 'Employees apply for leave → admin approves/rejects → employee sees status update in portal instantly.', image: '/overview.png' },
             ].map((item) => (
-              <div key={item.title} className="snap-start shrink-0 w-[280px] sm:w-[340px] card-lift bg-white rounded-2xl border border-slate-200 overflow-hidden">
-                <CardAvatar icon={item.icon} index={['One-Click Portal Creation','Portal Access Control','Payslip Notifications','Leave Workflow'].indexOf(item.title)} />
-                <div className="p-5">
-                  <h3 className="text-sm font-bold text-slate-900 mb-1.5" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{item.title}</h3>
-                  <p className="text-xs text-slate-500 leading-5">{item.desc}</p>
+              <div key={item.title} className="snap-center shrink-0 w-[280px] h-[280px] sm:w-[340px] sm:h-[340px] bg-white rounded-2xl overflow-hidden shadow-md transition-all duration-700 ease-out flex flex-col hover:-translate-y-1.5 group/card">
+                <img src={item.image} alt={item.title} className="h-[55%] w-full object-cover group-hover/card:scale-110 transition-transform duration-700" />
+                <div className="h-[45%] flex flex-col justify-center p-5 bg-[#0052CC]">
+                  <h3 className="text-sm font-bold text-white mb-1.5" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{item.title}</h3>
+                  <p className="text-xs text-white/80 leading-5 line-clamp-2">{item.desc}</p>
                 </div>
               </div>
             ))}
-          </div>
+          </CardSlider>
         </div>
       </section>
 
@@ -1117,32 +892,24 @@ export function Payroll() {
               Admin-configurable, database-driven
             </h2>
           </div>
-          <div className="flex items-center justify-center gap-3 mb-6">
-            <button type="button" onClick={() => slideByCard(taxSliderRef, -1, 300)} className="h-9 w-9 rounded-full border border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:text-emerald-600 flex items-center justify-center transition-colors" aria-label="Previous">
-              <ChevronLeft className="h-5 w-5" />
-            </button>
-            <button type="button" onClick={() => slideByCard(taxSliderRef, 1, 300)} className="h-9 w-9 rounded-full border border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:text-emerald-600 flex items-center justify-center transition-colors" aria-label="Next">
-              <ChevronRight className="h-5 w-5" />
-            </button>
-          </div>
-          <div ref={taxSliderRef} onMouseEnter={() => setTaxPaused(true)} onMouseLeave={() => setTaxPaused(false)} className="flex gap-4 overflow-x-auto no-scrollbar snap-x snap-mandatory pb-4 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+          <CardSlider>
             {[
-              { icon: Calculator, title: 'PAYE Brackets', desc: 'View and configure tax brackets per tax year — lower limit, upper limit, rate, base amount.' },
-              { icon: ShieldCheck, title: 'Rebates', desc: 'Primary, secondary (65+) and tertiary (75+) rebate amounts per tax year.' },
-              { icon: Users, title: 'Medical Tax Credits', desc: 'Main member, first dependent and additional dependent credit amounts.' },
-              { icon: Landmark, title: 'Statutory Rates', desc: 'UIF employee/employer rates, UIF ceiling, SDL rate, official interest rate.' },
-              { icon: AlertTriangle, title: 'SDL Exemption', desc: 'Company-level toggle to exempt from SDL if annual payroll is R500,000 or less.' },
-              { icon: RefreshCw, title: 'Update Without Code', desc: 'All values are database-driven — update SARS rates when new tax year tables are published.' },
+              { title: 'PAYE Brackets', desc: 'View and configure tax brackets per tax year — lower limit, upper limit, rate, base amount.', image: '/payroll graphs.png' },
+              { title: 'Rebates', desc: 'Primary, secondary (65+) and tertiary (75+) rebate amounts per tax year.', image: '/payroll history .png' },
+              { title: 'Medical Tax Credits', desc: 'Main member, first dependent and additional dependent credit amounts.', image: '/payslip templete .png' },
+              { title: 'Statutory Rates', desc: 'UIF employee/employer rates, UIF ceiling, SDL rate, official interest rate.', image: '/run payroll.png' },
+              { title: 'SDL Exemption', desc: 'Company-level toggle to exempt from SDL if annual payroll is R500,000 or less.', image: '/general ledger .png' },
+              { title: 'Update Without Code', desc: 'All values are database-driven — update SARS rates when new tax year tables are published.', image: '/overview.png' },
             ].map((item) => (
-              <div key={item.title} className="snap-start shrink-0 w-[260px] sm:w-[300px] card-lift bg-white rounded-xl border border-slate-200 overflow-hidden">
-                <CardAvatar icon={item.icon} index={['PAYE Brackets','Rebates','Medical Tax Credits','Statutory Rates','SDL Exemption','Update Without Code'].indexOf(item.title)} />
-                <div className="p-4">
-                  <h3 className="text-xs font-bold text-slate-900 mb-0.5" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{item.title}</h3>
-                  <p className="text-[11px] text-slate-500 leading-4">{item.desc}</p>
+              <div key={item.title} className="snap-center shrink-0 w-[280px] h-[280px] sm:w-[340px] sm:h-[340px] bg-white rounded-2xl overflow-hidden shadow-md transition-all duration-700 ease-out flex flex-col hover:-translate-y-1.5 group/card">
+                <img src={item.image} alt={item.title} className="h-[55%] w-full object-cover group-hover/card:scale-110 transition-transform duration-700" />
+                <div className="h-[45%] flex flex-col justify-center p-4 bg-[#0052CC]">
+                  <h3 className="text-xs font-bold text-white mb-0.5" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{item.title}</h3>
+                  <p className="text-[11px] text-white/80 leading-4">{item.desc}</p>
                 </div>
               </div>
             ))}
-          </div>
+          </CardSlider>
         </div>
       </section>
 
@@ -1155,25 +922,24 @@ export function Payroll() {
               SARS-compliant reports from pay run data
             </h2>
           </div>
-          <div className="flex items-center justify-center gap-3 mb-6">
-            <button type="button" onClick={() => slideByCard(reportsSliderRef, -1, 300)} className="h-9 w-9 rounded-full border border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:text-emerald-600 flex items-center justify-center transition-colors" aria-label="Previous">
-              <ChevronLeft className="h-5 w-5" />
-            </button>
-            <button type="button" onClick={() => slideByCard(reportsSliderRef, 1, 300)} className="h-9 w-9 rounded-full border border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:text-emerald-600 flex items-center justify-center transition-colors" aria-label="Next">
-              <ChevronRight className="h-5 w-5" />
-            </button>
-          </div>
-          <div ref={reportsSliderRef} onMouseEnter={() => setReportsPaused(true)} onMouseLeave={() => setReportsPaused(false)} className="flex gap-3 overflow-x-auto no-scrollbar snap-x snap-mandatory pb-4 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
-            {reports.map((r) => (
-              <div key={r.title} className="snap-start shrink-0 w-[260px] sm:w-[300px] card-lift bg-white rounded-xl border border-slate-200 overflow-hidden">
-                <CardAvatar icon={r.icon} index={reports.indexOf(r)} />
-                <div className="p-4">
-                  <h3 className="text-xs font-bold text-slate-900 mb-0.5" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{r.title}</h3>
-                  <p className="text-[11px] text-slate-500 leading-4">{r.desc}</p>
+          <CardSlider>
+            {[
+              { title: 'EMP201 — Monthly Declaration', desc: 'PAYE, UIF and SDL aggregation with SARS source codes.', image: '/payroll graphs.png' },
+              { title: 'IRP5 — Annual Tax Certificate', desc: 'Per-employee tax certificate across a full tax year.', image: '/payslip templete .png' },
+              { title: 'EMP501 — Annual Reconciliation', desc: 'Annual aggregation of all pay run data for SARS.', image: '/payroll history .png' },
+              { title: 'Department Spend Report', desc: 'Gross, net and employer costs per department with charts.', image: '/run payroll.png' },
+              { title: 'CV Bank File', desc: 'CSV bank upload file with all employee bank details and net pay.', image: '/general ledger .png' },
+              { title: 'Payroll History', desc: 'Filter runs by status, date and type with pay status badges.', image: '/payroll history .png' },
+            ].map((r) => (
+              <div key={r.title} className="snap-center shrink-0 w-[280px] h-[280px] sm:w-[340px] sm:h-[340px] bg-white rounded-2xl overflow-hidden shadow-md transition-all duration-700 ease-out flex flex-col hover:-translate-y-1.5 group/card">
+                <img src={r.image} alt={r.title} className="h-[55%] w-full object-cover group-hover/card:scale-110 transition-transform duration-700" />
+                <div className="h-[45%] flex flex-col justify-center p-4 bg-[#0052CC]">
+                  <h3 className="text-xs font-bold text-white mb-0.5" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{r.title}</h3>
+                  <p className="text-[11px] text-white/80 leading-4">{r.desc}</p>
                 </div>
               </div>
             ))}
-          </div>
+          </CardSlider>
         </div>
       </section>
 
@@ -1228,26 +994,24 @@ export function Payroll() {
               Walks users through the full payroll workflow — from setup to reports.
             </p>
           </div>
-          <div className="flex items-center justify-center gap-3 mb-6">
-            <button type="button" onClick={() => slideByCard(tutorialSliderRef, -1, 200)} className="h-9 w-9 rounded-full border border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:text-emerald-600 flex items-center justify-center transition-colors" aria-label="Previous">
-              <ChevronLeft className="h-5 w-5" />
-            </button>
-            <button type="button" onClick={() => slideByCard(tutorialSliderRef, 1, 200)} className="h-9 w-9 rounded-full border border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:text-emerald-600 flex items-center justify-center transition-colors" aria-label="Next">
-              <ChevronRight className="h-5 w-5" />
-            </button>
-          </div>
-          <div ref={tutorialSliderRef} onMouseEnter={() => setTutorialPaused(true)} onMouseLeave={() => setTutorialPaused(false)} className="flex gap-3 overflow-x-auto no-scrollbar snap-x snap-mandatory pb-4 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
-            {tutorialSteps.map((step) => (
-              <div key={step.num} className="snap-start shrink-0 w-[160px] sm:w-[200px] bg-white rounded-xl border border-slate-200 overflow-hidden group hover:border-emerald-300 transition-colors">
-                <CardAvatar icon={GraduationCap} index={tutorialSteps.indexOf(step)} label={step.num} />
-                <div className="p-4 relative">
-                  <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-[#0F9D6C] to-[#1BA37B] opacity-0 group-hover:opacity-100 transition-opacity" />
-                  <h3 className="text-sm font-bold text-slate-900 mt-1 mb-0.5" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{step.title}</h3>
-                  <p className="text-[11px] text-slate-500 leading-4">{step.desc}</p>
+          <CardSlider>
+            {[
+              { title: 'Setup', desc: 'Configure tax years, brackets and statutory rates', image: '/overview.png' },
+              { title: 'Employees', desc: 'Add employees with ID, banking and tax flags', image: '/list of customers .png' },
+              { title: 'Allowances', desc: 'Assign recurring allowances and fringe benefits', image: '/payroll graphs.png' },
+              { title: 'Pay Runs', desc: 'Create periods, process and finalize', image: '/run payroll.png' },
+              { title: 'Payslips', desc: 'Generate branded PDFs and email to staff', image: '/payslip templete .png' },
+              { title: 'Reports', desc: 'EMP201, IRP5 and department spend', image: '/payroll history .png' },
+            ].map((step) => (
+              <div key={step.title} className="snap-center shrink-0 w-[280px] h-[280px] sm:w-[340px] sm:h-[340px] bg-white rounded-2xl overflow-hidden shadow-md transition-all duration-700 ease-out flex flex-col hover:-translate-y-1.5 group/card">
+                <img src={step.image} alt={step.title} className="h-[55%] w-full object-cover group-hover/card:scale-110 transition-transform duration-700" />
+                <div className="h-[45%] flex flex-col justify-center p-4 bg-[#0052CC]">
+                  <h3 className="text-sm font-bold text-white mb-0.5" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{step.title}</h3>
+                  <p className="text-[11px] text-white/80 leading-4">{step.desc}</p>
                 </div>
               </div>
             ))}
-          </div>
+          </CardSlider>
         </div>
       </section>
 
@@ -1262,63 +1026,18 @@ export function Payroll() {
             <p className="text-slate-600 text-base mt-3 max-w-2xl mx-auto leading-7">
               Manage the full recruitment process inside Rigel, alongside payroll and employee records. No separate HR system needed.
             </p>
-            <div className="flex items-center justify-center gap-3 mt-5">
-              <button
-                type="button"
-                onClick={() => {
-                  const el = hiringSliderRef.current;
-                  if (!el) return;
-                  const card = el.firstElementChild as HTMLElement | null;
-                  const step = (card?.offsetWidth ?? 340) + 16;
-                  el.scrollBy({ left: -step, behavior: 'smooth' });
-                }}
-                className="h-10 w-10 rounded-full border border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:text-emerald-600 flex items-center justify-center transition-colors"
-                aria-label="Previous hiring feature"
-              >
-                <ChevronLeft className="h-5 w-5" />
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  const el = hiringSliderRef.current;
-                  if (!el) return;
-                  const card = el.firstElementChild as HTMLElement | null;
-                  const step = (card?.offsetWidth ?? 340) + 16;
-                  el.scrollBy({ left: step, behavior: 'smooth' });
-                }}
-                className="h-10 w-10 rounded-full border border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:text-emerald-600 flex items-center justify-center transition-colors"
-                aria-label="Next hiring feature"
-              >
-                <ChevronRight className="h-5 w-5" />
-              </button>
-            </div>
           </div>
-          <div
-            ref={hiringSliderRef}
-            onMouseEnter={() => setHiringPaused(true)}
-            onMouseLeave={() => setHiringPaused(false)}
-            className="flex gap-4 overflow-x-auto no-scrollbar snap-x snap-mandatory pb-4 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8"
-          >
+          <CardSlider>
             {hiringModules.map((m) => (
-              <div key={m.title} className="snap-start shrink-0 w-[280px] sm:w-[340px] card-lift bg-white rounded-xl border border-slate-200 overflow-hidden">
-                <CardAvatar icon={m.icon} index={hiringModules.indexOf(m)} />
-                <div className="p-5">
-                  <h3 className="text-sm font-bold text-slate-900 mb-2" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{m.title}</h3>
-                  <p className="text-xs text-slate-600 leading-5 mb-3">{m.desc}</p>
-                {m.bullets && (
-                  <ul className="space-y-1.5">
-                    {m.bullets.map(b => (
-                      <li key={b} className="flex items-start gap-2 text-[11px] text-slate-500 leading-4">
-                        <CheckCircle2 className="h-3 w-3 text-emerald-500 shrink-0 mt-0.5" />
-                        {b}
-                      </li>
-                    ))}
-                  </ul>
-                )}
+              <div key={m.title} className="snap-center shrink-0 w-[280px] h-[280px] sm:w-[340px] sm:h-[340px] bg-white rounded-2xl overflow-hidden shadow-md transition-all duration-700 ease-out flex flex-col hover:-translate-y-1.5 group/card">
+                <img src="/services .png" alt={m.title} className="h-[55%] w-full object-cover group-hover/card:scale-110 transition-transform duration-700" />
+                <div className="h-[45%] flex flex-col justify-center p-5 bg-[#0052CC]">
+                  <h3 className="text-sm font-bold text-white mb-1.5" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{m.title}</h3>
+                  <p className="text-xs text-white/80 leading-5 line-clamp-2">{m.desc}</p>
                 </div>
               </div>
             ))}
-          </div>
+          </CardSlider>
           <div className="mt-10 max-w-4xl mx-auto bg-slate-50 rounded-2xl border border-slate-200 p-6 flex flex-col sm:flex-row items-start gap-4">
             <div className="h-10 w-10 rounded-full icon-gradient text-emerald-600 flex items-center justify-center shrink-0">
               <TrendingUp className="h-5 w-5" />

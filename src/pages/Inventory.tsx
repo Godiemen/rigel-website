@@ -1,32 +1,22 @@
-import { useState, useEffect, useRef, type ReactNode, type ComponentType } from 'react';
+import { useState, useEffect, useRef, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import {
   ChevronDown, ArrowRight, ChevronLeft, ChevronRight, CheckCircle2, X, Play,
-  Package, FileText, Users,
-  AlertTriangle, RefreshCw, Upload, ClipboardList,
-  TrendingUp, ShieldCheck, Zap, ArrowLeftRight, GraduationCap,
-  Bell, Boxes, Layers, Gift, Image as ImageIcon, Search,
+  Package, FileText,
+  TrendingUp, ShieldCheck, ArrowLeftRight,
+  Boxes, Layers, Gift,
+  GraduationCap,
 } from 'lucide-react';
 
 const APP_URL = 'https://biz-flow-sa-delta.vercel.app';
 
 
 
-const avatarGradients = [
-  'from-emerald-400 to-teal-600',
-  'from-blue-400 to-indigo-600',
-  'from-amber-400 to-orange-600',
-  'from-purple-400 to-pink-600',
-  'from-cyan-400 to-blue-600',
-  'from-rose-400 to-red-600',
-  'from-lime-400 to-green-600',
-  'from-violet-400 to-purple-600',
-  'from-sky-400 to-cyan-600',
-  'from-fuchsia-400 to-pink-600',
-];
-
 function CardSlider({ children, className = '' }: { children: ReactNode; className?: string }) {
   const ref = useRef<HTMLDivElement>(null);
+  const [centerIndex, setCenterIndex] = useState(0);
+  const childCount = Array.isArray(children) ? children.length : 1;
+
   const scroll = (dir: number) => {
     const el = ref.current;
     if (!el) return;
@@ -34,45 +24,42 @@ function CardSlider({ children, className = '' }: { children: ReactNode; classNa
     const w = (card?.offsetWidth ?? 320) + 16;
     el.scrollBy({ left: dir * w, behavior: 'smooth' });
   };
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const onScroll = () => {
+      const card = el.firstElementChild as HTMLElement | null;
+      if (!card) return;
+      const center = el.scrollLeft + el.clientWidth / 2;
+      const index = Math.round((center - card.offsetWidth / 2) / (card.offsetWidth + 16));
+      setCenterIndex(Math.max(0, Math.min(index, childCount - 1)));
+    };
+    el.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+    return () => el.removeEventListener('scroll', onScroll);
+  }, [childCount]);
+
   return (
     <div className="relative">
-      <div className="absolute -top-14 right-0 flex gap-2">
-        <button
-          onClick={() => scroll(-1)}
-          className="h-10 w-10 rounded-full border border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:text-emerald-600 flex items-center justify-center transition-colors"
-        >
+      <div className="absolute -top-14 right-0 flex items-center gap-3">
+        <span className="text-sm font-mono text-slate-500">
+          {String(centerIndex + 1).padStart(2, '0')} / {String(childCount).padStart(2, '0')}
+        </span>
+        <button onClick={() => scroll(-1)} className="h-10 w-10 rounded-full border border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:text-emerald-600 flex items-center justify-center transition-colors">
           <ChevronLeft className="h-5 w-5" />
         </button>
-        <button
-          onClick={() => scroll(1)}
-          className="h-10 w-10 rounded-full border border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:text-emerald-600 flex items-center justify-center transition-colors"
-        >
+        <button onClick={() => scroll(1)} className="h-10 w-10 rounded-full border border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:text-emerald-600 flex items-center justify-center transition-colors">
           <ChevronRight className="h-5 w-5" />
         </button>
       </div>
-      <div
-        ref={ref}
-        className={`flex gap-4 overflow-x-auto no-scrollbar snap-x snap-mandatory pb-4 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 ${className}`}
-      >
-        {children}
+      <div ref={ref} className={`flex gap-4 overflow-x-auto no-scrollbar snap-x snap-mandatory pb-4 pt-8 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 ${className}`}>
+        {Array.isArray(children) ? children.map((child, i) => (
+          <div key={i} className={`transition-all duration-500 ease-out shrink-0 snap-center ${i === centerIndex ? 'scale-[1.12] z-10' : 'scale-90 opacity-60 hover:opacity-90'}`}>
+            {child}
+          </div>
+        )) : children}
       </div>
-    </div>
-  );
-}
-
-function CardAvatar({ icon: Icon, index, label }: { icon: ComponentType<{ className?: string }>; index: number; label?: string }) {
-  const gradient = avatarGradients[index % avatarGradients.length];
-  return (
-    <div className={`relative h-20 bg-gradient-to-br ${gradient} overflow-hidden rounded-t-xl`}>
-      <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(circle, white 1.5px, transparent 1.5px)', backgroundSize: '14px 14px' }} />
-      <div className="absolute -right-5 -top-5 h-16 w-16 rounded-full bg-white/10" />
-      <div className="absolute -left-3 -bottom-6 h-14 w-14 rounded-full bg-white/10" />
-      <div className="absolute inset-0 flex items-center justify-center">
-        <Icon className="h-9 w-9 text-white drop-shadow-sm" />
-      </div>
-      <span className="absolute top-2 right-2.5 text-[10px] font-mono font-bold text-white/60">
-        {label ?? String(index + 1).padStart(2, '0')}
-      </span>
     </div>
   );
 }
@@ -209,10 +196,10 @@ const moduleSections: AccordionSection[] = [
 ];
 
 const reports = [
-  { icon: RefreshCw, title: 'Inventory Turnover Report', desc: 'Turnover ratios, days to sell and movement trends per item.' },
-  { icon: TrendingUp, title: 'Sales by Item Report', desc: 'Revenue and quantity sold per item with date filtering.' },
-  { icon: Package, title: 'Purchases by Item Report', desc: 'Purchase history per item with supplier details.' },
-  { icon: Users, title: 'Supplier Listing Report', desc: 'All suppliers with current balances.' },
+  { title: 'Inventory Turnover Report', desc: 'Turnover ratios, days to sell and movement trends per item.', image: '/view transaction report.png' },
+  { title: 'Sales by Item Report', desc: 'Revenue and quantity sold per item with date filtering.', image: '/sales by supplier .png' },
+  { title: 'Purchases by Item Report', desc: 'Purchase history per item with supplier details.', image: '/supplier invoice .png' },
+  { title: 'Supplier Listing Report', desc: 'All suppliers with current balances.', image: '/creditors control.png' },
 ];
 
 const tutorialSteps = [
@@ -386,30 +373,32 @@ export function Inventory() {
             alt=""
             className="h-full w-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-white via-white/85 to-transparent" />
-          <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-white to-transparent" />
+          <div className="absolute inset-0 bg-[#0B1220]/70" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#0B1220]/80 via-transparent to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-[#0B1220] to-transparent" />
         </div>
+        <div className="absolute inset-x-0 -bottom-1 h-24 sm:h-32 bg-white z-10 pointer-events-none" style={{ clipPath: 'polygon(0 40%, 100% 70%, 100% 100%, 0 100%)' }} />
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-36">
           <div className="max-w-xl">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-50 border border-emerald-100 mb-6">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/20 border border-emerald-400/30 mb-6">
               <Package className="h-3.5 w-3.5 text-[#0F9D6C]" />
-              <span className="text-xs font-semibold text-emerald-700 tracking-wide uppercase">Inventory &amp; Stock</span>
+              <span className="text-xs font-semibold text-emerald-100 tracking-wide uppercase">Inventory &amp; Stock</span>
             </div>
             <h1
-              className="text-4xl lg:text-5xl font-bold text-slate-900 mb-5 leading-tight tracking-tight"
+              className="text-4xl lg:text-5xl font-bold text-white mb-5 leading-tight tracking-tight"
               style={{ fontFamily: "'Inter Tight', sans-serif" }}
             >
               Full control of your stock
             </h1>
-            <p className="text-lg text-slate-600 leading-8 mb-8 max-w-lg">
+            <p className="text-lg text-slate-200 leading-8 mb-8 max-w-lg">
               Track stock levels, movements, batches, donations, adjustments and AI-powered forecasts — all integrated with your accounting ledger.
             </p>
             <div className="flex flex-col sm:flex-row gap-3">
               <a href={`${APP_URL}/signup`} className="btn-pill inline-flex h-12 items-center bg-[#0F9D6C] hover:bg-[#0B7A52] px-7 font-semibold text-white">
                 Get Started <ArrowRight className="h-4 w-4 ml-2" />
               </a>
-              <Link to="/book-demo" className="btn-pill inline-flex h-12 items-center border border-slate-200 bg-white/80 backdrop-blur-sm hover:bg-white hover:border-slate-300 px-7 font-semibold text-slate-700">
+              <Link to="/book-demo" className="btn-pill inline-flex h-12 items-center border border-white/30 bg-white/10 backdrop-blur-sm hover:bg-white/20 hover:border-white/50 px-7 font-semibold text-white">
                 Watch Demo
               </Link>
             </div>
@@ -431,19 +420,19 @@ export function Inventory() {
           </div>
           <CardSlider>
             {[
-              { icon: Package, title: 'Items', desc: 'Physical stock with qty, cost, SKU, status badges and movement history.' },
-              { icon: FileText, title: 'Services', desc: 'Non-stock services with selling price — no stock or accounting entries.' },
-              { icon: Boxes, title: 'Three Pathways', desc: 'Opening stock, capital contribution or donated stock — each posts correctly.' },
-              { icon: Layers, title: 'Batch Tracking', desc: 'Batches with expiry dates, locations and quantities for traceability.' },
-            ].map((p, i) => (
-              <div key={p.title} className="card-lift shrink-0 snap-start w-[85%] sm:w-[55%] lg:w-[40%] bg-white rounded-2xl border border-slate-200 overflow-hidden">
-                <CardAvatar icon={p.icon} index={i} />
-                <div className="p-5">
-                  <h3 className="text-sm font-bold text-slate-900 mb-2" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{p.title}</h3>
-                  <p className="text-xs text-slate-500 leading-5">{p.desc}</p>
+              { title: 'Items', desc: 'Physical stock with qty, cost, SKU, status badges and movement history.', image: '/assets register .png' },
+              { title: 'Services', desc: 'Non-stock services with selling price — no stock or accounting entries.', image: '/services .png' },
+              { title: 'Three Pathways', desc: 'Opening stock, capital contribution or donated stock — each posts correctly.', image: '/add assets form .png' },
+              { title: 'Batch Tracking', desc: 'Batches with expiry dates, locations and quantities for traceability.', image: '/assets manangement.png' },
+            ].map((p) => (
+              <div key={p.title} className="snap-center shrink-0 w-[280px] h-[280px] sm:w-[340px] sm:h-[340px] bg-white rounded-2xl overflow-hidden shadow-md transition-all duration-700 ease-out flex flex-col hover:-translate-y-1.5 group/card">
+                <img src={p.image} alt={p.title} className="h-[55%] w-full object-cover group-hover/card:scale-110 transition-transform duration-700" />
+                <div className="h-[45%] flex flex-col justify-center p-5 bg-[#0052CC]">
+                  <h3 className="text-sm font-bold text-white mb-2" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{p.title}</h3>
+                  <p className="text-xs text-white/80 leading-5">{p.desc}</p>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
           </CardSlider>
         </div>
       </section>
@@ -609,16 +598,16 @@ export function Inventory() {
           </div>
           <CardSlider className="mb-8">
             {[
-              { label: 'Stock Healthy', value: '0', icon: CheckCircle2 },
-              { label: 'Low Stock', value: '0', icon: AlertTriangle },
-              { label: 'Out of Stock', value: '0', icon: AlertTriangle },
-              { label: 'Total Inventory Value', value: 'R 0', icon: TrendingUp },
-            ].map((kpi, i) => (
-              <div key={kpi.label} className="card-lift shrink-0 snap-start w-[85%] sm:w-[55%] lg:w-[40%] bg-white rounded-2xl border border-slate-200 overflow-hidden">
-                <CardAvatar icon={kpi.icon} index={i} />
-                <div className="p-5">
-                  <p className="text-2xl font-bold text-slate-900 mb-1" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{kpi.value}</p>
-                  <p className="text-xs text-slate-500">{kpi.label}</p>
+              { label: 'Stock Healthy', value: '0', image: '/assets register .png' },
+              { label: 'Low Stock', value: '0', image: '/assets report graphs .png' },
+              { label: 'Out of Stock', value: '0', image: '/aging for debtors .png' },
+              { label: 'Total Inventory Value', value: 'R 0', image: '/income statement.png' },
+            ].map((kpi) => (
+              <div key={kpi.label} className="snap-center shrink-0 w-[280px] h-[280px] sm:w-[340px] sm:h-[340px] bg-white rounded-2xl overflow-hidden shadow-md transition-all duration-700 ease-out flex flex-col hover:-translate-y-1.5 group/card">
+                <img src={kpi.image} alt={kpi.label} className="h-[55%] w-full object-cover group-hover/card:scale-110 transition-transform duration-700" />
+                <div className="h-[45%] flex flex-col justify-center p-5 bg-[#0052CC]">
+                  <p className="text-2xl font-bold text-white mb-1" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{kpi.value}</p>
+                  <p className="text-xs text-white/80">{kpi.label}</p>
                 </div>
               </div>
             ))}
@@ -678,19 +667,19 @@ export function Inventory() {
           </div>
           <CardSlider className="mb-6">
             {[
-              { icon: Bell, title: 'Action Centre', features: ['Items needing price review (selling at a loss or break-even)', 'Items needing stock (out of stock or below reorder threshold)', 'Click any alert to jump directly to the action', 'Shows top 10 priority items with stock quantities and status'] },
-              { icon: Zap, title: 'AI Decision Engine', features: ['Critical: out of stock with lost revenue calculation', 'Critical: only X days of stock remaining with lead time warning', 'Warning: high-margin item running low — prioritise restocking', 'Warning: overstocked — months of supply exceeds 3 months', 'Warning: stock variance detected with percentage and value', 'Success: item in good standing with healthy margin'] },
-              { icon: TrendingUp, title: 'Financial Impact', features: ['Quantified financial impact per AI recommendation', 'Title, detail and recommended action per alert', 'Cost-of-ignore calculation for prioritisation'] },
-            ].map((card, i) => (
-              <div key={card.title} className="card-lift shrink-0 snap-start w-[85%] sm:w-[55%] lg:w-[40%] bg-white rounded-2xl border border-slate-200 overflow-hidden">
-                <CardAvatar icon={card.icon} index={i} />
-                <div className="p-6">
-                  <h3 className="text-sm font-bold text-slate-900 mb-2" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{card.title}</h3>
-                  <ul className="space-y-2">
-                    {card.features.map(f => (
-                      <li key={f} className="flex items-start gap-2 text-sm text-slate-600">
-                        <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
-                        <span className="leading-6">{f}</span>
+              { title: 'Action Centre', features: ['Items needing price review (selling at a loss or break-even)', 'Items needing stock (out of stock or below reorder threshold)', 'Click any alert to jump directly to the action', 'Shows top 10 priority items with stock quantities and status'], image: '/assets report graphs .png' },
+              { title: 'AI Decision Engine', features: ['Critical: out of stock with lost revenue calculation', 'Critical: only X days of stock remaining with lead time warning', 'Warning: high-margin item running low — prioritise restocking', 'Warning: overstocked — months of supply exceeds 3 months', 'Warning: stock variance detected with percentage and value', 'Success: item in good standing with healthy margin'], image: '/payroll graphs.png' },
+              { title: 'Financial Impact', features: ['Quantified financial impact per AI recommendation', 'Title, detail and recommended action per alert', 'Cost-of-ignore calculation for prioritisation'], image: '/income statement.png' },
+            ].map((card) => (
+              <div key={card.title} className="snap-center shrink-0 w-[280px] h-[280px] sm:w-[340px] sm:h-[340px] bg-white rounded-2xl overflow-hidden shadow-md transition-all duration-700 ease-out flex flex-col hover:-translate-y-1.5 group/card">
+                <img src={card.image} alt={card.title} className="h-[55%] w-full object-cover group-hover/card:scale-110 transition-transform duration-700" />
+                <div className="h-[45%] flex flex-col justify-center p-6 bg-[#0052CC]">
+                  <h3 className="text-sm font-bold text-white mb-2" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{card.title}</h3>
+                  <ul className="space-y-1.5">
+                    {card.features.slice(0, 3).map(f => (
+                      <li key={f} className="flex items-start gap-2 text-[11px] text-white/80">
+                        <CheckCircle2 className="h-3 w-3 text-white/60 shrink-0 mt-0.5" />
+                        <span className="leading-4">{f}</span>
                       </li>
                     ))}
                   </ul>
@@ -706,20 +695,20 @@ export function Inventory() {
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <CardSlider>
             {[
-              { icon: ClipboardList, title: 'Bulk Actions', features: ['Checkbox selection on the items table', 'Bulk deactivate selected items', 'Bulk mark active/inactive', 'Prevents deletion of items with stock on hand'] },
-              { icon: Upload, title: 'Import & Export', features: ['Import opening stock from CSV/Excel — posts to Inventory and Opening Equity', 'Import services from CSV/Excel — no stock or accounting entries', 'Template download available in the import dialog', 'Export all items to Excel, CSV or PDF'] },
-              { icon: ImageIcon, title: 'Image Management', features: ['Upload product images stored in Supabase Storage', 'View product images in the items table', 'Image upload dialog with error handling', 'Broken image fallback handling'] },
-              { icon: Search, title: 'Search, Filter & Pagination', features: ['Search by item name, SKU or description', 'Filter by All / Active / Inactive', 'Category filter (Parts vs Service)', 'Paginated table with page navigation', 'Real-time filtering as you type'] },
-            ].map((card, i) => (
-              <div key={card.title} className="card-lift shrink-0 snap-start w-[85%] sm:w-[55%] lg:w-[40%] bg-white rounded-2xl border border-slate-200 overflow-hidden">
-                <CardAvatar icon={card.icon} index={i} />
-                <div className="p-6">
-                  <h3 className="text-base font-bold text-slate-900 mb-2" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{card.title}</h3>
-                  <ul className="space-y-2">
-                    {card.features.map(f => (
-                      <li key={f} className="flex items-start gap-2 text-sm text-slate-600">
-                        <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
-                        <span className="leading-6">{f}</span>
+              { title: 'Bulk Actions', features: ['Checkbox selection on the items table', 'Bulk deactivate selected items', 'Bulk mark active/inactive', 'Prevents deletion of items with stock on hand'], image: '/assets register .png' },
+              { title: 'Import & Export', features: ['Import opening stock from CSV/Excel — posts to Inventory and Opening Equity', 'Import services from CSV/Excel — no stock or accounting entries', 'Template download available in the import dialog', 'Export all items to Excel, CSV or PDF'], image: '/supplier invoice .png' },
+              { title: 'Image Management', features: ['Upload product images stored in Supabase Storage', 'View product images in the items table', 'Image upload dialog with error handling', 'Broken image fallback handling'], image: '/add assets form .png' },
+              { title: 'Search, Filter & Pagination', features: ['Search by item name, SKU or description', 'Filter by All / Active / Inactive', 'Category filter (Parts vs Service)', 'Paginated table with page navigation', 'Real-time filtering as you type'], image: '/view transaction report.png' },
+            ].map((card) => (
+              <div key={card.title} className="snap-center shrink-0 w-[280px] h-[280px] sm:w-[340px] sm:h-[340px] bg-white rounded-2xl overflow-hidden shadow-md transition-all duration-700 ease-out flex flex-col hover:-translate-y-1.5 group/card">
+                <img src={card.image} alt={card.title} className="h-[55%] w-full object-cover group-hover/card:scale-110 transition-transform duration-700" />
+                <div className="h-[45%] flex flex-col justify-center p-6 bg-[#0052CC]">
+                  <h3 className="text-base font-bold text-white mb-2" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{card.title}</h3>
+                  <ul className="space-y-1.5">
+                    {card.features.slice(0, 3).map(f => (
+                      <li key={f} className="flex items-start gap-2 text-[11px] text-white/80">
+                        <CheckCircle2 className="h-3 w-3 text-white/60 shrink-0 mt-0.5" />
+                        <span className="leading-4">{f}</span>
                       </li>
                     ))}
                   </ul>
@@ -740,12 +729,12 @@ export function Inventory() {
             </h2>
           </div>
           <CardSlider>
-            {reports.map((r, i) => (
-              <div key={r.title} className="card-lift shrink-0 snap-start w-[85%] sm:w-[55%] lg:w-[40%] bg-white rounded-2xl border border-slate-200 overflow-hidden">
-                <CardAvatar icon={r.icon} index={i} />
-                <div className="p-4">
-                  <h3 className="text-xs font-bold text-slate-900 mb-0.5" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{r.title}</h3>
-                  <p className="text-[11px] text-slate-500 leading-4">{r.desc}</p>
+            {reports.map((r) => (
+              <div key={r.title} className="snap-center shrink-0 w-[280px] h-[280px] sm:w-[340px] sm:h-[340px] bg-white rounded-2xl overflow-hidden shadow-md transition-all duration-700 ease-out flex flex-col hover:-translate-y-1.5 group/card">
+                <img src={r.image} alt={r.title} className="h-[55%] w-full object-cover group-hover/card:scale-110 transition-transform duration-700" />
+                <div className="h-[45%] flex flex-col justify-center p-5 bg-[#0052CC]">
+                  <h3 className="text-xs font-bold text-white mb-0.5" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{r.title}</h3>
+                  <p className="text-[11px] text-white/80 leading-4">{r.desc}</p>
                 </div>
               </div>
             ))}
@@ -778,13 +767,13 @@ export function Inventory() {
           </div>
           <CardSlider className="mt-6">
             {[
-              { icon: ShieldCheck, desc: 'PostgreSQL RPC stock_transaction_engine handles all quantity updates and records stock_movements with type, quantity, unit cost and reference.' },
-              { icon: AlertTriangle, desc: 'GL balance check alerts if debits do not equal credits.' },
+              { desc: 'PostgreSQL RPC stock_transaction_engine handles all quantity updates and records stock_movements with type, quantity, unit cost and reference.', image: '/general ledger .png' },
+              { desc: 'GL balance check alerts if debits do not equal credits.', image: '/trial balance .png' },
             ].map((card, i) => (
-              <div key={i} className="card-lift shrink-0 snap-start w-[85%] sm:w-[55%] lg:w-[40%] bg-white rounded-2xl border border-slate-200 overflow-hidden">
-                <CardAvatar icon={card.icon} index={i} />
-                <div className="p-4">
-                  <p className="text-xs text-slate-600">{card.desc}</p>
+              <div key={i} className="snap-center shrink-0 w-[280px] h-[280px] sm:w-[340px] sm:h-[340px] bg-white rounded-2xl overflow-hidden shadow-md transition-all duration-700 ease-out flex flex-col hover:-translate-y-1.5 group/card">
+                <img src={card.image} alt="" className="h-[55%] w-full object-cover group-hover/card:scale-110 transition-transform duration-700" />
+                <div className="h-[45%] flex flex-col justify-center p-5 bg-[#0052CC]">
+                  <p className="text-xs text-white/80">{card.desc}</p>
                 </div>
               </div>
             ))}
@@ -808,12 +797,12 @@ export function Inventory() {
             </p>
           </div>
           <CardSlider>
-            {tutorialSteps.map((step, i) => (
-              <div key={step.num} className="card-lift shrink-0 snap-start w-[85%] sm:w-[55%] lg:w-[40%] bg-white rounded-2xl border border-slate-200 overflow-hidden">
-                <CardAvatar icon={GraduationCap} index={i} label={step.num} />
-                <div className="p-4">
-                  <h3 className="text-sm font-bold text-slate-900 mb-0.5" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{step.title}</h3>
-                  <p className="text-[11px] text-slate-500 leading-4">{step.desc}</p>
+            {tutorialSteps.map((step) => (
+              <div key={step.num} className="snap-center shrink-0 w-[280px] h-[280px] sm:w-[340px] sm:h-[340px] bg-white rounded-2xl overflow-hidden shadow-md transition-all duration-700 ease-out flex flex-col hover:-translate-y-1.5 group/card">
+                <img src="/desktop app.png" alt={step.title} className="h-[55%] w-full object-cover group-hover/card:scale-110 transition-transform duration-700" />
+                <div className="h-[45%] flex flex-col justify-center p-5 bg-[#0052CC]">
+                  <h3 className="text-sm font-bold text-white mb-0.5" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{step.title}</h3>
+                  <p className="text-[11px] text-white/80 leading-4">{step.desc}</p>
                 </div>
               </div>
             ))}
