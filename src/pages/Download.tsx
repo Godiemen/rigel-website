@@ -1,6 +1,6 @@
 import { Monitor, Globe, Smartphone, Users, Download as DownloadIcon, ArrowRight, CheckCircle2, Wifi, WifiOff, Shield, Zap } from 'lucide-react';
 
-const APP_URL = 'https://biz-flow-sa-delta.vercel.app';
+const APP_URL = 'https://biz-flow-sa-two.vercel.app';
 const EXE_URL = 'https://github.com/Godiemen/rigel-business-releases/releases/download/v1.0.0/Rigel-Business_1.0.0_x64-setup.exe.exe';
 
 export function Download() {
@@ -230,7 +230,7 @@ export function Download() {
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
               {[
-                { step: '01', title: 'Open in browser', desc: 'Go to biz-flow-sa-delta.vercel.app in Chrome or Safari on your phone.' },
+                { step: '01', title: 'Open in browser', desc: 'Go to biz-flow-sa-two.vercel.app in Chrome or Safari on your phone.' },
                 { step: '02', title: 'Tap Share / Menu', desc: 'Tap the share button (Safari) or three-dot menu (Chrome).' },
                 { step: '03', title: 'Add to Home Screen', desc: 'Tap "Add to Home Screen" — it installs like a native app.' },
               ].map((s) => (

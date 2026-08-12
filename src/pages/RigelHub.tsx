@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { ArrowRight, Building2, Globe, Loader2, LockKeyhole, MapPin, Search, Shield, Store, Truck } from 'lucide-react';
 
-const APP_URL = 'https://biz-flow-sa-delta.vercel.app';
+const APP_URL = 'https://biz-flow-sa-two.vercel.app';
 const APP_ICON = '/Screenshot%202026-02-25%20154513.png';
 const SUPPLIER_FEED_URL = import.meta.env.VITE_RIGEL_HUB_SUPPLIERS_URL || `${APP_URL}/api/public/rigel-hub/suppliers`;
 

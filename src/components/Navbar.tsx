@@ -8,7 +8,7 @@ import {
   CornerDownLeft, ArrowUp, ArrowDown,
 } from 'lucide-react';
 
-const APP_URL = 'https://biz-flow-sa-delta.vercel.app';
+const APP_URL = 'https://biz-flow-sa-two.vercel.app';
 const APP_ICON = '/Screenshot%202026-02-25%20154513.png';
 
 type SearchResult = {
@@ -393,7 +393,7 @@ export function Navbar() {
                 <LogIn className="h-3.5 w-3.5" /> Login
               </a>
               <a
-                href="https://biz-flow-sauyi.vercel.app/careers"
+                href="https://biz-flow-sa-two.vercel.app/careers"
                 className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors"
               >
                 Career
@@ -513,7 +513,7 @@ export function Navbar() {
                 <LogIn className="h-4 w-4" /> Login
               </a>
               <a
-                href="https://biz-flow-sauyi.vercel.app/careers"
+                href="https://biz-flow-sa-two.vercel.app/careers"
                 onClick={() => setOpen(false)}
                 className="flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-slate-700 hover:text-slate-900"
               >

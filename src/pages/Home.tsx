@@ -10,7 +10,7 @@ import {
   PieChart, ChevronLeft, ChevronRight, Play
 } from 'lucide-react';
 
-const APP_URL = 'https://biz-flow-sa-delta.vercel.app';
+const APP_URL = 'https://biz-flow-sa-two.vercel.app';
 
 function getYouTubeId(url: string) {
   try {
@@ -738,7 +738,7 @@ export function Home() {
                 Looking for your next opportunity? Explore open roles, post jobs and connect with teams shaping the future of business software in South Africa.
               </p>
               <a
-                href="https://biz-flow-sauyi.vercel.app/careers"
+                href="https://biz-flow-sa-two.vercel.app/careers"
                 className="btn-pill inline-flex h-12 items-center bg-[#0F9D6C] hover:bg-[#0B7A52] px-8 font-semibold text-white"
               >
                 View careers <ArrowRight className="h-4 w-4 ml-2" />

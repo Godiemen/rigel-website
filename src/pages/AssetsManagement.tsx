@@ -7,7 +7,7 @@ import {
   Wallet, Building, Gem,
 } from 'lucide-react';
 
-const APP_URL = 'https://biz-flow-sa-delta.vercel.app';
+const APP_URL = 'https://biz-flow-sa-two.vercel.app';
 
 function getYouTubeId(url: string) {
   try {

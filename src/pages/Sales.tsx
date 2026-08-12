@@ -6,7 +6,7 @@ import {
   Zap, ShieldCheck, Link2, AlertTriangle, GraduationCap,
 } from 'lucide-react';
 
-const APP_URL = 'https://biz-flow-sa-delta.vercel.app';
+const APP_URL = 'https://biz-flow-sa-two.vercel.app';
 
 const screenshots = [
   { src: '/list of customers .png', title: 'Customer list', desc: 'View all customers with balances and payment status at a glance.' },

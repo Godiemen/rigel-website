@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { CheckCircle2, ArrowRight, Sparkles, Building2, Users } from 'lucide-react';
 
-const APP_URL = 'https://biz-flow-sa-delta.vercel.app';
+const APP_URL = 'https://biz-flow-sa-two.vercel.app';
 
 const plans = [
   {

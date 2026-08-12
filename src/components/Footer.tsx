@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ShieldCheck, Clock, Star, ArrowRight, Mail } from 'lucide-react';
 
-const APP_URL = 'https://biz-flow-sa-delta.vercel.app';
+const APP_URL = 'https://biz-flow-sa-two.vercel.app';
 const APP_ICON = '/Screenshot%202026-02-25%20154513.png';
 const COMPANY_LOGO = '/images%20(2).jpeg';
 
